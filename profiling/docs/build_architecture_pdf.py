@@ -156,7 +156,7 @@ def cover(canvas, doc):
     canvas.setFont("Courier", 8.6)
     canvas.setFillColor(colors.HexColor("#7f8ea3"))
     canvas.drawString(21 * mm, h - 72 * mm,
-                      "2069 lines  /  6 Python modules  /  4 profilers  /  111 checks")
+                      "2096 lines  /  6 Python modules  /  4 profilers  /  111 checks")
     canvas.setStrokeColor(RULE)
     canvas.setLineWidth(0.5)
     canvas.line(21 * mm, 15 * mm, w - 21 * mm, 15 * mm)
@@ -807,12 +807,23 @@ A(table(
 A(p("A guard inside the hook cannot have the second failure, because it tests the "
     "artifact rather than a record of the artifact.", Body))
 
-A(p("Running it on its own", H2))
+A(p("--init is the manual trigger, and ignores the flag", H2))
 A(code("""
-./run_profiling.sh --init                    # every package with PACKAGE_INIT=1
+./run_profiling.sh --init                    # every discovered package
 ./run_profiling.sh --init --package my-tool  # just one
 """))
-A(p("<font face='Courier' size='8.6'>./install.sh</font> calls that after installing "
+A(p("The flag decides whether a <i>profiling run</i> builds the package on its own. "
+    "Asking for <font face='Courier' size='8.6'>--init</font> is already saying you "
+    "want it now, so it does not also require editing the "
+    "<font face='Courier' size='8.6'>.env</font> -- and then remembering to edit it "
+    "back. Set <font face='Courier' size='8.6'>PACKAGE_INIT=0</font> once and build "
+    "when you choose to.", Body))
+A(p("A package with no hook is skipped by "
+    "<font face='Courier' size='8.6'>--init</font> rather than failing, so it can be "
+    "pointed at anything. The reverse -- "
+    "<font face='Courier' size='8.6'>PACKAGE_INIT=1</font> with no hook -- <i>is</i> "
+    "an error, because the .env asked for a build step that does not exist.", Body))
+A(p("<font face='Courier' size='8.6'>./install.sh</font> calls it after installing "
     "dependencies, so one command leaves the box ready to profile. A failed init "
     "skips that package's runs, records them as failed and yields exit code 4; "
     "nothing is cached, so the next invocation simply tries again.", Body))
@@ -1202,7 +1213,7 @@ A(p("SECTION 15", Kick))
 A(p("Is this too much code?", H1))
 A(p("An honest accounting", Cap))
 
-A(p("2069 lines total, 1636 excluding comments and blanks. That is a fair thing to "
+A(p("2096 lines total, 1655 excluding comments and blanks. That is a fair thing to "
     "challenge. Here is where it actually goes.", Body))
 
 A(table(

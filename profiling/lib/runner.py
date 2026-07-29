@@ -339,11 +339,18 @@ def resolve(
     return _read_nul(argv_file) or list(target.argv), _read_nul(command_file) or []
 
 
+#: ``run_package_init`` returns this when package.sh defines no such hook.
+NO_INIT_HOOK = 79
+
+
 def run_package_init(env: Mapping[str, str], package: Package) -> int:
     """Call ``package_init``.  Returns its exit code; output goes to the console.
 
-    Called once per package per invocation whenever ``PACKAGE_INIT=1``, with no
-    caching of any kind.  Deciding whether there is work to do belongs to the
+    ``NO_INIT_HOOK`` means there was no hook to call -- a skip, not a failure,
+    so ``--init`` can be pointed at any package without the caller first having
+    to ask whether it has one.
+
+    No caching of any kind.  Deciding whether there is work to do belongs to the
     hook: only the package knows what "already built" means for it, and a guard
     like ``[ -x .venv/bin/python ] || python3 -m venv .venv`` says so in one
     line -- cheaper and more honest than any staleness check the harness could
@@ -354,8 +361,7 @@ def run_package_init(env: Mapping[str, str], package: Package) -> int:
         '. "$PROFILING_ROOT/lib/common.sh"\n'
         '. "$1"\n'
         "if ! declare -F package_init >/dev/null; then\n"
-        '  profiling_error "PACKAGE_INIT=1 but package.sh defines no package_init"\n'
-        "  exit 78\n"
+        f"  exit {NO_INIT_HOOK}\n"
         "fi\n"
         "package_init\n"
     )

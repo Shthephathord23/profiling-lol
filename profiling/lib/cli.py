@@ -196,8 +196,14 @@ def cmd_list_profilers(env: Dict[str, str], as_json: bool) -> int:
 def cmd_init(args: argparse.Namespace, env: Dict[str, str]) -> int:
     """Run package_init for the selected packages (default: all) and exit.
 
-    Lets ./install.sh leave the box ready to profile in one call, and gives you
-    a way to do the build step on its own.
+    This is the manual trigger, and it deliberately **ignores PACKAGE_INIT**.
+    That flag governs whether a profiling run builds the package on its own;
+    asking for --init is already saying you want it now, and having to edit a
+    file first -- then remember to edit it back -- would make the flag a switch
+    you have to flip rather than a setting you choose once.
+
+    A package with no package_init hook is skipped, not an error, so --init can
+    be pointed at anything.
     """
     entries = discovery.discover_packages(PROFILING_ROOT)
     names = discovery.resolve_selection(args.package, entries, "package") or sorted(
@@ -207,10 +213,11 @@ def cmd_init(args: argparse.Namespace, env: Dict[str, str]) -> int:
     exit_code = EXIT_OK
     for name in names:
         package = discovery.load_package(CONFIG_ENV, entries[name])
-        if not package.init_enabled:
-            continue
         print(f"--> init {name}")
-        if runner.run_package_init(package.env, package) != 0:
+        code = runner.run_package_init(package.env, package)
+        if code == runner.NO_INIT_HOOK:
+            print(f"    no package_init in {name}/package.sh; nothing to do")
+        elif code != 0:
             print(f"ERROR: package_init failed for {name}", file=sys.stderr)
             exit_code = EXIT_INIT_FAILED
     return exit_code
@@ -505,10 +512,11 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
             )
 
             # PACKAGE_INIT=1: call the hook once, before this package's runs.
+            # Set it to 0 and a run never builds the package; --init still can.
             if base_package.init_enabled:
                 if args.dry_run:
                     print(f"    [dry-run] would run package_init for {package_name}")
-                elif runner.run_package_init(base_package.env, base_package) != 0:
+                elif _init_for_run(base_package, package_name) != 0:
                     print(
                         f"ERROR: package_init failed for {package_name}; "
                         "skipping its runs",
@@ -545,6 +553,19 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
         _print_totals(records)
 
     return exit_code
+
+
+def _init_for_run(package: Package, name: str) -> int:
+    """package_init as part of a run.  A missing hook is a configuration error
+    here -- the .env asked for an init that does not exist."""
+    code = runner.run_package_init(package.env, package)
+    if code == runner.NO_INIT_HOOK:
+        print(
+            f"ERROR: {name}/.env sets PACKAGE_INIT=1 but package.sh defines no "
+            "package_init",
+            file=sys.stderr,
+        )
+    return code
 
 
 def _is_all(values: Sequence[str]) -> bool:

@@ -105,8 +105,9 @@ On `--remove-output`: lists what would be deleted, deletes nothing.
 
 ### `--init`
 
-Runs `package_init` for the selected packages (default: all with
-`PACKAGE_INIT=1`) and exits. See "Package init".
+Runs `package_init` for the selected packages (default: all) and exits. It
+ignores `PACKAGE_INIT`, so it builds a package without you editing the `.env`.
+See "Package init".
 
 ---
 
@@ -392,7 +393,8 @@ package_init() {
 ```
 
 `PACKAGE_INIT=1` means *call the hook once, before this package's runs*. `0` or
-absent means never call it. That is the whole mechanism.
+absent means a profiling run never builds the package. That is the whole
+mechanism.
 
 **There is no staleness tracking.** The hook runs on every invocation, and
 making it cheap when there is nothing to do is the hook's job — as above, one
@@ -403,15 +405,24 @@ in a `.state/` directory; the guess could disagree with reality (stamp says
 built, the virtualenv is gone, every run dies at exit 127), and it cost more
 code than the thing it was guarding.
 
-Run the build step on its own with:
+`--init` is the manual trigger, and it **ignores `PACKAGE_INIT`**:
 
 ```bash
-./run_profiling.sh --init                    # every package with PACKAGE_INIT=1
+./run_profiling.sh --init                    # every discovered package
 ./run_profiling.sh --init --package my-tool  # just one
 ```
 
-`./install.sh` calls that after installing dependencies, so one command leaves
-the box ready to profile.
+The flag decides whether a *profiling run* builds the package on its own.
+Asking for `--init` is already saying you want it now, so it does not also
+require editing the `.env` — and then remembering to edit it back. Set
+`PACKAGE_INIT=0` once and build when you choose to.
+
+A package with no `package_init` hook is skipped by `--init`, not an error, so
+you can point it at anything. The reverse — `PACKAGE_INIT=1` with no hook — *is*
+an error, because the `.env` asked for a build step that does not exist.
+
+`./install.sh` calls `--init` after installing dependencies, so one command
+leaves the box ready to profile.
 
 A failed init skips that package's runs, records them as failed, and yields
 exit code 4. Nothing is cached, so the next invocation simply tries again.
