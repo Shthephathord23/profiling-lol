@@ -43,7 +43,6 @@ __all__ = [
     "resolve",
 ]
 
-RUN_ID_RE = re.compile(r"^\d{8}-\d{6}-[0-9a-f]{4}$")
 _RUN_ID_SAFE = re.compile(r"[^A-Za-z0-9._-]+")
 
 

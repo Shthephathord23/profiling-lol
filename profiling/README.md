@@ -16,8 +16,10 @@ profiling/
   lib/                 the Python core, common.sh, and helper scripts
   packages/<name>/     .env + package.sh   -- a workload
   profilers/<name>/    .env + profiler.sh  -- a way to measure it
-  output/              run artifacts (gitignored)
   .state/              package init stamps (gitignored)
+
+$PROFILING_OUT_PATH/
+  output/<package>/<profiler>/<run-id>/   run artifacts
 ```
 
 ---
@@ -482,16 +484,23 @@ A terminal action: prune, print, exit. It never combines with a run.
 `--keep 3` on a package with four profilers leaves twelve run directories.
 Scope follows `--package` / `--profiler`; with neither, the whole tree.
 
-Safety rules:
+**Every directory inside a package/profiler pair is treated as a run**, whatever
+it is called. There is no name pattern and nothing is special-cased: a run made
+with a custom `RUN_ID` is prunable like any other, and so is a folder someone
+left behind. The tree is the harness's to manage, not somewhere to keep things.
 
-* Directories whose names do not match the run-id pattern are **left
-  untouched**, never guessed at. A custom `RUN_ID` therefore opts that run out
-  of automatic pruning — delete those by hand.
-* The `latest` symlink is re-pointed at the newest survivor, or removed when
-  none is left.
-* The harness refuses to prune when `PROFILING_OUTPUT_DIR` is unset, relative,
-  the filesystem root, or suspiciously shallow — and re-checks that every
-  candidate resolves inside it.
+The consequence worth knowing: a folder dropped in *after* the last run counts
+as the newest run and will be kept until newer runs push it out.
+
+Runs are ordered by **mtime**, not by name — run ids are only chronological
+when the harness generated them, and a CI-supplied `RUN_ID` like `build-9`
+would otherwise sort after `build-10`.
+
+The `latest` symlink is re-pointed at the newest survivor, or removed when none
+is left. And the harness refuses to prune at all when `PROFILING_OUTPUT_DIR` is
+unset, relative, the filesystem root, or suspiciously shallow — which matters
+more now that the tree lives outside the repository, where a mistake is not
+something you would spot in `git status`.
 
 ---
 
@@ -582,9 +591,17 @@ docker run -v profiling-state:/app/profiling/.state …
 
 ### Disk layout
 
-Both `output/` and `.state/` are gitignored, and every path is defined in
-`config.env`, so the whole tree can be relocated with one edit — or pointed at
-a mounted volume via `PROFILING_OUTPUT_DIR` / `PROFILING_STATE_DIR`.
+Set `PROFILING_OUT_PATH` to a directory **outside the repository** so profiling
+data can never be captured by a commit, and so the tree survives a re-clone:
+
+```bash
+PROFILING_OUT_PATH=/var/lib/profiling ./run_profiling.sh --package all --profiler all
+docker run -v /var/lib/profiling:/var/lib/profiling -e PROFILING_OUT_PATH=/var/lib/profiling …
+```
+
+It defaults to the harness's own directory so a fresh checkout runs with no
+configuration, and `output/` is gitignored to cover that case. Every path is
+defined in `config.env`, so relocating the whole tree is one edit.
 
 ---
 
@@ -659,7 +676,8 @@ py-spy falls back to `speedscope` JSON.
 |---|---|---|
 | `PROFILING_ROOT` | resolved automatically | this directory |
 | `REPO_ROOT` | `$PROFILING_ROOT/..` | root of the project being profiled |
-| `PROFILING_OUTPUT_DIR` | `$PROFILING_ROOT/output` | where artifacts go |
+| `PROFILING_OUT_PATH` | `$PROFILING_ROOT` | base for artifacts — **point this outside the repo** |
+| `PROFILING_OUTPUT_DIR` | `$PROFILING_OUT_PATH/output` | where artifacts go |
 | `PROFILING_STATE_DIR` | `$PROFILING_ROOT/.state` | where init stamps go |
 | `DEFAULT_PROFILERS` | `time py-spy` | fallback when `PACKAGE_PROFILERS` is empty |
 | `PROFILING_KEEP_DEFAULT` | `1` | default `--keep` for `--remove-output` |

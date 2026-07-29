@@ -156,7 +156,7 @@ def cover(canvas, doc):
     canvas.setFont("Courier", 8.6)
     canvas.setFillColor(colors.HexColor("#7f8ea3"))
     canvas.drawString(21 * mm, h - 72 * mm,
-                      "2336 lines  /  7 Python modules  /  4 profilers  /  111 checks")
+                      "2239 lines  /  7 Python modules  /  4 profilers  /  111 checks")
     canvas.setStrokeColor(RULE)
     canvas.setLineWidth(0.5)
     canvas.line(21 * mm, 15 * mm, w - 21 * mm, 15 * mm)
@@ -1067,10 +1067,9 @@ A(table(
       "the newest survivor, or removed when none remains"]],
     [40 * mm, 128 * mm]))
 
-A(p("The consequence of the third guard is worth stating plainly: a run created with "
-    "a custom <font face='Courier' size='8.6'>RUN_ID</font> opts <i>out</i> of "
-    "automatic pruning, because the harness cannot tell it apart from a directory "
-    "someone put there on purpose. Those must be deleted by hand.", Body))
+A(p("One consequence is worth stating plainly: a folder dropped into a pair "
+    "directory <i>after</i> the last run counts as the newest run, and is kept until "
+    "newer runs push it out. Nothing is special-cased -- that is the point.", Body))
 
 A(spacer(2))
 A(callout("The bug this module actually had",
@@ -1209,7 +1208,7 @@ A(p("SECTION 15", Kick))
 A(p("Is this too much code?", H1))
 A(p("An honest accounting", Cap))
 
-A(p("2336 lines total, 1839 excluding comments and blanks. That is a fair thing to "
+A(p("2239 lines total, 1762 excluding comments and blanks. That is a fair thing to "
     "challenge. Here is where it actually goes.", Body))
 
 A(table(
@@ -1221,7 +1220,7 @@ A(table(
      ["discovery.py", "236", "Scanning (40), typed accessors (110), selection (35)"],
      ["report.py", "228", "meta.json (60), listings (40), table renderer (25), summary (40)"],
      ["initstate.py", "207", "Fingerprint (40), decision table (30), execution (60)"],
-     ["retention.py", "175", "Safety checks (30), planning (50), applying (40)"],
+     ["retention.py", "107", "Safety check (25), prune (45), latest symlink (12)"],
      ["envfile.py", "200", "load_layers entry point, sourcing (50), parsing (40), precedence (25)"]],
     [26 * mm, 14 * mm, 128 * mm], mono_cols=(0, 1)))
 

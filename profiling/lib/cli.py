@@ -221,48 +221,20 @@ def cmd_remove_output(args: argparse.Namespace, env: Dict[str, str]) -> int:
     packages = discovery.resolve_selection(args.package, package_entries, "package")
     profilers = discovery.resolve_selection(args.profiler, profiler_entries, "profiler")
 
-    plan = retention.plan_prune(
-        output_dir,
-        keep=keep,
-        packages=packages or None,
-        profilers=profilers or None,
-    )
-
-    scope = []
-    if packages:
-        scope.append("packages=" + ",".join(packages))
-    if profilers:
-        scope.append("profilers=" + ",".join(profilers))
-    print(
-        f"Pruning {output_dir} (keep {keep} per package/profiler pair"
-        + (f"; {'; '.join(scope)}" if scope else "")
-        + ")"
-    )
-
-    if not plan.remove:
-        print("  nothing to remove")
-    for path in plan.remove:
-        print(f"  {'would remove' if args.dry_run else 'removed'} {path}")
-
-    if plan.skipped:
-        print(
-            "  left untouched (not run-id shaped): "
-            + ", ".join(str(p) for p in plan.skipped)
-        )
-
-    if args.dry_run:
-        for link in plan.relink:
-            print(f"  would re-point {link}")
-        print(f"  keeping {len(plan.kept)} run(s)")
-        return EXIT_OK
-
+    print(f"Pruning {output_dir} (keep {keep} per package/profiler pair)")
     try:
-        retention.apply_plan(plan, output_dir)
-    except (retention.RetentionError, OSError) as exc:
+        removed = retention.prune(
+            output_dir, keep, packages or None, profilers or None, args.dry_run
+        )
+    except OSError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return EXIT_RUN_FAILED
 
-    print(f"  kept {len(plan.kept)} run(s)")
+    verb = "would remove" if args.dry_run else "removed"
+    for path in removed:
+        print(f"  {verb} {path}")
+    if not removed:
+        print("  nothing to remove")
     return EXIT_OK
 
 
