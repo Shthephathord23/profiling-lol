@@ -168,13 +168,15 @@ def packages_listing(
     rows = []
     for name in sorted(packages):
         pkg = packages[name]
+        # Must match what `--profiler all` actually runs, ordering included:
+        # this list is what a CI job iterates to build its matrix.
         effective = pkg.profilers or default_profilers or all_profilers
         rows.append(
             {
                 "name": name,
                 "description": pkg.description,
                 "kind": pkg.kind,
-                "profilers": list(effective),
+                "profilers": sorted(set(effective)),
                 "declared_profilers": pkg.profilers,
                 "entry": pkg.entry_point,
                 "workdir": str(pkg.workdir),

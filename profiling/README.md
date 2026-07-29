@@ -122,6 +122,14 @@ So `--package all --profiler all` is *not* a cartesian product: a package
 listing two profilers gets two runs while its neighbour listing three gets
 three.
 
+**Order.** Packages run before profilers vary, and each dimension is ordered
+the same way: as given on the command line, or alphabetically for `all`. So
+`--profiler viztracer,time` runs viztracer first, while `--profiler all` runs
+a package's list alphabetically regardless of how it is written in
+`PACKAGE_PROFILERS`. Duplicates in that list are collapsed. The `profilers`
+field of `--list-packages --json` is exactly what `--profiler all` will run,
+in the same order, so a CI matrix built from it matches the harness.
+
 ### Kind compatibility
 
 Every profiler declares which `PACKAGE_KIND`s it can handle. If a package's
@@ -620,12 +628,21 @@ resulting pid; the shell then owns the process and `wait` yields its exact
 exit code. The cost is that sampling begins a few milliseconds late, so the
 very start of interpreter startup can be missed.
 
-A non-zero py-spy status is still used, but only to tell its two failure modes
-apart — and the discriminator is the output file, not the status. When py-spy
-cannot attach at all (ptrace denied, process already gone) it writes nothing,
-and that *is* a failed profiling run. When it attached but collected no
-samples it still writes a file, and the run is reported on the workload's own
-status with a warning suggesting more work or a higher `PYSPY_RATE`.
+A non-zero py-spy status is still used, but only to tell its failure modes
+apart, and never by trusting the number itself:
+
+| What happened | How it is detected | Outcome |
+|---|---|---|
+| Attached, collected no samples | it still wrote an output file | warning; the workload's status stands |
+| Could not attach, workload still running | no output file, and the workload was alive when py-spy quit | **run fails** — ptrace denied or similar |
+| Could not attach, workload already finished | no output file, workload already gone | warning; the workload's status stands |
+
+That last row is the attach-window race, and it is deliberately not a failure:
+a workload that finishes in a few milliseconds occasionally beats the attach,
+and failing on it would make fast packages flaky in CI. You lose the profile
+for that run, not the run. The distinction between the last two rows is only
+observable while it happens, which is why the profiler waits on py-spy first
+and checks whether the workload is still live at that moment.
 
 Set `PYSPY_CAPTURE_EXIT_CODE=0` for plain launch mode, where the workload's
 exit status is simply not observable and is reported as 0.

@@ -85,6 +85,19 @@ _pyspy_ptrace_hint() {
     fi
 }
 
+# True while a pid is a live process.  A finished-but-unreaped child is still
+# a pid we can signal, so `kill -0` cannot answer this -- check the state field
+# in /proc instead and treat Z (zombie) as finished.  The comm field can hold
+# spaces and parentheses, so parse from the last ") ".
+_pyspy_pid_running() {
+    local line state
+    [ -r "/proc/$1/stat" ] || return 1
+    line=$(cat "/proc/$1/stat" 2>/dev/null) || return 1
+    state=${line##*') '}
+    state=${state%% *}
+    [ -n "$state" ] && [ "$state" != "Z" ]
+}
+
 _pyspy_no_samples_hint() {
     profiling_warn \
         "py-spy wrote a profile but collected no samples: the workload" \
@@ -94,7 +107,7 @@ _pyspy_no_samples_hint() {
 
 profiler_wrap() {
     require_bin py-spy
-    local cmd status spy_status target_pid spy_pid
+    local cmd status spy_status target_pid spy_pid target_was_running
 
     if ! _pyspy_capture_enabled; then
         # Launch mode.  py-spy's status says nothing about the workload, so
@@ -123,26 +136,46 @@ profiler_wrap() {
     "${cmd[@]}" &
     spy_pid=$!
 
+    # Wait on py-spy first, so that its exit can be interpreted.  Whether the
+    # workload was still running at that moment is what separates py-spy's two
+    # failure modes, and the answer is only observable while it is happening:
+    #
+    #   workload still running -> py-spy stopped on its own account (ptrace
+    #                             denied, unreadable process): a real error.
+    #   workload already gone  -> py-spy merely outlived its target.  On a
+    #                             short workload it can miss the attach window
+    #                             entirely; that costs a profile, not a run.
+    wait "$spy_pid"
+    spy_status=$?
+    if _pyspy_pid_running "$target_pid"; then
+        target_was_running=1
+    else
+        target_was_running=0
+    fi
+
     wait "$target_pid"
     status=$?
 
-    wait "$spy_pid"
-    spy_status=$?
-
     if [ "$spy_status" -ne 0 ]; then
         if _pyspy_wrote_profile; then
-            # py-spy attached fine but had nothing to sample.  That is not a
-            # failure of the workload, whose status stands.
+            # Attached fine, collected nothing.  Not the workload's fault.
             _pyspy_no_samples_hint
-        else
+        elif [ "$target_was_running" -eq 1 ]; then
             _pyspy_ptrace_hint
             if [ "$status" -eq 0 ]; then
-                # The workload was fine but we have no profile at all: that is
-                # a failed profiling run, not a successful one.
+                # No profile, and py-spy quit while there was still something
+                # to profile: a genuinely failed profiling run.
                 profiling_error "py-spy exited $spy_status; no profile was recorded"
                 return "$spy_status"
             fi
             profiling_warn "py-spy exited $spy_status (workload also failed: $status)"
+        else
+            # Lost the race against a short-lived workload.  Warning only --
+            # failing here would make fast workloads flaky in CI.
+            profiling_warn \
+                "py-spy exited $spy_status without recording a profile: the" \
+                "workload finished before sampling could start. Give it more" \
+                "work if you need a profile of this run."
         fi
     fi
 

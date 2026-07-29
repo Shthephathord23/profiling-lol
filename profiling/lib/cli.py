@@ -288,15 +288,29 @@ def _select_profilers_for_package(
 
     Returns (names, forced).  ``forced`` marks profilers named explicitly on
     the command line, which run even when the package does not list them.
+
+    Ordering follows §10: names given explicitly keep their command-line
+    order, while anything reached through ``--profiler all`` -- the package's
+    own list, DEFAULT_PROFILERS, or every discovered profiler -- runs
+    alphabetically.  Duplicates are collapsed either way, so a package that
+    lists a profiler twice still runs it once.
     """
     if explicit:
-        return requested, True
-    declared = package.profilers
-    if declared:
-        return declared, False
-    if default_profilers:
-        return default_profilers, False
-    return all_profilers, False
+        return _dedupe(requested), True
+
+    for candidate in (package.profilers, default_profilers, all_profilers):
+        if candidate:
+            return sorted(_dedupe(candidate)), False
+    return [], False
+
+
+def _dedupe(names: List[str]) -> List[str]:
+    seen, out = set(), []
+    for name in names:
+        if name not in seen:
+            seen.add(name)
+            out.append(name)
+    return out
 
 
 def _missing_binaries(profiler: Profiler, env: Dict[str, str]) -> List[str]:
