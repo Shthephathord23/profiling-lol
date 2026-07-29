@@ -1,6 +1,6 @@
 """Execute one (package, profiler) run.
 
-The central mechanism is the *target contract* (§6 of the spec): before the
+The central mechanism is the *target contract*: before the
 profiler hook is invoked, the runner writes ``<RUN_DIR>/target.sh`` declaring
 the workload as bash arrays.  Sourcing a generated file sidesteps every
 quoting and export problem that passing argv through the environment would
@@ -15,12 +15,10 @@ create, and exposing the argv in two shapes serves both profiler families:
 
 from __future__ import annotations
 
-import os
 import re
 import secrets
 import shlex
 import shutil
-import signal
 import subprocess
 import sys
 import threading
@@ -29,6 +27,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Mapping, Optional
 
+import process
 from discovery import PACKAGE_KINDS, Package, Profiler
 
 __all__ = [
@@ -58,15 +57,13 @@ _ACTIVE: "Optional[subprocess.Popen]" = None
 def terminate_active() -> bool:
     """Kill the in-flight run's process group, if there is one.
 
-    The workload runs in its own session so that a timeout can kill the
-    profiler and everything it spawned together.  The flip side is that a
-    signal sent to the harness does *not* reach it, so an interrupted run
-    would otherwise leave py-spy and the workload orphaned in the container.
+    The workload owns its session, so a signal to the harness does not reach it:
+    without this an interrupt orphans the profiler and the workload.
     """
     proc = _ACTIVE
     if proc is None or proc.poll() is not None:
         return False
-    _kill_group(proc)
+    process.kill_group(proc)
     return True
 
 
@@ -189,96 +186,9 @@ def render_target_sh(target: Target, package: Package, profiler: Profiler) -> st
     return "\n".join(lines) + "\n"
 
 
-# ------------------------------------------------------------- harnesses ---
+#: The bash side of a run; see lib/harness.sh for what it does.
+HARNESS_SH = Path(__file__).resolve().parent / "harness.sh"
 
-# One harness serves --dry-run and the real run alike.
-#
-# It sources the same files either way and calls the same profiler_command
-# builder, so the command --dry-run prints is by construction the command that
-# executes -- they cannot drift, because there is only one of them.
-#
-# With PROFILING_RESOLVE_ONLY=1 it stops right after writing what it resolved.
-# Otherwise it goes on to run the workload, all in this one bash process so
-# that the hooks share shell state and package_post_run can be an EXIT trap
-# that fires even when the run fails or is killed.
-_HARNESS = r"""
-set -o pipefail
-. "$PROFILING_ROOT/lib/common.sh"
-. "$PROFILING_TARGET_FILE"
-
-# A definition file that will not source is a hard error.  Sourced at the top
-# level, never inside a function, so `declare` in a hook still lands globally.
-# Without the status check bash prints the syntax error and carries on, and the
-# run then proceeds with every hook silently missing -- including the
-# package_pre_run guards whose whole job is to fail loudly.
-if [ -f "$PROFILING_PACKAGE_SH" ] && ! . "$PROFILING_PACKAGE_SH"; then
-  profiling_error "package.sh failed to source (see the error above): $PROFILING_PACKAGE_SH"
-  exit 78
-fi
-if [ -f "$PROFILING_PROFILER_SH" ] && ! . "$PROFILING_PROFILER_SH"; then
-  profiling_error "profiler.sh failed to source (see the error above): $PROFILING_PROFILER_SH"
-  exit 78
-fi
-
-# The package may rewrite the workload entirely.
-if declare -F package_command >/dev/null; then
-  package_command
-fi
-printf '%s\0' "${TARGET_ARGV[@]}" > "$PROFILING_ARGV_FILE"
-
-if ! declare -F profiler_command >/dev/null; then
-  profiling_error "profiler '$PROFILER_NAME' defines no profiler_command function"
-  exit 78
-fi
-
-cmd=()
-profiler_command
-# An empty cmd expands to nothing, so the run would "succeed" in zero seconds
-# having executed no profiler and no workload.  Checked before the command file
-# is written, so --dry-run rejects it on the same path as a real run.
-if [ "${#cmd[@]}" -eq 0 ]; then
-  profiling_error "profiler '$PROFILER_NAME' resolved to an empty command;" \
-    "profiler_command must populate the 'cmd' array"
-  exit 78
-fi
-printf '%s\0' "${cmd[@]}" > "$PROFILING_COMMAND_FILE"
-
-if [ "${PROFILING_RESOLVE_ONLY:-0}" = "1" ]; then
-  exit 0
-fi
-
-__profiling_post_run() {
-  if declare -F package_post_run >/dev/null; then
-    package_post_run || profiling_warn "package_post_run exited $?"
-  fi
-}
-trap __profiling_post_run EXIT
-
-cd "$PACKAGE_WORKDIR" || {
-  profiling_error "PACKAGE_WORKDIR does not exist: $PACKAGE_WORKDIR"
-  exit 77
-}
-
-if declare -F package_pre_run >/dev/null; then
-  package_pre_run || {
-    __profiling_status=$?
-    profiling_error "package_pre_run exited $__profiling_status"
-    exit "$__profiling_status"
-  }
-fi
-
-"${cmd[@]}"
-__profiling_status=$?
-
-if [ "$__profiling_status" -eq 0 ] && declare -F profiler_post >/dev/null; then
-  profiler_post || {
-    __profiling_status=$?
-    profiling_error "profiler_post exited $__profiling_status"
-  }
-fi
-
-exit "$__profiling_status"
-"""
 
 
 def _hook_env(
@@ -291,7 +201,7 @@ def _hook_env(
     argv_file: Path,
     command_file: Path,
 ) -> Dict[str, str]:
-    """The environment every hook sees (§6)."""
+    """The environment every hook sees."""
     out = dict(env)
     out.update(
         {
@@ -347,7 +257,7 @@ def resolve(
     hook_env["PROFILING_RESOLVE_ONLY"] = "1"
 
     proc = subprocess.run(
-        ["bash", "-c", _HARNESS],
+        ["bash", str(HARNESS_SH)],
         env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
         stdout=subprocess.PIPE,
@@ -370,15 +280,9 @@ NO_INIT_HOOK = 79
 def run_package_init(env: Mapping[str, str], package: Package) -> int:
     """Call ``package_init``.  Returns its exit code; output goes to the console.
 
-    ``NO_INIT_HOOK`` means there was no hook to call -- a skip, not a failure,
-    so ``--init`` can be pointed at any package without the caller first having
-    to ask whether it has one.
-
-    No caching of any kind.  Deciding whether there is work to do belongs to the
-    hook: only the package knows what "already built" means for it, and a guard
-    like ``[ -x .venv/bin/python ] || python3 -m venv .venv`` says so in one
-    line -- cheaper and more honest than any staleness check the harness could
-    make on its behalf.
+    ``NO_INIT_HOOK`` means there was no hook to call -- a skip, not a failure, so
+    ``--init`` can be pointed at any package.  Nothing is cached; whether there
+    is work to do is the hook's own business.
     """
     script = (
         "set -o pipefail\n"
@@ -401,15 +305,12 @@ def run_package_init(env: Mapping[str, str], package: Package) -> int:
 
 
 def reset_run_dir(run_dir: Path, output_root: Path) -> bool:
-    """Clear a run directory that already exists.
+    """Clear a run directory that already exists.  Returns True if it did.
 
-    Only reachable when ``RUN_ID`` is pinned (a CI build number) and that build
-    is re-run.  Without this, the previous run's artifacts survive alongside
-    the new one and get listed in ``meta.json`` as if this run had produced
-    them -- e.g. a stale ``profile.svg`` next to a fresh ``profile.json``.
-
-    Returns True if anything was cleared.  The containment check is belt and
-    braces: ``run_id`` is already sanitized to a single path component.
+    Only reachable when ``RUN_ID`` is pinned and that build is re-run.  Without
+    it the previous artifacts survive alongside the new ones and get listed in
+    ``meta.json`` as if this run produced them -- a stale ``profile.svg`` beside
+    a fresh ``profile.json``.
     """
     if not run_dir.is_dir():
         return False
@@ -456,7 +357,7 @@ def execute(
     started = time.time()
 
     proc = subprocess.Popen(
-        ["bash", "-c", _HARNESS],
+        ["bash", str(HARNESS_SH)],
         env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
         stdout=subprocess.PIPE,
@@ -470,10 +371,10 @@ def execute(
     stderr_log = run_dir / "stderr.log"
     teams = [
         threading.Thread(
-            target=_tee, args=(proc.stdout, stdout_log, sys.stdout), daemon=True
+            target=process.tee, args=(proc.stdout, stdout_log, sys.stdout), daemon=True
         ),
         threading.Thread(
-            target=_tee, args=(proc.stderr, stderr_log, sys.stderr), daemon=True
+            target=process.tee, args=(proc.stderr, stderr_log, sys.stderr), daemon=True
         ),
     ]
     for t in teams:
@@ -488,12 +389,12 @@ def execute(
             exit_code = proc.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
             timed_out = True
-            _kill_group(proc)
+            process.kill_group(proc)
             exit_code = proc.wait()
         except BaseException:
             # Ctrl-C, SIGTERM from a cancelled CI job, anything else: take the
             # process group with us rather than orphaning the workload.
-            _kill_group(proc)
+            process.kill_group(proc)
             raise
     finally:
         _ACTIVE = None
@@ -534,87 +435,6 @@ def execute(
         started_at=started_at,
         finished_at=finished_at,
     )
-
-
-def _tee(stream, path: Path, console) -> None:
-    """Stream to the console and to a log file at the same time."""
-    try:
-        with path.open("wb") as fh:
-            for chunk in iter(lambda: stream.readline(), b""):
-                fh.write(chunk)
-                fh.flush()
-                try:
-                    console.write(chunk.decode("utf-8", "replace"))
-                    console.flush()
-                except (ValueError, OSError):
-                    pass
-    finally:
-        try:
-            stream.close()
-        except OSError:
-            pass
-
-
-def _group_alive(pgid: int) -> bool:
-    """True while any process remains in the group (signal 0 probes it)."""
-    try:
-        os.killpg(pgid, 0)
-        return True
-    except ProcessLookupError:
-        return False
-    except PermissionError:
-        return True
-
-
-def _signal_group(pgid: int, sig: int) -> bool:
-    try:
-        os.killpg(pgid, sig)
-        return True
-    except (ProcessLookupError, PermissionError):
-        return False
-
-
-def _kill_group(
-    proc: "subprocess.Popen",
-    term_grace: float = 2.0,
-    kill_grace: float = 5.0,
-) -> None:
-    """SIGTERM the process group, then SIGKILL whatever is still in it.
-
-    Escalation is driven by whether the *group* is empty, not by whether the
-    direct child exited.  Those differ in practice: GNU time sets SIGTERM to
-    SIG_IGN, and an ignored disposition survives exec, so `time -- sleep 99`
-    leaves a sleep that shrugs off the SIGTERM that killed its parent. Keying
-    on the child alone let that sleep outlive the harness.
-    """
-    try:
-        pgid = os.getpgid(proc.pid)
-    except ProcessLookupError:
-        return
-
-    _signal_group(pgid, signal.SIGTERM)
-
-    # Reap the direct child first.  An un-reaped zombie is still a member of
-    # the group, so probing before this would always report the group alive
-    # and stall for the full grace period on every kill.
-    try:
-        proc.wait(timeout=term_grace)
-    except subprocess.TimeoutExpired:
-        pass
-
-    if _group_alive(pgid):
-        _signal_group(pgid, signal.SIGKILL)
-        deadline = time.monotonic() + kill_grace
-        while time.monotonic() < deadline and _group_alive(pgid):
-            time.sleep(0.05)
-    _reap(proc)
-
-
-def _reap(proc: "subprocess.Popen") -> None:
-    try:
-        proc.wait(timeout=5)
-    except subprocess.TimeoutExpired:
-        pass
 
 
 def _existing_dir(*candidates) -> str:

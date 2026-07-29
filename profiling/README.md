@@ -13,7 +13,16 @@ profiling/
   run_profiling.sh     entry point (a shim around lib/cli.py)
   install.sh           discovery-driven dependency installer
   config.env           global paths and defaults
-  lib/                 the Python core, common.sh, and helper scripts
+  lib/
+    cli.py             argument parsing, dispatch, the run loop
+    discovery.py       find packages/profilers, typed access to their .env
+    envfile.py         source .env layers, apply precedence
+    runner.py          the target contract, one run's setup and execution
+    process.py         process-group lifecycle and output tee'ing
+    report.py          meta.json, summary.json, listings
+    retention.py       --remove-output pruning
+    harness.sh         the bash half of a run: source hooks, build, execute
+    common.sh          helpers sourced into every hook
   tests/               the test suite
   packages/<name>/     .env + package.sh   -- a workload
   profilers/<name>/    .env + profiler.sh  -- a way to measure it

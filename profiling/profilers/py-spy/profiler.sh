@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # py-spy: a sampling profiler that reads another process's memory.
 #
 # The command is this profiler's own attach.sh rather than py-spy itself, because py-spy's

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Template for a new profiler's hooks.
 #
 # A profiler declares a *command*.  The harness resolves that command once and
@@ -34,6 +35,7 @@
 # machinery.  Do not reach for `bash -c '...'`: it technically fits in one argv,
 # but it hides a shell script inside a string and makes --dry-run unreadable.
 profiler_command() {
+    # shellcheck disable=SC2034  # cmd is read by lib/harness.sh
     cmd=(
         mytool
         --output "$(run_artifact "${MYTOOL_OUTPUT:-profile.out}")"

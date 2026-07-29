@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Helpers sourced into every package.sh / profiler.sh hook.
 #
 # This file is sourced, never executed.  Keep it side-effect free: defining

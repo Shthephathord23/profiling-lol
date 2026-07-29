@@ -25,6 +25,7 @@ sys.path.insert(0, str(HARNESS_ROOT / "lib"))
 
 import discovery  # noqa: E402
 import envfile  # noqa: E402
+import process  # noqa: E402
 import retention  # noqa: E402
 import runner  # noqa: E402
 from discovery import DiscoveryError  # noqa: E402
@@ -920,6 +921,78 @@ class TestCliRun(TreeFixture):
             d.name for d in (self.out / "p" / "noop").iterdir() if d.is_dir() and not d.is_symlink()
         )
         self.assertEqual(remaining, ["build-2"])
+
+
+class TestShellHygiene(unittest.TestCase):
+    """The bash side is half the harness, so it is linted like the Python side.
+
+    Skips when shellcheck is absent rather than failing: it is a development
+    tool, not a runtime dependency.
+    """
+
+    def test_every_shell_file_passes_shellcheck(self):
+        if shutil.which("shellcheck") is None:
+            self.skipTest("shellcheck not installed")
+        files = sorted(
+            set(HARNESS_ROOT.glob("*.sh"))
+            | set(HARNESS_ROOT.glob("lib/*.sh"))
+            | set(HARNESS_ROOT.glob("profilers/*/*.sh"))
+            | set(HARNESS_ROOT.glob("packages/*/*.sh"))
+        )
+        self.assertTrue(files, "no shell files found")
+        failures = []
+        for path in files:
+            proc = subprocess.run(
+                ["shellcheck", "-x", "-S", "warning", str(path)],
+                cwd=HARNESS_ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+            )
+            if proc.returncode != 0:
+                failures.append(f"{path.relative_to(HARNESS_ROOT)}:\n{proc.stdout}")
+        self.assertEqual(failures, [], "\n".join(failures))
+
+
+class TestProcessGroup(unittest.TestCase):
+    """lib/process.py: POSIX group lifecycle, no profiling knowledge."""
+
+    def test_kill_group_takes_down_a_sigterm_ignoring_child(self):
+        proc = subprocess.Popen(
+            ["bash", "-c", "trap '' TERM; sleep 60 & wait"],
+            start_new_session=True,
+            stdout=subprocess.DEVNULL,
+        )
+        pgid = os.getpgid(proc.pid)
+        self.assertTrue(process.group_alive(pgid))
+        process.kill_group(proc, term_grace=0.5, kill_grace=3.0)
+        self.assertFalse(process.group_alive(pgid))
+
+    def test_kill_group_on_an_already_dead_process_is_a_noop(self):
+        proc = subprocess.Popen(["true"], start_new_session=True)
+        proc.wait()
+        process.kill_group(proc)  # must not raise
+
+    def test_group_alive_is_false_for_a_reaped_child(self):
+        proc = subprocess.Popen(["true"], start_new_session=True)
+        pgid = os.getpgid(proc.pid)
+        proc.wait()
+        self.assertFalse(process.group_alive(pgid))
+
+    def test_tee_writes_to_both_the_file_and_the_console(self):
+        import io
+
+        tmp = Path(tempfile.mkdtemp(prefix="tee-test-"))
+        self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
+        proc = subprocess.Popen(
+            ["printf", "one\ntwo\n"], stdout=subprocess.PIPE
+        )
+        console = io.StringIO()
+        log = tmp / "out.log"
+        process.tee(proc.stdout, log, console)
+        proc.wait()
+        self.assertEqual(log.read_text(), "one\ntwo\n")
+        self.assertEqual(console.getvalue(), "one\ntwo\n")
 
 
 class TestInstaller(TreeFixture):

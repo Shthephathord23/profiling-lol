@@ -272,14 +272,9 @@ def cmd_init(
 ) -> int:
     """Run package_init for the selected packages (default: all) and exit.
 
-    This is the manual trigger, and it deliberately **ignores PACKAGE_INIT**.
-    That flag governs whether a profiling run builds the package on its own;
-    asking for --init is already saying you want it now, and having to edit a
-    file first -- then remember to edit it back -- would make the flag a switch
-    you have to flip rather than a setting you choose once.
-
-    A package with no package_init hook is skipped, not an error, so --init can
-    be pointed at anything.
+    The manual trigger, so it ignores PACKAGE_INIT: that flag only governs
+    whether a *run* builds the package.  A package with no hook is skipped
+    rather than an error, so --init can be pointed at anything.
     """
     entries = discovery.discover_packages(PROFILING_ROOT)
     names = discovery.resolve_selection(args.package, entries, "package") or sorted(
@@ -347,23 +342,18 @@ def cmd_remove_output(args: argparse.Namespace, env: Dict[str, str]) -> int:
 
 
 def _select_profilers_for_package(
-    args: argparse.Namespace,
     package: Package,
     requested: List[str],
     explicit: bool,
     all_profilers: List[str],
     default_profilers: List[str],
 ) -> "tuple[List[str], bool]":
-    """Resolve the profiler list for one package (§4).
+    """Resolve the profiler list for one package.
 
-    Returns (names, forced).  ``forced`` marks profilers named explicitly on
-    the command line, which run even when the package does not list them.
-
-    Ordering follows §10: names given explicitly keep their command-line
-    order, while anything reached through ``--profiler all`` -- the package's
-    own list, DEFAULT_PROFILERS, or every discovered profiler -- runs
-    alphabetically.  Duplicates are collapsed either way, so a package that
-    lists a profiler twice still runs it once.
+    Returns (names, forced); ``forced`` marks profilers named explicitly on the
+    command line, which run even when the package does not list them.  Explicit
+    names keep command-line order, anything reached through ``--profiler all``
+    runs alphabetically, and duplicates are collapsed either way.
     """
     if explicit:
         return _dedupe(requested), True
@@ -449,7 +439,7 @@ def _run_pair(
     profiler = discovery.load_profiler(
         CONFIG_ENV, ctx.profiler_entries[profiler_name], ctx.overrides.profiler
     )
-    # Full layering: config.env -> profiler -> package -> --env-* (§5).  The
+    # Full layering: config.env -> profiler -> package -> --env-*.  The
     # package sits above the profiler so it can tune that profiler for itself,
     # which is why this is rebuilt per pair rather than hoisted out of the loop.
     package = discovery.load_package(
@@ -624,7 +614,6 @@ def cmd_run(
             )
 
             selected, forced = _select_profilers_for_package(
-                args,
                 base_package,
                 requested_profilers,
                 explicit,

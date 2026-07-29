@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Hooks for the example package.
 
 # One-time build: a virtualenv plus byte-compiled sources.

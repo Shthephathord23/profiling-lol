@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # viztracer: an interpreter *replacement*, not a prefix wrapper.  It is itself
 # the Python launcher, so it takes TARGET_PYTHON_ARGV (`-m module args...`),
 # never TARGET_ARGV -- `viztracer python -m tool` would trace the wrong thing.
@@ -6,6 +7,7 @@ profiler_command() {
     require_python_target
     # VIZTRACER_FLAGS is intentionally unquoted: it is a flag list.
     # shellcheck disable=SC2206
+    # shellcheck disable=SC2034  # cmd is read by lib/harness.sh
     cmd=(
         viztracer
         --output_file "$(run_artifact "${VIZTRACER_OUTPUT:-trace.json}")"

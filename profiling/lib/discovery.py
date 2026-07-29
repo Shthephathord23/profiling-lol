@@ -91,12 +91,7 @@ class Package:
 
     @property
     def init_enabled(self) -> bool:
-        """PACKAGE_INIT=1 means "call package_init before this package's runs".
-
-        There is no staleness tracking: the harness calls the hook, and making
-        it cheap when there is nothing to do is the hook's own job.  Only the
-        package knows what "already built" means for it.
-        """
+        """PACKAGE_INIT=1: call package_init before this package's runs."""
         return (self.env.get("PACKAGE_INIT") or "0").strip() == "1"
 
     @property
@@ -203,8 +198,8 @@ def load_package(
 
     When ``profiler_env_file`` is given the layering is the full run stack --
     config.env, then the profiler, then the package, then ``overrides`` from the
-    ``--env-*`` flags (§5) -- which is what lets a package tune a profiler for
-    itself and the command line tune either one.
+    ``--env-*`` flags -- which is what lets a package tune a profiler for itself
+    and the command line tune either one.
     """
     layers = [profiler_env_file] if profiler_env_file else []
     layers.append(entry.env_file)

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # line-profiler (kernprof): an interpreter *replacement*, like viztracer.
 # It accepts Python's own trailing shape, so TARGET_PYTHON_ARGV drops straight
 # in after the flags.

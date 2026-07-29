@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Template for a new package's hooks.  Every hook is optional; this file may
 # be empty.  All of them run with the merged environment exported and
 # cwd = PACKAGE_WORKDIR.

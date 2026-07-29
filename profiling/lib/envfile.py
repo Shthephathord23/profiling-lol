@@ -63,18 +63,11 @@ def load_layers(
         2. each path in order            config.env, profiler, package
         3. overrides                     --env-profiler / --env-package
 
-    The ambient environment is the *base*, not the winner.  A `.env` assigns
-    unconditionally, so it beats whatever was exported into the shell -- which
-    means a stray ``PACKAGE_ARGS`` left over in someone's session cannot
-    silently redirect a run.  It also means a package can write
-    ``PYTHONPATH="$MY_SRC:$PYTHONPATH"`` and have it stick, so the PATHLIKE
-    exception this module used to carry is gone.
-
-    Harness variables still respond to the ambient environment, because
-    config.env declares them with ``: "${VAR:=default}"`` -- it defers to
-    anything already set.  So ``PROFILING_OUT_PATH=... run_profiling.sh`` and
-    ``docker run -e`` keep working, while package and profiler knobs do not
-    answer to the shell.
+    The ambient environment is the *base*, not the winner: a `.env` assigns
+    unconditionally, so a stray ``PACKAGE_ARGS`` in someone's shell cannot
+    redirect a run, and ``PYTHONPATH="$MY_SRC:$PYTHONPATH"`` in a `.env` sticks.
+    Harness knobs still answer to the shell, because config.env declares them
+    with ``: "${VAR:=default}"``.
 
     Raises ``EnvFileError`` naming the offending file if any layer fails.
     """

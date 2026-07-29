@@ -23,13 +23,10 @@ __all__ = [
     "profilers_listing",
 ]
 
-_INTERNAL_ARTIFACTS = frozenset({".argv"})
-
-
 def _is_internal(rel: str) -> bool:
-    """Bookkeeping files a profiler or the runner left behind are not
-    artifacts.  Dotfiles at the top of a run directory are reserved for it."""
-    return rel in _INTERNAL_ARTIFACTS or rel == "meta.json" or rel.startswith(".")
+    """The runner's own bookkeeping is not an artifact.  Dotfiles at the top of a
+    run directory are reserved for it, which covers .argv and .command."""
+    return rel == "meta.json" or rel.startswith(".")
 
 
 def git_sha(cwd: Path) -> Optional[str]:
