@@ -419,7 +419,19 @@ def _run_pair(
 
     # 4. Dry run: resolve and print, create nothing, start nothing.
     if args.dry_run:
-        _print_dry_run(package, profiler, target, run_dir, run_id, is_forced)
+        if not _print_dry_run(package, profiler, target, run_dir, run_id, is_forced):
+            # A command that cannot be resolved is a failure the real run would
+            # also hit, so --dry-run reports it in its exit code and not just on
+            # stderr -- otherwise it cannot be used as a CI preflight gate.
+            return (
+                _record_status(
+                    package_name,
+                    profiler_name,
+                    "failed",
+                    "could not resolve the command",
+                ),
+                EXIT_RUN_FAILED,
+            )
         return (
             _record_status(package_name, profiler_name, "skipped", "dry run"),
             EXIT_OK,
@@ -598,8 +610,12 @@ def _print_dry_run(
     run_dir: Path,
     run_id: str,
     forced: bool,
-) -> None:
-    """Resolve and print, without creating the run directory or any process."""
+) -> bool:
+    """Resolve and print, without creating the run directory or any process.
+
+    Returns False when the command could not be resolved, so the caller can
+    account for it in the exit code.
+    """
     with tempfile.TemporaryDirectory(prefix="profiling-dryrun-") as scratch:
         try:
             argv, command = runner.resolve(
@@ -613,7 +629,7 @@ def _print_dry_run(
             )
         except runner.RunError as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
-            return
+            return False
 
     print(f"[dry-run] {package.name} / {profiler.name}")
     print(f"    run dir : {run_dir}")
@@ -623,6 +639,7 @@ def _print_dry_run(
         print("    forced  : yes (not in PACKAGE_PROFILERS)")
     print("    workload: " + " ".join(shlex.quote(a) for a in argv))
     print("    command : " + " ".join(shlex.quote(a) for a in command))
+    return True
 
 
 def _print_totals(records: Sequence[Dict]) -> None:

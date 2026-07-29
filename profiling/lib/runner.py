@@ -205,8 +205,20 @@ _HARNESS = r"""
 set -o pipefail
 . "$PROFILING_ROOT/lib/common.sh"
 . "$PROFILING_TARGET_FILE"
-if [ -f "$PROFILING_PACKAGE_SH" ]; then . "$PROFILING_PACKAGE_SH"; fi
-if [ -f "$PROFILING_PROFILER_SH" ]; then . "$PROFILING_PROFILER_SH"; fi
+
+# A definition file that will not source is a hard error.  Sourced at the top
+# level, never inside a function, so `declare` in a hook still lands globally.
+# Without the status check bash prints the syntax error and carries on, and the
+# run then proceeds with every hook silently missing -- including the
+# package_pre_run guards whose whole job is to fail loudly.
+if [ -f "$PROFILING_PACKAGE_SH" ] && ! . "$PROFILING_PACKAGE_SH"; then
+  profiling_error "package.sh failed to source (see the error above): $PROFILING_PACKAGE_SH"
+  exit 78
+fi
+if [ -f "$PROFILING_PROFILER_SH" ] && ! . "$PROFILING_PROFILER_SH"; then
+  profiling_error "profiler.sh failed to source (see the error above): $PROFILING_PROFILER_SH"
+  exit 78
+fi
 
 # The package may rewrite the workload entirely.
 if declare -F package_command >/dev/null; then
@@ -221,6 +233,14 @@ fi
 
 cmd=()
 profiler_command
+# An empty cmd expands to nothing, so the run would "succeed" in zero seconds
+# having executed no profiler and no workload.  Checked before the command file
+# is written, so --dry-run rejects it on the same path as a real run.
+if [ "${#cmd[@]}" -eq 0 ]; then
+  profiling_error "profiler '$PROFILER_NAME' resolved to an empty command;" \
+    "profiler_command must populate the 'cmd' array"
+  exit 78
+fi
 printf '%s\0' "${cmd[@]}" > "$PROFILING_COMMAND_FILE"
 
 if [ "${PROFILING_RESOLVE_ONLY:-0}" = "1" ]; then

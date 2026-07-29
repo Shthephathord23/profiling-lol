@@ -14,6 +14,7 @@ profiling/
   install.sh           discovery-driven dependency installer
   config.env           global paths and defaults
   lib/                 the Python core, common.sh, and helper scripts
+  tests/               the test suite
   packages/<name>/     .env + package.sh   -- a workload
   profilers/<name>/    .env + profiler.sh  -- a way to measure it
 
@@ -40,6 +41,17 @@ cd profiling
 `packages/my-tool/` is a working example: a small, stdlib-only, offline
 workload with its own `package_init`. It runs out of the box in a fresh
 checkout, so you can exercise the harness before wiring up a real project.
+
+## Tests
+
+```bash
+python3 tests/test_harness.py        # stdlib unittest, no dependencies
+python3 -m pytest tests/             # if you prefer pytest
+```
+
+Most tests build a throwaway profiling tree in a tmpdir and drive the real
+CLI, so they cover the bash layering and process control rather than mocking
+them. One test needs `/usr/bin/time` and skips without it.
 
 ---
 
@@ -398,12 +410,8 @@ mechanism.
 
 **There is no staleness tracking.** The hook runs on every invocation, and
 making it cheap when there is nothing to do is the hook's job — as above, one
-guard line usually does it. This is deliberate: only the package knows what
-"already built" means for it, and any check the harness invented on its behalf
-would be a guess. Earlier versions guessed with a sha256 of the inputs stored
-in a `.state/` directory; the guess could disagree with reality (stamp says
-built, the virtualenv is gone, every run dies at exit 127), and it cost more
-code than the thing it was guarding.
+guard line usually does it. Only the package knows what "already built" means
+for it.
 
 `--init` is the manual trigger, and it **ignores `PACKAGE_INIT`**:
 
@@ -605,10 +613,8 @@ orders of magnitude, so a viztracer run is not a timing measurement. Use
 
 ### Persisting build state
 
-There is no state directory to mount — the harness keeps none. Persist the
-thing `package_init` actually builds (a virtualenv, a compiled tree) if you
-want to skip the work, or let the hook rebuild it. Either way the hook's own
-guard decides, and it cannot disagree with what is on disk.
+To skip `package_init`'s work between runs, persist the thing it builds (a
+virtualenv, a compiled tree). The hook's own guard then sees it and skips.
 
 ### Disk layout
 
