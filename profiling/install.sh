@@ -56,6 +56,11 @@ each_entry_dir() {
 }
 
 # Read one variable out of a .env without letting it leak into this shell.
+#
+# stderr is suppressed because a .env may legitimately print warnings, and one
+# variable's value is not the place to report them.  That makes a file which
+# fails to source indistinguishable from one that declares nothing, so
+# validate_env_files below runs first and refuses the tree outright.
 read_var() {
     local env_file="$1" var="$2"
     bash -c '
@@ -65,6 +70,35 @@ read_var() {
         set +a
         printf "%s" "${!2-}"
     ' _ "$env_file" "$var" 2>/dev/null
+}
+
+# Every discovered .env must source before anything reads one out of it.
+#
+# Without this, read_var's suppressed stderr turns a broken .env into a set of
+# silently-empty declarations: its apt/pip packages vanish from the install
+# list, and --check reports "(none declared)  ok" for it. The result was a
+# preflight that passed a tree the harness itself refuses to run -- CI green,
+# then every run of that profiler fails. So this mirrors the harness: a .env
+# that will not source is exit 2, not a warning.
+validate_env_files() {
+    local kind dir status=0
+    for kind in profilers packages; do
+        while IFS= read -r dir; do
+            if ! bash -c '
+                set -a
+                . "$1"
+                . "$2"
+            ' _ "$PROFILING_ROOT/config.env" "$dir/.env" >/dev/null; then
+                err "cannot source $dir/.env (see the error above)"
+                status=1
+            fi
+        done < <(each_entry_dir "$kind")
+    done
+    if [ "$status" -ne 0 ]; then
+        err "fix the .env file(s) above; the harness will refuse to run too"
+        return 2
+    fi
+    return 0
 }
 
 # Collect a *_APT_PACKAGES / *_PIP_PACKAGES variable across all entries.
@@ -231,6 +265,8 @@ do_package_inits() {
     "$PROFILING_ROOT/run_profiling.sh" --init || warn "some package inits failed"
     echo
 }
+
+validate_env_files || exit $?
 
 case "$MODE" in
     check) do_check ;;

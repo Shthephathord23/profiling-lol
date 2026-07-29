@@ -50,8 +50,9 @@ class TreeFixture(unittest.TestCase):
         # Path(__file__).resolve(), which follows a symlink back to the source
         # tree and would make every run operate on the real packages/.
         shutil.copytree(HARNESS_ROOT / "lib", self.root / "lib")
-        shutil.copy(HARNESS_ROOT / "run_profiling.sh", self.root / "run_profiling.sh")
-        os.chmod(self.root / "run_profiling.sh", 0o755)
+        for script in ("run_profiling.sh", "install.sh"):
+            shutil.copy(HARNESS_ROOT / script, self.root / script)
+            os.chmod(self.root / script, 0o755)
 
         self.out = self.tmp / "out"
         write(
@@ -921,6 +922,158 @@ class TestCliRun(TreeFixture):
         self.assertEqual(remaining, ["build-2"])
 
 
+class TestInstaller(TreeFixture):
+    """install.sh --check is the documented CI preflight, so it must not pass a
+    tree the harness would refuse."""
+
+    def run_install(self, *argv: str):
+        return subprocess.run(
+            ["bash", str(self.root / "install.sh"), *argv],
+            cwd=self.root,
+            env=dict(os.environ),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=120,
+        )
+
+    def test_check_passes_a_healthy_tree(self):
+        self.add_package("p")
+        self.add_profiler("noop", env='PROFILER_KINDS="exec"\nPROFILER_REQUIRES_BIN="ls"\n')
+        r = self.run_install("--check")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+    def test_check_reports_a_missing_binary(self):
+        self.add_package("p")
+        self.add_profiler(
+            "ghost",
+            env='PROFILER_KINDS="exec"\nPROFILER_REQUIRES_BIN="definitely-not-installed-xyz"\n',
+        )
+        r = self.run_install("--check")
+        self.assertEqual(r.returncode, 3)
+        self.assertIn("MISSING", r.stdout)
+
+    def test_unsourceable_env_is_refused_not_treated_as_empty(self):
+        """A .env that will not source used to come back as silently-empty
+        declarations, so --check printed "(none declared)  ok" and exited 0 for a
+        tree the harness rejects outright."""
+        self.add_package("p")
+        self.add_profiler("good", env='PROFILER_KINDS="exec"\nPROFILER_REQUIRES_BIN="ls"\n')
+        write(self.root / "profilers" / "broken" / ".env", 'PROFILER_KINDS="unterminated\n')
+        write(self.root / "profilers" / "broken" / "profiler.sh", "profiler_command() { :; }\n")
+
+        install = self.run_install("--check")
+        harness = self.run_cli("--list-profilers")
+
+        self.assertEqual(install.returncode, 2, install.stdout + install.stderr)
+        self.assertIn("broken/.env", install.stderr)
+        self.assertNotIn("none declared", install.stdout)
+        # The whole point: the two agree that this tree is not runnable.
+        self.assertNotEqual(harness.returncode, 0)
+
+    def test_a_broken_package_env_is_also_refused(self):
+        self.add_package("p")
+        self.add_profiler("noop", env='PROFILER_KINDS="exec"\nPROFILER_REQUIRES_BIN="ls"\n')
+        write(self.root / "packages" / "bad" / ".env", 'PACKAGE_ARGS="unterminated\n')
+        r = self.run_install("--check")
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("bad/.env", r.stderr)
+
+    def test_dependencies_are_collected_from_every_entry(self):
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_APT_PACKAGES="pkg-apt"\n'
+        )
+        self.add_profiler(
+            "one", env='PROFILER_KINDS="exec"\nPROFILER_APT_PACKAGES="apt-one"\n'
+            'PROFILER_PIP_PACKAGES="pip-one"\n'
+        )
+        self.add_profiler(
+            "two", env='PROFILER_KINDS="exec"\nPROFILER_APT_PACKAGES="apt-two"\n'
+        )
+        r = self.run_install("--dry-run")
+        apt_line = next(
+            l for l in r.stdout.splitlines() if l.startswith("Discovered apt")
+        )
+        for expected in ("apt-one", "apt-two", "pkg-apt"):
+            self.assertIn(expected, apt_line)
+        self.assertIn("pip-one", r.stdout)
+
+    def test_templates_are_excluded_from_discovery(self):
+        self.add_package("p")
+        self.add_profiler("noop", env='PROFILER_KINDS="exec"\nPROFILER_REQUIRES_BIN="ls"\n')
+        write(
+            self.root / "profilers" / "_template" / ".env",
+            'PROFILER_APT_PACKAGES="should-not-be-installed"\n',
+        )
+        r = self.run_install("--dry-run")
+        self.assertNotIn("should-not-be-installed", r.stdout)
+
+
+class TestSignals(TreeFixture):
+    """The workload runs in its own session, so a signal to the harness does not
+    reach it.  An interrupt must therefore take the process group down."""
+
+    def _long_run(self):
+        self.add_package(
+            "slow",
+            env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/sleep\nPACKAGE_ARGS=300\n'
+            'PACKAGE_PROFILERS="noop"\n',
+        )
+        self.add_profiler("noop")
+
+    def _interrupt_with(self, sig: int):
+        import signal as _signal
+        import time as _time
+
+        self._long_run()
+        proc = subprocess.Popen(
+            [sys.executable, str(self.root / "lib" / "cli.py"),
+             "--package", "slow", "--profiler", "noop"],
+            cwd=self.root,
+            env={k: v for k, v in os.environ.items() if k != "RUN_ID"},
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        deadline = _time.time() + 20
+        while _time.time() < deadline:
+            if subprocess.run(
+                ["pgrep", "-f", "^/bin/sleep 300$"], stdout=subprocess.DEVNULL
+            ).returncode == 0:
+                break
+            _time.sleep(0.1)
+        else:
+            proc.kill()
+            self.fail("workload never started")
+
+        proc.send_signal(sig)
+        returncode = proc.wait(timeout=30)
+
+        deadline = _time.time() + 10
+        while _time.time() < deadline:
+            alive = subprocess.run(
+                ["pgrep", "-f", "^/bin/sleep 300$"], stdout=subprocess.DEVNULL
+            ).returncode == 0
+            if not alive:
+                break
+            _time.sleep(0.2)
+        else:
+            subprocess.run(["pkill", "-9", "-f", "^/bin/sleep 300$"])
+            self.fail(f"signal {sig} orphaned the workload")
+        self.assertEqual(returncode, 1)
+
+    def test_sigint_kills_the_workload(self):
+        import signal as _signal
+        self._interrupt_with(_signal.SIGINT)
+
+    def test_sigterm_kills_the_workload(self):
+        import signal as _signal
+        self._interrupt_with(_signal.SIGTERM)
+
+    def test_sighup_kills_the_workload(self):
+        import signal as _signal
+        self._interrupt_with(_signal.SIGHUP)
+
+
 class TestProfilerContract(TreeFixture):
     """A profiler declares a command.  What happens when it declares nothing?"""
 
@@ -947,6 +1100,92 @@ class TestProfilerContract(TreeFixture):
             r.returncode, 0,
             "a profiler that resolved to no command reported a successful run",
         )
+
+    def test_a_run_that_resolves_to_nothing_is_an_error(self):
+        """Zero (package, profiler) pairs used to print nothing and exit 0."""
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS=""\n'
+        )
+        r = self.run_cli(
+            "--package", "all", "--profiler", "all",
+            # A blank, not empty: config.env uses `: "${VAR:=default}"`, which
+            # treats an empty ambient value as unset and restores the default.
+            env_extra={"DEFAULT_PROFILERS": " "},
+        )
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        self.assertIn("nothing ran", r.stderr)
+        self.assertIn("no profiler applies to p", r.stderr)
+
+    def test_dry_run_also_fails_when_nothing_resolves(self):
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS=""\n'
+        )
+        r = self.run_cli(
+            "--package", "all", "--profiler", "all", "--dry-run",
+            # A blank, not empty: config.env uses `: "${VAR:=default}"`, which
+            # treats an empty ambient value as unset and restores the default.
+            env_extra={"DEFAULT_PROFILERS": " "},
+        )
+        self.assertEqual(r.returncode, 2)
+
+    def test_all_pairs_skipped_is_still_a_success(self):
+        """Skips are outcomes, so they must not trip the nothing-ran check."""
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="pyonly"\n'
+        )
+        self.add_profiler("pyonly", env='PROFILER_KINDS="python-module"\n')
+        r = self.run_cli("--package", "all", "--profiler", "all")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(self._summary()["counts"]["skipped"], 1)
+
+    def test_misspelled_kind_is_an_error_not_a_skip(self):
+        """A typo in PACKAGE_KIND must not masquerade as an incompatible kind:
+        every profiler would skip and the invocation would still exit 0."""
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=python-modul\nPACKAGE_ENTRY=my.mod\n'
+            'PACKAGE_PROFILERS="a b"\n',
+        )
+        for name in ("a", "b"):
+            self.add_profiler(name, env='PROFILER_KINDS="python-module exec"\n')
+        r = self.run_cli("--package", "p", "--profiler", "all")
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        self.assertIn("unknown PACKAGE_KIND", r.stderr)
+        self.assertNotIn("SKIP", r.stdout)
+
+    def test_misspelled_kind_is_caught_by_dry_run_too(self):
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=exek\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="noop"\n',
+        )
+        self.add_profiler("noop")
+        r = self.run_cli("--package", "p", "--profiler", "noop", "--dry-run")
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+
+    def test_a_genuinely_incompatible_kind_is_still_a_skip(self):
+        """The fix must not turn real kind mismatches into failures."""
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="pyonly"\n'
+        )
+        self.add_profiler("pyonly", env='PROFILER_KINDS="python-module"\n')
+        r = self.run_cli("--package", "p", "--profiler", "all")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("SKIP", r.stdout)
+
+    def test_malformed_timeout_fails_dry_run(self):
+        """--dry-run is a preflight gate, so it must reject a value that would
+        abort the real run."""
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="noop"\n'
+            "PACKAGE_TIMEOUT=soon\n",
+        )
+        self.add_profiler("noop")
+        dry = self.run_cli("--package", "p", "--profiler", "noop", "--dry-run")
+        real = self.run_cli("--package", "p", "--profiler", "noop")
+        self.assertEqual(dry.returncode, 2, dry.stdout + dry.stderr)
+        self.assertIn("PACKAGE_TIMEOUT must be a number", dry.stderr)
+        self.assertEqual(real.returncode, 2)
 
     def test_dry_run_fails_when_the_command_cannot_be_resolved(self):
         """--dry-run is a preflight gate, so a resolution failure must reach the

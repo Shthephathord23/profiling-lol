@@ -29,7 +29,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Mapping, Optional
 
-from discovery import Package, Profiler
+from discovery import PACKAGE_KINDS, Package, Profiler
 
 __all__ = [
     "RunError",
@@ -127,10 +127,10 @@ def build_target(package: Package) -> Target:
     args = package.args
     workdir = Path(package.workdir)
 
-    if kind not in ("python-module", "python-script", "exec"):
+    if kind not in PACKAGE_KINDS:
         raise RunError(
             f"package '{package.name}': unknown PACKAGE_KIND {kind!r} "
-            "(expected python-module, python-script or exec)"
+            "(expected " + ", ".join(PACKAGE_KINDS) + ")"
         )
     if not entry:
         raise RunError(

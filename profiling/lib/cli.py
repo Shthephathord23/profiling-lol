@@ -464,7 +464,28 @@ def _run_pair(
             file=sys.stderr,
         )
 
-    # 1. Kind compatibility -- a skip, never a failure.
+    # 1. The package's own declarations, before anything interprets them.
+    #
+    # PACKAGE_KIND is checked against the known set first because the
+    # compatibility check below cannot tell "valid kind this profiler does not
+    # handle" from "kind that does not exist".  Without this, PACKAGE_KIND=
+    # python-modul skips every profiler that supports python-module and the
+    # invocation still exits 0 -- a typo reported as a clean run of nothing.
+    #
+    # PACKAGE_TIMEOUT is parsed here, not where execute() needs it, so a
+    # malformed value fails --dry-run too rather than passing the preflight and
+    # aborting the real run.
+    if package.kind not in discovery.PACKAGE_KINDS:
+        raise UsageError(
+            f"package '{package_name}': unknown PACKAGE_KIND {package.kind!r}; "
+            "expected one of " + ", ".join(discovery.PACKAGE_KINDS)
+        )
+    try:
+        timeout = package.timeout
+    except DiscoveryError as exc:
+        raise UsageError(str(exc)) from exc
+
+    # 2. Kind compatibility -- a skip, never a failure.
     if not profiler.supports(package.kind):
         reason = f"kind {package.kind} not supported by {profiler_name}"
         print(f"SKIP {package_name} / {profiler_name}: {reason}")
@@ -472,7 +493,7 @@ def _run_pair(
 
     _warn_unset_knobs(profiler, package, package.env)
 
-    # 2. Required binaries.
+    # 3. Required binaries.
     missing = _missing_binaries(profiler, package.env)
     if missing:
         reason = "missing required binary: " + ", ".join(missing)
@@ -487,7 +508,7 @@ def _run_pair(
             record["forced"] = is_forced
             return record, EXIT_MISSING_BIN
 
-    # 3. Resolve the workload and where its artifacts go.
+    # 4. Resolve the workload and where its artifacts go.
     try:
         target = runner.build_target(package)
         run_id = runner.make_run_id(package.env)
@@ -496,7 +517,7 @@ def _run_pair(
 
     run_dir = ctx.output_dir / package_name / profiler_name / run_id
 
-    # 4. Dry run: resolve and print, create nothing, start nothing.
+    # 5. Dry run: resolve and print, create nothing, start nothing.
     if args.dry_run:
         if not _print_dry_run(
             package, profiler, target, run_dir, run_id, is_forced, ctx.overrides
@@ -518,7 +539,7 @@ def _run_pair(
             EXIT_OK,
         )
 
-    # 5-6. Execute, then record.
+    # 6-7. Execute, then record.
     print(f"==> {package_name} / {profiler_name} -> {run_dir}")
     if runner.reset_run_dir(run_dir, ctx.output_dir):
         # Only reachable when RUN_ID is pinned and re-run; say so rather than
@@ -533,7 +554,7 @@ def _run_pair(
         run_dir=run_dir,
         run_id=run_id,
         forced=is_forced,
-        timeout=package.timeout,
+        timeout=timeout,
     )
     meta = report.write_meta(
         result, package, profiler, ctx.repo_root, ctx.overrides.as_meta()
@@ -610,6 +631,13 @@ def cmd_run(
                 all_profilers,
                 default_profilers,
             )
+            if not selected:
+                print(
+                    f"WARN: no profiler applies to {package_name}: its "
+                    "PACKAGE_PROFILERS is empty, so is DEFAULT_PROFILERS, and "
+                    "profilers/ has nothing to fall back on",
+                    file=sys.stderr,
+                )
 
             # PACKAGE_INIT=1: call the hook once, before this package's runs.
             # Set it to 0 and a run never builds the package; --init still can.
@@ -640,6 +668,17 @@ def cmd_run(
                 )
                 records.append(record)
                 exit_code = max(exit_code, category)
+
+        # A run was asked for, so producing no outcome at all is a failure and
+        # not a quiet success.  Skips still count as outcomes -- they have
+        # records -- so this only fires when nothing resolved: no package
+        # matched, or no profiler applied to any of them.
+        if not records:
+            raise UsageError(
+                "nothing ran: this selection resolved to no (package, profiler) "
+                "pair. Check that packages/ and profilers/ contain entries, and "
+                "that PACKAGE_PROFILERS or DEFAULT_PROFILERS names one."
+            )
     finally:
         # Written even when a later package aborts the invocation.  Runs that
         # already completed have their artifacts on disk, so discarding the
