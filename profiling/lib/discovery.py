@@ -48,10 +48,6 @@ class Entry:
     env_file: Path
     script_file: Path
 
-    @property
-    def has_script(self) -> bool:
-        return self.script_file.is_file()
-
 
 @dataclass
 class Package:

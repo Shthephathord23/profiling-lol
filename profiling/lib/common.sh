@@ -6,7 +6,7 @@
 #
 # Available in every hook (exported by the runner):
 #   RUN_DIR RUN_ID PACKAGE_NAME PROFILER_NAME PROFILING_ROOT REPO_ROOT
-#   PACKAGE_WORKDIR
+#   PACKAGE_WORKDIR PACKAGE_DIR PROFILER_DIR
 # Plus the target contract, sourced from "$RUN_DIR/target.sh":
 #   TARGET_KIND TARGET_PYTHON TARGET_ARGV[] TARGET_PYTHON_ARGV[]
 

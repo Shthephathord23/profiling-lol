@@ -308,7 +308,8 @@ def cmd_remove_output(args: argparse.Namespace, env: Dict[str, str]) -> int:
     if keep is None:
         keep = _int_env(env, "PROFILING_KEEP_DEFAULT", 1)
     if keep < 0:
-        raise UsageError(f"--keep must be >= 0, got {keep}")
+        source = "--keep" if args.keep is not None else "PROFILING_KEEP_DEFAULT"
+        raise UsageError(f"{source} must be >= 0, got {keep}")
     if args.remove_output == "all" and args.keep not in (None, 0):
         raise UsageError("--remove-output=all conflicts with --keep; it implies --keep 0")
 
@@ -385,7 +386,7 @@ def _missing_binaries(profiler: Profiler, env: Dict[str, str]) -> List[str]:
     return missing
 
 
-def _warn_unset_knobs(profiler: Profiler, package: Package, env: Dict[str, str]) -> None:
+def _warn_unset_knobs(profiler: Profiler, package: Package) -> None:
     """Honour a profiler's ``PROFILER_WARN_IF_UNSET`` declaration.
 
     Data-driven on purpose: line-profiler is the one profiler that is not
@@ -393,7 +394,7 @@ def _warn_unset_knobs(profiler: Profiler, package: Package, env: Dict[str, str])
     """
     names = (profiler.env.get("PROFILER_WARN_IF_UNSET") or "").split()
     for name in names:
-        if (env.get(name) or "").strip():
+        if (package.env.get(name) or "").strip():
             continue
         message = (profiler.env.get("PROFILER_WARN_MESSAGE") or "").strip()
         print(
@@ -486,7 +487,7 @@ def _run_pair(
         print(f"SKIP {package_name} / {profiler_name}: {reason}")
         return _skip_record(package_name, profiler_name, reason, is_forced), EXIT_OK
 
-    _warn_unset_knobs(profiler, package, package.env)
+    _warn_unset_knobs(profiler, package)
 
     # 3. Required binaries.
     missing = _missing_binaries(profiler, package.env)
@@ -860,10 +861,11 @@ def main(argv: Optional[List[str]] = None) -> int:
 
         return cmd_run(args, env, overrides)
 
-    except (UsageError, DiscoveryError, EnvFileError) as exc:
-        # All three mean "the harness was asked to do something it cannot make
-        # sense of" -- a bad flag, an unknown name, a .env that will not source.
-        # They are one category to a caller, so they share one exit code.
+    except (UsageError, DiscoveryError, EnvFileError, runner.RunError) as exc:
+        # All four mean "the harness was asked to do something it cannot make
+        # sense of" -- a bad flag, an unknown name, a .env that will not source,
+        # a run directory it refuses to touch.  They are one category to a
+        # caller, so they share one exit code.
         print(f"ERROR: {exc}", file=sys.stderr)
         return EXIT_USAGE
     except retention.RetentionError as exc:

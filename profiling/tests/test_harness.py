@@ -26,6 +26,7 @@ sys.path.insert(0, str(HARNESS_ROOT / "lib"))
 import discovery  # noqa: E402
 import envfile  # noqa: E402
 import process  # noqa: E402
+import report  # noqa: E402
 import retention  # noqa: E402
 import runner  # noqa: E402
 from discovery import DiscoveryError  # noqa: E402
@@ -723,6 +724,24 @@ class TestCliRun(TreeFixture):
         self.assertEqual(r.returncode, 2)
         self.assertIn("unknown profiler", r.stderr)
 
+    def test_a_run_dir_resolving_outside_the_output_tree_is_a_clean_error(self):
+        """reset_run_dir refuses on purpose; RunError was the one exception main
+        did not catch, so the refusal surfaced as a traceback."""
+        self._basic_tree()
+        outside = self.tmp / "elsewhere"
+        outside.mkdir()
+        planted = self.out / "p" / "noop"
+        planted.mkdir(parents=True)
+        (planted / "build-1").symlink_to(outside, target_is_directory=True)
+
+        r = self.run_cli(
+            "--package", "p", "--profiler", "noop", env_extra={"RUN_ID": "build-1"}
+        )
+        self.assertNotIn("Traceback", r.stderr)
+        self.assertIn("refusing to reset", r.stderr)
+        self.assertEqual(r.returncode, 2)
+        self.assertTrue(outside.is_dir())
+
     def test_pinned_run_id_reruns_into_a_cleared_dir(self):
         self._basic_tree()
         self.run_cli("--package", "p", "--profiler", "noop", env_extra={"RUN_ID": "build-1"})
@@ -951,6 +970,54 @@ class TestCliRun(TreeFixture):
             d.name for d in (self.out / "p" / "noop").iterdir() if d.is_dir() and not d.is_symlink()
         )
         self.assertEqual(remaining, ["build-2"])
+
+
+class TestReportRecords(unittest.TestCase):
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="report-test-"))
+        self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
+
+    def test_summary_survives_a_one_shot_records_iterable(self):
+        """write_summary reads records twice -- once to count, once to list -- so
+        a generator used to produce correct counts and an empty runs array."""
+        recs = [{"status": "ok", "package": "p"}, {"status": "failed", "package": "q"}]
+        path = report.write_summary(self.tmp, ["--x"], (r for r in recs), 0)
+        payload = json.loads(path.read_text())
+        self.assertEqual(payload["counts"]["ok"], 1)
+        self.assertEqual(payload["counts"]["failed"], 1)
+        self.assertEqual(len(payload["runs"]), 2)
+
+    def test_update_latest_warns_on_stderr_not_stdout(self):
+        """Every other warning goes to stderr; stdout carries the report."""
+        run_dir = self.tmp / "pkg" / "prof" / "r1"
+        run_dir.mkdir(parents=True)
+        (run_dir.parent / "latest").mkdir()  # a real directory blocks the symlink
+        blocked = self.tmp / "pkg" / "prof" / "r2"
+        blocked.mkdir()
+        (blocked.parent / "latest" / "keep").write_text("x")
+
+        proc = subprocess.run(
+            [sys.executable, "-c",
+             "import sys; sys.path.insert(0, %r); import report, pathlib; "
+             "report.update_latest(pathlib.Path(%r))" % (str(HARNESS_ROOT / "lib"), str(run_dir))],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        self.assertEqual(proc.stdout, "", "a warning leaked onto stdout")
+
+    def test_relink_latest_warns_on_stderr_not_stdout(self):
+        pair = self.tmp / "pkg" / "prof"
+        pair.mkdir(parents=True)
+        (pair / "latest").mkdir()  # not a symlink, so symlink_to will fail
+        run = pair / "r1"
+        run.mkdir()
+        proc = subprocess.run(
+            [sys.executable, "-c",
+             "import sys; sys.path.insert(0, %r); import retention, pathlib; "
+             "retention._relink_latest(pathlib.Path(%r), [pathlib.Path(%r)])"
+             % (str(HARNESS_ROOT / "lib"), str(pair), str(run))],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        self.assertEqual(proc.stdout, "", "a warning leaked onto stdout")
 
 
 class TestShellHygiene(unittest.TestCase):

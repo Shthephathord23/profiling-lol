@@ -6,9 +6,10 @@ import json
 import os
 import platform
 import subprocess
+import sys
 import time
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence
 
 from discovery import Package, Profiler
 from runner import RunResult
@@ -19,6 +20,7 @@ __all__ = [
     "write_summary",
     "update_latest",
 ]
+
 
 def _is_internal(rel: str) -> bool:
     """The runner's own bookkeeping is not an artifact.  Dotfiles at the top of a
@@ -118,19 +120,21 @@ def update_latest(run_dir: Path) -> None:
             link.unlink()
         link.symlink_to(run_dir.name, target_is_directory=True)
     except OSError as exc:
-        print(f"WARN: could not update {link}: {exc}", flush=True)
+        print(f"WARN: could not update {link}: {exc}", file=sys.stderr)
 
 
 def write_summary(
     output_dir: Path,
     argv: Sequence[str],
-    records: Iterable[Dict],
+    records: Sequence[Dict],
     exit_code: int,
 ) -> Path:
     """Overwrite ``summary.json`` with this invocation's arguments and results.
 
     A regression gate downstream then has exactly one file to read.
     """
+    # Read twice below, so anything one-shot has to be materialised first.
+    records = list(records)
     output_dir.mkdir(parents=True, exist_ok=True)
     payload = {
         "invocation": {
@@ -148,7 +152,7 @@ def write_summary(
     return path
 
 
-def _counts(records: Iterable[Dict]) -> Dict[str, int]:
+def _counts(records: Sequence[Dict]) -> Dict[str, int]:
     counts = {"ok": 0, "failed": 0, "timeout": 0, "skipped": 0}
     for record in records:
         counts[record.get("status", "failed")] = (

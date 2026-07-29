@@ -13,6 +13,7 @@ a profiler's history against itself.
 from __future__ import annotations
 
 import shutil
+import sys
 from pathlib import Path
 from typing import List, Optional, Sequence
 
@@ -115,4 +116,4 @@ def _relink_latest(pair: Path, survivors: Sequence[Path]) -> None:
         if survivors:
             link.symlink_to(survivors[-1].name, target_is_directory=True)
     except OSError as exc:
-        print(f"WARN: could not update {link}: {exc}")
+        print(f"WARN: could not update {link}: {exc}", file=sys.stderr)
