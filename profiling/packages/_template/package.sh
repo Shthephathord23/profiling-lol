@@ -5,16 +5,15 @@
 # lib/common.sh is already sourced, so run_artifact, require_bin,
 # profiling_warn etc. are available here too.
 
-# OPTIONAL.  One-time build, run at most once per invocation and then cached
-# against a fingerprint of this package's .env, package.sh and every path in
-# PACKAGE_INIT_FINGERPRINT.  Delete .state/<package>/ to force a rebuild, or
-# pass --force-init.
+# Build step, called once before this package's runs when PACKAGE_INIT=1 in the
+# .env.  Absent or 0 and it is never called.
 #
-# Output goes to $PROFILING_STATE_DIR/<package>/init.log -- never into a run
-# directory, so pruning output can never trigger a rebuild.
+# The harness does no staleness tracking, so this runs on every invocation:
+# guard the expensive part yourself.  One line usually does it, and the package
+# is the only thing that knows what "already built" means:
 #
-# If this hook is absent, init is skipped entirely.
 #package_init() {
+#    [ -x .venv/bin/python ] || python3 -m venv .venv
 #    uv sync --frozen
 #}
 

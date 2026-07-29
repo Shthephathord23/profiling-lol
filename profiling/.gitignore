@@ -1,5 +1,4 @@
 output/
-.state/
 
 # Byte-compiled Python from the harness itself and from example workloads.
 __pycache__/

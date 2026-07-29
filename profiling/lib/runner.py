@@ -339,6 +339,34 @@ def resolve(
     return _read_nul(argv_file) or list(target.argv), _read_nul(command_file) or []
 
 
+def run_package_init(env: Mapping[str, str], package: Package) -> int:
+    """Call ``package_init``.  Returns its exit code; output goes to the console.
+
+    Called once per package per invocation whenever ``PACKAGE_INIT=1``, with no
+    caching of any kind.  Deciding whether there is work to do belongs to the
+    hook: only the package knows what "already built" means for it, and a guard
+    like ``[ -x .venv/bin/python ] || python3 -m venv .venv`` says so in one
+    line -- cheaper and more honest than any staleness check the harness could
+    make on its behalf.
+    """
+    script = (
+        "set -o pipefail\n"
+        '. "$PROFILING_ROOT/lib/common.sh"\n'
+        '. "$1"\n'
+        "if ! declare -F package_init >/dev/null; then\n"
+        '  profiling_error "PACKAGE_INIT=1 but package.sh defines no package_init"\n'
+        "  exit 78\n"
+        "fi\n"
+        "package_init\n"
+    )
+    proc = subprocess.run(
+        ["bash", "-c", script, "_", str(package.entry.script_file)],
+        env=dict(env),
+        cwd=_existing_dir(package.workdir, package.entry.path),
+    )
+    return proc.returncode
+
+
 def reset_run_dir(run_dir: Path, output_root: Path) -> bool:
     """Clear a run directory that already exists.
 

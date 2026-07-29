@@ -16,7 +16,6 @@ profiling/
   lib/                 the Python core, common.sh, and helper scripts
   packages/<name>/     .env + package.sh   -- a workload
   profilers/<name>/    .env + profiler.sh  -- a way to measure it
-  .state/              package init stamps (gitignored)
 
 $PROFILING_OUT_PATH/
   output/<package>/<profiler>/<run-id>/   run artifacts
@@ -47,7 +46,8 @@ checkout, so you can exercise the harness before wiring up a real project.
 ## Commands
 
 ```
-run_profiling.sh --package <sel> --profiler <sel> [--dry-run] [--force-init]
+run_profiling.sh --package <sel> --profiler <sel> [--dry-run]
+run_profiling.sh --init [--package <sel>]
 run_profiling.sh --list-packages  [--json]
 run_profiling.sh --list-profilers [--json]
 run_profiling.sh --remove-output[=all] [--package <sel>] [--profiler <sel>]
@@ -103,9 +103,10 @@ of what would run; it is what runs.
 
 On `--remove-output`: lists what would be deleted, deletes nothing.
 
-### `--force-init`
+### `--init`
 
-Re-runs a package's `package_init` unconditionally, ignoring the stamp.
+Runs `package_init` for the selected packages (default: all with
+`PACKAGE_INIT=1`) and exits. See "Package init".
 
 ---
 
@@ -244,7 +245,7 @@ PACKAGE_ARGS="--corpus data/10k --workers 4"
 PACKAGE_WORKDIR="$REPO_ROOT"
 PACKAGE_PYTHON="$REPO_ROOT/.venv/bin/python"
 PACKAGE_PROFILERS="time py-spy line-profiler"
-PACKAGE_INIT_FINGERPRINT="pyproject.toml uv.lock"
+PACKAGE_INIT=1
 PACKAGE_TIMEOUT=600
 LINE_PROFILER_TARGETS="my_service.index"
 ```
@@ -276,7 +277,7 @@ package_post_run() { :; }                  # after each run, even on failure
 | `PACKAGE_WORKDIR` | cwd for the workload and every hook |
 | `PACKAGE_PYTHON` | interpreter for the `python-*` kinds (default `python3`) |
 | `PACKAGE_PROFILERS` | curated allowlist; empty falls back to `DEFAULT_PROFILERS` |
-| `PACKAGE_INIT_FINGERPRINT` | extra files feeding the init fingerprint, relative to `PACKAGE_WORKDIR` |
+| `PACKAGE_INIT` | `1` = call `package_init` before this package's runs |
 | `PACKAGE_TIMEOUT` | seconds; `0` or empty means no timeout |
 | `PACKAGE_APT_PACKAGES` / `PACKAGE_PIP_PACKAGES` | dependencies for `install.sh` |
 
@@ -373,36 +374,47 @@ From `lib/common.sh`, sourced before every hook:
 
 ## Package init
 
-Some packages need a one-time build before they can be profiled. Define
-`package_init` in `package.sh` and the harness runs it at most once per
-invocation, then caches the result against a fingerprint:
+Some packages need a build step before they can be profiled: a virtualenv, a
+compile, `uv sync --frozen`. Declare it with a flag in the package `.env` and
+put the work in `package_init`:
 
+```bash
+# packages/my-service/.env
+PACKAGE_INIT=1
 ```
-fingerprint = sha256( packages/<pkg>/.env
-                    + packages/<pkg>/package.sh
-                    + contents of each PACKAGE_INIT_FINGERPRINT file )
+
+```bash
+# packages/my-service/package.sh
+package_init() {
+    [ -x .venv/bin/python ] || python3 -m venv .venv
+    uv sync --frozen
+}
 ```
 
-| Condition | Result |
-|---|---|
-| no `package_init` defined | skip |
-| `--force-init` | run |
-| no stamp (fresh container) | run |
-| fingerprint changed (lockfile, entry point, …) | run |
-| previous attempt failed | run |
-| otherwise | skip |
+`PACKAGE_INIT=1` means *call the hook once, before this package's runs*. `0` or
+absent means never call it. That is the whole mechanism.
 
-Notes that matter in practice:
+**There is no staleness tracking.** The hook runs on every invocation, and
+making it cheap when there is nothing to do is the hook's job — as above, one
+guard line usually does it. This is deliberate: only the package knows what
+"already built" means for it, and any check the harness invented on its behalf
+would be a guess. Earlier versions guessed with a sha256 of the inputs stored
+in a `.state/` directory; the guess could disagree with reality (stamp says
+built, the virtualenv is gone, every run dies at exit 127), and it cost more
+code than the thing it was guarding.
 
-* Fingerprint paths resolve relative to `PACKAGE_WORKDIR`. **A listed file
-  that does not exist is a hard error**, not an empty hash — otherwise a typo
-  would mean init silently never re-runs again.
-* Output goes to `$PROFILING_STATE_DIR/<package>/init.log`, never into a run
-  directory, so pruning artifacts can never trigger a rebuild.
-* A failed init is recorded as `"status": "failed"`, skips that package's
-  runs, and yields exit code 4. A failed build is never cached as done.
-* `$PROFILING_STATE_DIR` is where "already built" lives. Mount it as a volume
-  to keep builds across containers; delete it to force a clean rebuild.
+Run the build step on its own with:
+
+```bash
+./run_profiling.sh --init                    # every package with PACKAGE_INIT=1
+./run_profiling.sh --init --package my-tool  # just one
+```
+
+`./install.sh` calls that after installing dependencies, so one command leaves
+the box ready to profile.
+
+A failed init skips that package's runs, records them as failed, and yields
+exit code 4. Nothing is cached, so the next invocation simply tries again.
 
 ---
 
@@ -582,12 +594,10 @@ orders of magnitude, so a viztracer run is not a timing measurement. Use
 
 ### Persisting build state
 
-`.state/` is what makes `package_init` run once instead of on every container
-start. Mount it as a volume:
-
-```bash
-docker run -v profiling-state:/app/profiling/.state …
-```
+There is no state directory to mount — the harness keeps none. Persist the
+thing `package_init` actually builds (a virtualenv, a compiled tree) if you
+want to skip the work, or let the hook rebuild it. Either way the hook's own
+guard decides, and it cannot disagree with what is on disk.
 
 ### Disk layout
 
@@ -678,7 +688,6 @@ py-spy falls back to `speedscope` JSON.
 | `REPO_ROOT` | `$PROFILING_ROOT/..` | root of the project being profiled |
 | `PROFILING_OUT_PATH` | `$PROFILING_ROOT` | base for artifacts — **point this outside the repo** |
 | `PROFILING_OUTPUT_DIR` | `$PROFILING_OUT_PATH/output` | where artifacts go |
-| `PROFILING_STATE_DIR` | `$PROFILING_ROOT/.state` | where init stamps go |
 | `DEFAULT_PROFILERS` | `time py-spy` | fallback when `PACKAGE_PROFILERS` is empty |
 | `PROFILING_KEEP_DEFAULT` | `1` | default `--keep` for `--remove-output` |
 | `PROFILING_FLAMEGRAPHS` | `1` | global flamegraph kill switch |

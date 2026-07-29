@@ -21,7 +21,7 @@ import shutil
 import signal
 import sys
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence
 
@@ -29,7 +29,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import discovery  # noqa: E402
 import envfile  # noqa: E402
-import initstate  # noqa: E402
 import report  # noqa: E402
 import retention  # noqa: E402
 import runner  # noqa: E402
@@ -88,9 +87,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="resolve everything and print what would happen; change nothing",
     )
     parser.add_argument(
-        "--force-init",
+        "--init",
         action="store_true",
-        help="re-run package init unconditionally, ignoring the stamp",
+        help="run package_init for the selected packages and exit",
     )
     parser.add_argument(
         "--list-packages",
@@ -192,6 +191,29 @@ def cmd_list_profilers(env: Dict[str, str], as_json: bool) -> int:
             )
         )
     return EXIT_OK
+
+
+def cmd_init(args: argparse.Namespace, env: Dict[str, str]) -> int:
+    """Run package_init for the selected packages (default: all) and exit.
+
+    Lets ./install.sh leave the box ready to profile in one call, and gives you
+    a way to do the build step on its own.
+    """
+    entries = discovery.discover_packages(PROFILING_ROOT)
+    names = discovery.resolve_selection(args.package, entries, "package") or sorted(
+        entries
+    )
+
+    exit_code = EXIT_OK
+    for name in names:
+        package = discovery.load_package(CONFIG_ENV, entries[name])
+        if not package.init_enabled:
+            continue
+        print(f"--> init {name}")
+        if runner.run_package_init(package.env, package) != 0:
+            print(f"ERROR: package_init failed for {name}", file=sys.stderr)
+            exit_code = EXIT_INIT_FAILED
+    return exit_code
 
 
 # -------------------------------------------------------------- retention ---
@@ -315,11 +337,7 @@ class RunContext:
     profiler_entries: Dict[str, discovery.Entry]
     all_profilers: List[str]
     output_dir: Path
-    state_dir: Path
     repo_root: Path
-    # Which packages have been built this invocation, so init runs at most once
-    # per package no matter how many profilers follow.
-    init_done: Dict[str, bool] = field(default_factory=dict)
 
 
 def _run_pair(
@@ -383,16 +401,7 @@ def _run_pair(
             record["forced"] = is_forced
             return record, EXIT_MISSING_BIN
 
-    # 3. Package init, at most once per package per invocation.
-    if package_name not in ctx.init_done:
-        ctx.init_done[package_name] = _maybe_init(base_package, ctx.state_dir, args)
-    if not ctx.init_done[package_name]:
-        return (
-            _record_status(package_name, profiler_name, "failed", "package init failed"),
-            EXIT_INIT_FAILED,
-        )
-
-    # 4. Resolve the workload and where its artifacts go.
+    # 3. Resolve the workload and where its artifacts go.
     try:
         target = runner.build_target(package)
         run_id = runner.make_run_id(package.env)
@@ -401,7 +410,7 @@ def _run_pair(
 
     run_dir = ctx.output_dir / package_name / profiler_name / run_id
 
-    # 5. Dry run: resolve and print, create nothing, start nothing.
+    # 4. Dry run: resolve and print, create nothing, start nothing.
     if args.dry_run:
         _print_dry_run(package, profiler, target, run_dir, run_id, is_forced)
         return (
@@ -409,7 +418,7 @@ def _run_pair(
             EXIT_OK,
         )
 
-    # 6-7. Execute, then record.
+    # 5-6. Execute, then record.
     print(f"==> {package_name} / {profiler_name} -> {run_dir}")
     if runner.reset_run_dir(run_dir, ctx.output_dir):
         # Only reachable when RUN_ID is pinned and re-run; say so rather than
@@ -472,7 +481,6 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
         output_dir=Path(
             env.get("PROFILING_OUTPUT_DIR") or (PROFILING_ROOT / "output")
         ),
-        state_dir=Path(env.get("PROFILING_STATE_DIR") or (PROFILING_ROOT / ".state")),
         repo_root=Path(env.get("REPO_ROOT") or PROFILING_ROOT.parent),
     )
 
@@ -495,6 +503,28 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
                 all_profilers,
                 default_profilers,
             )
+
+            # PACKAGE_INIT=1: call the hook once, before this package's runs.
+            if base_package.init_enabled:
+                if args.dry_run:
+                    print(f"    [dry-run] would run package_init for {package_name}")
+                elif runner.run_package_init(base_package.env, base_package) != 0:
+                    print(
+                        f"ERROR: package_init failed for {package_name}; "
+                        "skipping its runs",
+                        file=sys.stderr,
+                    )
+                    for profiler_name in selected:
+                        records.append(
+                            _record_status(
+                                package_name,
+                                profiler_name,
+                                "failed",
+                                "package init failed",
+                            )
+                        )
+                    exit_code = max(exit_code, EXIT_INIT_FAILED)
+                    continue
 
             for profiler_name in selected:
                 record, category = _run_pair(
@@ -538,40 +568,6 @@ def _record_status(package: str, profiler: str, status: str, reason: str) -> Dic
         "exit_code": None,
         "run_id": None,
     }
-
-
-def _maybe_init(
-    package: Package,
-    state_dir: Path,
-    args: argparse.Namespace,
-) -> bool:
-    """Run package init if needed.  Returns False when it failed."""
-    try:
-        needed, reason, fingerprint = initstate.needs_init(
-            package, package.env, state_dir, args.force_init
-        )
-    except initstate.InitError as exc:
-        raise UsageError(str(exc)) from exc
-
-    if not needed:
-        return True
-
-    if args.dry_run:
-        print(f"    [dry-run] would run package_init for {package.name} ({reason})")
-        return True
-
-    print(f"--> init {package.name} ({reason})")
-    result = initstate.run_init(package, package.env, state_dir, fingerprint or "")
-    if result.ok:
-        print(f"    init ok in {result.duration_s:.2f}s")
-        return True
-
-    print(
-        f"ERROR: init failed for {package.name}: {result.reason} "
-        f"(log: {result.log_path})",
-        file=sys.stderr,
-    )
-    return False
 
 
 def _print_dry_run(
@@ -651,13 +647,20 @@ def main(argv: Optional[List[str]] = None) -> int:
         # of paths and defaults, independent of any package or profiler.
         env = envfile.load_layers(CONFIG_ENV)
 
-        terminal = [args.list_packages, args.list_profilers, args.remove_output is not None]
+        terminal = [
+            args.init,
+            args.list_packages,
+            args.list_profilers,
+            args.remove_output is not None,
+        ]
         if sum(1 for t in terminal if t) > 1:
             raise UsageError(
-                "--list-packages, --list-profilers and --remove-output are terminal "
-                "actions and cannot be combined"
+                "--init, --list-packages, --list-profilers and --remove-output are "
+                "terminal actions and cannot be combined"
             )
 
+        if args.init:
+            return cmd_init(args, env)
         if args.list_packages:
             return cmd_list_packages(env, args.json)
         if args.list_profilers:

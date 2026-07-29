@@ -213,8 +213,23 @@ do_install() {
         echo
     fi
 
+    do_package_inits
+
     echo "Verifying..."
     do_check
+}
+
+# ---------------------------------------------------------- package inits ---
+
+# One call: the harness already knows which packages set PACKAGE_INIT=1.
+do_package_inits() {
+    echo "Initialising packages..."
+    if [ "$DRY_RUN" -eq 1 ]; then
+        printf '  [dry-run] run_profiling.sh --init\n\n'
+        return 0
+    fi
+    "$PROFILING_ROOT/run_profiling.sh" --init || warn "some package inits failed"
+    echo
 }
 
 case "$MODE" in

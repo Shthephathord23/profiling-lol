@@ -156,7 +156,7 @@ def cover(canvas, doc):
     canvas.setFont("Courier", 8.6)
     canvas.setFillColor(colors.HexColor("#7f8ea3"))
     canvas.drawString(21 * mm, h - 72 * mm,
-                      "2239 lines  /  7 Python modules  /  4 profilers  /  111 checks")
+                      "2069 lines  /  6 Python modules  /  4 profilers  /  111 checks")
     canvas.setStrokeColor(RULE)
     canvas.setLineWidth(0.5)
     canvas.line(21 * mm, 15 * mm, w - 21 * mm, 15 * mm)
@@ -237,7 +237,7 @@ A(code("""
          |                        |
          |                        +--> envfile.py   what do their .env files mean?
          |
-         +--> initstate.py   does this package need building first?
+         +--> runner.run_package_init   if PACKAGE_INIT=1
          |
          +--> runner.py      build the argv, write target.sh, spawn ONE bash
          |          |
@@ -299,7 +299,6 @@ profiling/
     runner.py      613   the target contract, bash harnesses, process control
     discovery.py   244   enumerate packages/profilers, typed access to .env
     report.py      228   meta.json, summary.json, tables and JSON listings
-    initstate.py   207   init fingerprinting and stamps
     retention.py   175   --remove-output planning and execution
     envfile.py     172   source .env layers, apply precedence
     common.sh            helpers sourced into every leaf hook
@@ -766,65 +765,60 @@ A(PageBreak())
 # ============================================================ 8. INIT
 A(p("SECTION 8", Kick))
 A(p("Package init", H1))
-A(p("initstate.py - build once, and know when that stops being true", Cap))
+A(p("A flag, and the hook guards itself", Cap))
 
-A(p("Some packages need a one-time build before they can be profiled: a virtualenv, a "
-    "compile step, <font face='Courier' size='8.6'>uv sync --frozen</font>. Running "
-    "that before every profiler would multiply the cost by the number of profilers; "
-    "caching it forever would silently profile stale code. The fingerprint is the "
-    "compromise.", Body))
-
+A(p("Some packages need a build step before they can be profiled: a virtualenv, a "
+    "compile, <font face='Courier' size='8.6'>uv sync --frozen</font>. The package "
+    "declares that with one flag and puts the work in a hook:", Body))
 A(code("""
-fingerprint = sha256( packages/<pkg>/.env
-                    + packages/<pkg>/package.sh
-                    + contents of each PACKAGE_INIT_FINGERPRINT file )
-"""))
+# packages/my-service/.env
+PACKAGE_INIT=1
 
-A(p("The decision table", H2))
+# packages/my-service/package.sh
+package_init() {
+    [ -x .venv/bin/python ] || python3 -m venv .venv
+    uv sync --frozen
+}
+"""))
+A(p("<font face='Courier' size='8.6'>PACKAGE_INIT=1</font> means <i>call the hook "
+    "once, before this package's runs</i>.  0 or absent means never. That is the "
+    "entire mechanism.", Body))
+
+A(p("Why there is no staleness tracking", H2))
+A(p("The hook runs on every invocation, and making it cheap when there is nothing "
+    "to do is the hook's job -- the guard line above does it. That is deliberate: "
+    "only the package knows what \"already built\" means for it, so any check the "
+    "harness invented on its behalf would be a guess.", Body))
+A(p("An earlier version guessed. It hashed the package's .env, its package.sh and a "
+    "declared list of lockfiles into a sha256, stored that in "
+    "<font face='Courier' size='8.6'>.state/&lt;pkg&gt;/init.json</font> beside a "
+    "status field, and compared on the next run. Two problems, and the second is "
+    "the one that matters:", Body))
 A(table(
-    ["Condition", "Action", "Why"],
-    [["package.sh defines no package_init", "skip", "Nothing to do"],
-     ["<font face='Courier' size='8'>--force-init</font>", "run", "Explicit override"],
-     ["No stamp file", "run", "Fresh container"],
-     ["Fingerprint changed", "run", "Lockfile or entry point moved"],
-     ["Previous status was not ok", "run", "<b>A failed build is never cached as done</b>"],
-     ["Otherwise", "skip", "Already built, inputs unchanged"]],
-    [56 * mm, 16 * mm, 96 * mm]))
+    ["", "What went wrong"],
+    [["Cost", "Of 207 lines, about 95 were the cache and 18 actually ran the hook. "
+      "The stamp needed a path convention, a reader that tolerated corruption, a "
+      "status field so a failed build was not cached as done, a timestamp, a "
+      "duration, and a directory to hold it"],
+     ["Correctness", "The stamp described a thing it never looked at. Delete the "
+      "virtualenv and keep the stamp -- exactly what mounting .state as a Docker "
+      "volume did -- and the harness skipped init, then every run died at exit 127"]],
+    [24 * mm, 144 * mm]))
+A(p("A guard inside the hook cannot have the second failure, because it tests the "
+    "artifact rather than a record of the artifact.", Body))
 
-A(p("Three decisions worth explaining", H2))
-
-A(p("A missing fingerprint file is a hard error", H3))
-A(p("If <font face='Courier' size='8.6'>PACKAGE_INIT_FINGERPRINT</font> lists a path "
-    "that does not exist, the harness stops with a message naming it. The tempting "
-    "alternative - hash it as empty - means a typo produces a fingerprint that never "
-    "changes again, so init silently never re-runs. The failure would surface weeks "
-    "later as \"why is CI profiling last month's code\". Loud beats convenient.", Body))
-
-A(p("The log goes to .state/, never the run directory", H3))
-A(p("Covered in Section 2: if the build log lived under "
-    "<font face='Courier' size='8.6'>output/</font>, pruning would cost a rebuild.", Body))
-
-A(p("A failed init writes a stamp too", H3))
-A(p("It records <font face='Courier' size='8.6'>\"status\": \"failed\"</font>. The next "
-    "run sees a non-ok status and retries. Writing nothing would also work, but "
-    "writing the failure keeps the log and the exit code together for whoever is "
-    "debugging it.", Body))
-
-A(p("Verified behaviour", H2))
-A(p("Measured, not assumed - deleting <font face='Courier' size='8.6'>.state/</font> "
-    "and then touching a fingerprinted source file produces exactly this sequence of "
-    "init counts across five consecutive runs:", Body))
+A(p("Running it on its own", H2))
 A(code("""
-fresh .state/          -> 1 init
-run again              -> 0
-touch a source file    -> 1
-run again              -> 0
---force-init           -> 1
+./run_profiling.sh --init                    # every package with PACKAGE_INIT=1
+./run_profiling.sh --init --package my-tool  # just one
 """))
+A(p("<font face='Courier' size='8.6'>./install.sh</font> calls that after installing "
+    "dependencies, so one command leaves the box ready to profile. A failed init "
+    "skips that package's runs, records them as failed and yields exit code 4; "
+    "nothing is cached, so the next invocation simply tries again.", Body))
 
 A(PageBreak())
 
-# ============================================================ 9. HARNESS
 A(p("SECTION 9", Kick))
 A(p("The bash harness", H1))
 A(p("Where Python stops and the workload begins", Cap))
@@ -1208,7 +1202,7 @@ A(p("SECTION 15", Kick))
 A(p("Is this too much code?", H1))
 A(p("An honest accounting", Cap))
 
-A(p("2239 lines total, 1762 excluding comments and blanks. That is a fair thing to "
+A(p("2069 lines total, 1636 excluding comments and blanks. That is a fair thing to "
     "challenge. Here is where it actually goes.", Body))
 
 A(table(
@@ -1219,18 +1213,18 @@ A(table(
       "target building (70), dry-run resolution (57), process-group control (60)"],
      ["discovery.py", "236", "Scanning (40), typed accessors (110), selection (35)"],
      ["report.py", "228", "meta.json (60), listings (40), table renderer (25), summary (40)"],
-     ["initstate.py", "207", "Fingerprint (40), decision table (30), execution (60)"],
      ["retention.py", "107", "Safety check (25), prune (45), latest symlink (12)"],
      ["envfile.py", "200", "load_layers entry point, sourcing (50), parsing (40), precedence (25)"]],
     [26 * mm, 14 * mm, 128 * mm], mono_cols=(0, 1)))
 
 A(p("Roughly a third is features, not core", H2))
-A(p("Retention (135), init fingerprinting (163), dry-run resolution (~120), JSON "
-    "listings and table rendering (~90), summary and meta writing (~90). That is about "
-    "600 lines - a third of the total - and none of it is optional if the tool is to "
-    "have those features. The actual \"run a thing under a profiler\" path is closer to "
-    "400 lines: discover, layer the environment, build the argv, spawn bash, record the "
-    "result.", Body))
+A(p("Retention (107), dry-run resolution (~60), JSON listings and table rendering "
+    "(~90), summary and meta writing (~90). About 350 lines, and none of it is "
+    "optional if the tool is to have those features. The actual \"run a thing under a "
+    "profiler\" path is closer to 400 lines: discover, layer the environment, build "
+    "the argv, spawn bash, record the result.", Body))
+A(p("Init used to be on that list at 163 lines. It is now a flag and a "
+    "<font face='Courier' size='8.6'>subprocess.run</font> -- see Section 8.", Body))
 
 A(p("About 70 lines are bug fixes", H2))
 A(p("Signal handling, the SIGTERM-to-SIGKILL group escalation, and the run-directory "

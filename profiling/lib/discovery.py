@@ -90,8 +90,14 @@ class Package:
         return self.env.get("PACKAGE_PROFILERS", "").split()
 
     @property
-    def fingerprint_files(self) -> List[str]:
-        return self.env.get("PACKAGE_INIT_FINGERPRINT", "").split()
+    def init_enabled(self) -> bool:
+        """PACKAGE_INIT=1 means "call package_init before this package's runs".
+
+        There is no staleness tracking: the harness calls the hook, and making
+        it cheap when there is nothing to do is the hook's own job.  Only the
+        package knows what "already built" means for it.
+        """
+        return (self.env.get("PACKAGE_INIT") or "0").strip() == "1"
 
     @property
     def timeout(self) -> Optional[float]:
