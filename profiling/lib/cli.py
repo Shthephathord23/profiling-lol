@@ -16,10 +16,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shlex
 import shutil
 import signal
 import sys
 import tempfile
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence
 
@@ -333,6 +335,136 @@ def _warn_unset_knobs(profiler: Profiler, package: Package, env: Dict[str, str])
         )
 
 
+@dataclass
+class RunContext:
+    """Everything a single run needs that does not vary between runs."""
+
+    args: argparse.Namespace
+    profiler_entries: Dict[str, discovery.Entry]
+    all_profilers: List[str]
+    output_dir: Path
+    state_dir: Path
+    repo_root: Path
+    # Which packages have been built this invocation, so init runs at most once
+    # per package no matter how many profilers follow.
+    init_done: Dict[str, bool] = field(default_factory=dict)
+
+
+def _run_pair(
+    ctx: RunContext,
+    package_entry: discovery.Entry,
+    base_package: Package,
+    profiler_name: str,
+    forced: bool,
+) -> "tuple[Dict, int]":
+    """Run one (package, profiler) pair.
+
+    Returns the record for ``summary.json`` and the exit-code category this
+    outcome contributes.  Every branch returns both together, so no path can
+    record an outcome without also accounting for it in the exit code.
+    """
+    args = ctx.args
+    package_name = base_package.name
+
+    if profiler_name not in ctx.profiler_entries:
+        raise UsageError(
+            f"package '{package_name}' lists unknown profiler {profiler_name!r} "
+            "in PACKAGE_PROFILERS; available: " + ", ".join(ctx.all_profilers)
+        )
+
+    profiler = discovery.load_profiler(CONFIG_ENV, ctx.profiler_entries[profiler_name])
+    # Full layering: config.env -> profiler -> package -> real env.  The package
+    # sits above the profiler so it can tune that profiler for itself, which is
+    # why this is rebuilt per pair rather than hoisted out of the loop.
+    package = discovery.load_package(
+        CONFIG_ENV, package_entry, profiler.entry.env_file
+    )
+
+    is_forced = forced and profiler_name not in base_package.profilers
+    if is_forced:
+        print(
+            f"WARN: {profiler_name} not listed in PACKAGE_PROFILERS for "
+            f"{package_name}; forced by --profiler",
+            file=sys.stderr,
+        )
+
+    # 1. Kind compatibility -- a skip, never a failure.
+    if not profiler.supports(package.kind):
+        reason = f"kind {package.kind} not supported by {profiler_name}"
+        print(f"SKIP {package_name} / {profiler_name}: {reason}")
+        return _skip_record(package_name, profiler_name, reason, is_forced), EXIT_OK
+
+    _warn_unset_knobs(profiler, package, package.env)
+
+    # 2. Required binaries.
+    missing = _missing_binaries(profiler, package.env)
+    if missing:
+        reason = "missing required binary: " + ", ".join(missing)
+        if args.dry_run:
+            print(f"WARN: {profiler_name} would fail: {reason}", file=sys.stderr)
+        else:
+            print(
+                f"ERROR {package_name} / {profiler_name}: {reason} (run install.sh)",
+                file=sys.stderr,
+            )
+            record = _record_status(package_name, profiler_name, "failed", reason)
+            record["forced"] = is_forced
+            return record, EXIT_MISSING_BIN
+
+    # 3. Package init, at most once per package per invocation.
+    if package_name not in ctx.init_done:
+        ctx.init_done[package_name] = _maybe_init(base_package, ctx.state_dir, args)
+    if not ctx.init_done[package_name]:
+        return (
+            _record_status(package_name, profiler_name, "failed", "package init failed"),
+            EXIT_INIT_FAILED,
+        )
+
+    # 4. Resolve the workload and where its artifacts go.
+    try:
+        target = runner.build_target(package)
+        run_id = runner.make_run_id(package.env)
+    except (runner.RunError, DiscoveryError) as exc:
+        raise UsageError(str(exc)) from exc
+
+    run_dir = ctx.output_dir / package_name / profiler_name / run_id
+
+    # 5. Dry run: resolve and print, create nothing, start nothing.
+    if args.dry_run:
+        _print_dry_run(package, profiler, target, run_dir, run_id, is_forced)
+        return (
+            _record_status(package_name, profiler_name, "skipped", "dry run"),
+            EXIT_OK,
+        )
+
+    # 6-7. Execute, then record.
+    print(f"==> {package_name} / {profiler_name} -> {run_dir}")
+    if runner.reset_run_dir(run_dir, ctx.output_dir):
+        # Only reachable when RUN_ID is pinned and re-run; say so rather than
+        # deleting the previous build's artifacts silently.
+        print(f"    cleared previous artifacts in {run_id}")
+
+    result = runner.execute(
+        env=package.env,
+        package=package,
+        profiler=profiler,
+        target=target,
+        run_dir=run_dir,
+        run_id=run_id,
+        forced=is_forced,
+        timeout=package.timeout,
+    )
+    meta = report.write_meta(result, package, profiler, ctx.repo_root)
+    report.update_latest(run_dir)
+
+    print(
+        f"    {result.status} in {result.duration_s:.2f}s"
+        + (f" ({result.reason})" if result.reason else "")
+    )
+    failed = result.status in ("failed", "timeout")
+    return meta, EXIT_RUN_FAILED if failed else EXIT_OK
+
+
 def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
     package_entries = discovery.discover_packages(PROFILING_ROOT)
     profiler_entries = discovery.discover_profilers(PROFILING_ROOT)
@@ -360,16 +492,25 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
 
     all_profilers = sorted(profiler_entries)
     default_profilers = (env.get("DEFAULT_PROFILERS") or "").split()
-    output_dir = Path(env.get("PROFILING_OUTPUT_DIR") or (PROFILING_ROOT / "output"))
-    state_dir = Path(env.get("PROFILING_STATE_DIR") or (PROFILING_ROOT / ".state"))
-    repo_root = Path(env.get("REPO_ROOT") or PROFILING_ROOT.parent)
+
+    ctx = RunContext(
+        args=args,
+        profiler_entries=profiler_entries,
+        all_profilers=all_profilers,
+        output_dir=Path(
+            env.get("PROFILING_OUTPUT_DIR") or (PROFILING_ROOT / "output")
+        ),
+        state_dir=Path(env.get("PROFILING_STATE_DIR") or (PROFILING_ROOT / ".state")),
+        repo_root=Path(env.get("REPO_ROOT") or PROFILING_ROOT.parent),
+    )
 
     records: List[Dict] = []
     exit_code = EXIT_OK
-    init_done: Dict[str, bool] = {}
 
     for package_name in package_names:
         package_entry = package_entries[package_name]
+        # Loaded without a profiler beneath it, purely to read PACKAGE_PROFILERS:
+        # which profilers apply cannot be known until the package has been read.
         base_package = discovery.load_package(CONFIG_ENV, package_entry)
 
         selected, forced = _select_profilers_for_package(
@@ -382,128 +523,16 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
         )
 
         for profiler_name in selected:
-            if profiler_name not in profiler_entries:
-                raise UsageError(
-                    f"package '{package_name}' lists unknown profiler "
-                    f"{profiler_name!r} in PACKAGE_PROFILERS; available: "
-                    + ", ".join(all_profilers)
-                )
-            profiler = discovery.load_profiler(
-                CONFIG_ENV, profiler_entries[profiler_name]
+            record, category = _run_pair(
+                ctx, package_entry, base_package, profiler_name, forced
             )
-            # Full layering: config.env -> profiler -> package -> real env.
-            package = discovery.load_package(
-                CONFIG_ENV, package_entry, profiler.entry.env_file
-            )
-
-            is_forced = forced and profiler_name not in base_package.profilers
-            if is_forced:
-                print(
-                    f"WARN: {profiler_name} not listed in PACKAGE_PROFILERS for "
-                    f"{package_name}; forced by --profiler",
-                    file=sys.stderr,
-                )
-
-            # 1. Kind compatibility -- a skip, never a failure.
-            if not profiler.supports(package.kind):
-                reason = (
-                    f"kind {package.kind} not supported by {profiler_name}"
-                )
-                print(f"SKIP {package_name} / {profiler_name}: {reason}")
-                records.append(
-                    _skip_record(package_name, profiler_name, reason, is_forced)
-                )
-                continue
-
-            _warn_unset_knobs(profiler, package, package.env)
-
-            # 2. Required binaries.
-            missing = _missing_binaries(profiler, package.env)
-            if missing and not args.dry_run:
-                reason = "missing required binary: " + ", ".join(missing)
-                print(
-                    f"ERROR {package_name} / {profiler_name}: {reason} "
-                    "(run install.sh)",
-                    file=sys.stderr,
-                )
-                records.append(
-                    {
-                        "package": package_name,
-                        "profiler": profiler_name,
-                        "status": "failed",
-                        "reason": reason,
-                        "forced": is_forced,
-                        "exit_code": None,
-                    }
-                )
-                exit_code = max(exit_code, EXIT_MISSING_BIN)
-                continue
-            if missing and args.dry_run:
-                print(
-                    f"WARN: {profiler_name} would fail: missing "
-                    + ", ".join(missing),
-                    file=sys.stderr,
-                )
-
-            # 3. Package init, at most once per package per invocation.
-            if package_name not in init_done:
-                init_done[package_name] = _maybe_init(
-                    base_package, state_dir, args, records
-                )
-            if not init_done[package_name]:
-                reason = "package init failed"
-                records.append(
-                    _record_status(package_name, profiler_name, "failed", reason)
-                )
-                exit_code = max(exit_code, EXIT_INIT_FAILED)
-                continue
-
-            # 4-8. Build the target and run it.
-            try:
-                target = runner.build_target(package)
-                run_id = runner.make_run_id(package.env)
-            except (runner.RunError, DiscoveryError) as exc:
-                raise UsageError(str(exc)) from exc
-
-            run_dir = output_dir / package_name / profiler_name / run_id
-
-            if args.dry_run:
-                _print_dry_run(package, profiler, target, run_dir, run_id, is_forced)
-                records.append(
-                    _record_status(
-                        package_name, profiler_name, "skipped", "dry run"
-                    )
-                )
-                continue
-
-            print(f"==> {package_name} / {profiler_name} -> {run_dir}")
-            if runner.reset_run_dir(run_dir, output_dir):
-                # Only happens when RUN_ID is pinned and re-run; say so rather
-                # than deleting the previous build's artifacts silently.
-                print(f"    cleared previous artifacts in {run_id}")
-            result = runner.execute(
-                env=package.env,
-                package=package,
-                profiler=profiler,
-                target=target,
-                run_dir=run_dir,
-                run_id=run_id,
-                forced=is_forced,
-                timeout=package.timeout,
-            )
-            meta = report.write_meta(result, package, profiler, repo_root)
-            report.update_latest(run_dir)
-            records.append(meta)
-
-            if result.status in ("failed", "timeout"):
-                exit_code = max(exit_code, EXIT_RUN_FAILED)
-            print(
-                f"    {result.status} in {result.duration_s:.2f}s"
-                + (f" ({result.reason})" if result.reason else "")
-            )
+            records.append(record)
+            exit_code = max(exit_code, category)
 
     if not args.dry_run:
-        summary = report.write_summary(output_dir, sys.argv[1:], records, exit_code)
+        summary = report.write_summary(
+            ctx.output_dir, sys.argv[1:], records, exit_code
+        )
         print(f"\nSummary: {summary}")
     _print_totals(records)
     return exit_code
@@ -536,7 +565,6 @@ def _maybe_init(
     package: Package,
     state_dir: Path,
     args: argparse.Namespace,
-    records: List[Dict],
 ) -> bool:
     """Run package init if needed.  Returns False when it failed."""
     try:
@@ -576,11 +604,9 @@ def _print_dry_run(
     forced: bool,
 ) -> None:
     """Resolve and print, without creating the run directory or any process."""
-    import shlex
-
     with tempfile.TemporaryDirectory(prefix="profiling-dryrun-") as scratch:
         try:
-            argv = runner.resolve_argv(
+            argv, command = runner.resolve_dry_run(
                 package.env,
                 package,
                 profiler,
@@ -592,9 +618,6 @@ def _print_dry_run(
         except runner.RunError as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
             return
-        command = runner.dry_run_command(
-            package.env, package, profiler, target, Path(scratch), run_dir, run_id
-        )
 
     print(f"[dry-run] {package.name} / {profiler.name}")
     print(f"    run dir : {run_dir}")

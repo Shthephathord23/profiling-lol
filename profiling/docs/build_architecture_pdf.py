@@ -156,7 +156,7 @@ def cover(canvas, doc):
     canvas.setFont("Courier", 8.6)
     canvas.setFillColor(colors.HexColor("#7f8ea3"))
     canvas.drawString(21 * mm, h - 72 * mm,
-                      "2356 lines  /  7 Python modules  /  4 profilers  /  111 checks")
+                      "2349 lines  /  7 Python modules  /  4 profilers  /  111 checks")
     canvas.setStrokeColor(RULE)
     canvas.setLineWidth(0.5)
     canvas.line(21 * mm, 15 * mm, w - 21 * mm, 15 * mm)
@@ -727,14 +727,21 @@ A(p("A dict, a <font face='Courier' size='8.6'>max()</font> and a "
     "The run-everything-then-aggregate behaviour falls out of never breaking the "
     "loop.", Body))
 
-A(p("On the length of this function", H2))
-A(p("174 lines is long, and splitting it into eight functions is the obvious "
-    "refactor. It has not been done deliberately. The <i>ordering</i> of these steps "
-    "is the part that is easy to break - init must precede runs, the kind check must "
-    "precede the binary check so an irrelevant profiler never demands a tool you do "
-    "not need - and that ordering is only visible when the steps are adjacent. "
-    "Scattering them across eight call sites would hide the exact property most worth "
-    "protecting.", Body))
+A(p("How the loop body became its own function", H2))
+A(p("The eight steps above used to live inline in "
+    "<font face='Courier' size='8.6'>cmd_run</font>, making it 174 lines. The "
+    "defence for that was \"the ordering of these steps is fragile and only "
+    "visible when they are adjacent\" - which is true, but does not argue for "
+    "keeping them <i>inside the loop</i>. Extracting them into "
+    "<font face='Courier' size='8.6'>_run_pair</font> keeps all eight adjacent "
+    "and leaves <font face='Courier' size='8.6'>cmd_run</font> as a readable "
+    "71-line loop.", Body))
+A(p("The real defect was not length. Six different branches each had to remember "
+    "to do <i>two</i> things - append a record <b>and</b> raise the exit code - "
+    "interleaved with the logic, so a branch could silently do one and forget the "
+    "other. <font face='Courier' size='8.6'>_run_pair</font> returns "
+    "<font face='Courier' size='8.6'>(record, exit-category)</font> from every "
+    "path, so the two can no longer drift apart.", Body))
 
 A(p("Profiler selection, resolved per package", H2))
 A(p("The rules, in order, from <font face='Courier' size='8.6'>_select_profilers_for_package</font>:", Body))
@@ -1197,15 +1204,15 @@ A(p("SECTION 15", Kick))
 A(p("Is this too much code?", H1))
 A(p("An honest accounting", Cap))
 
-A(p("2356 lines total, 1881 excluding comments and blanks. That is a fair thing to "
+A(p("2349 lines total, 1854 excluding comments and blanks. That is a fair thing to "
     "challenge. Here is where it actually goes.", Body))
 
 A(table(
     ["Module", "Lines", "What it owns"],
-    [["cli.py", "697", "Parser (70), three terminal commands (116), the main loop (174), "
-      "dry-run printing (43), helpers, signals"],
-     ["runner.py", "613", "Three bash harnesses as string constants (~90), execute (96), "
-      "target building (70), dry-run resolution (74), process-group control (60)"],
+    [["cli.py", "720", "Parser (70), three terminal commands (116), _run_pair (113), "
+      "cmd_run (71), dry-run printing, helpers, signals"],
+     ["runner.py", "583", "Two bash harnesses as string constants (~70), execute (96), "
+      "target building (70), dry-run resolution (57), process-group control (60)"],
      ["discovery.py", "236", "Scanning (40), typed accessors (110), selection (35)"],
      ["report.py", "228", "meta.json (60), listings (40), table renderer (25), summary (40)"],
      ["initstate.py", "207", "Fingerprint (40), decision table (30), execution (60)"],
@@ -1226,22 +1233,22 @@ A(p("Signal handling, the SIGTERM-to-SIGKILL group escalation, and the run-direc
     "reset. Not elegant, but each closes a leak that was demonstrated rather than "
     "imagined.", Body))
 
-A(p("And some genuinely is redundant", H2))
-A(p("Checked rather than guessed. "
-    "<font face='Courier' size='8.6'>_RESOLVE_HARNESS</font> "
-    "(<font face='Courier' size='8.6'>runner.py:197</font>) and "
-    "<font face='Courier' size='8.6'>_DRYRUN_HARNESS</font> "
-    "(<font face='Courier' size='8.6'>runner.py:211</font>) are nearly the same script, "
-    "and <font face='Courier' size='8.6'>_print_dry_run</font> calls <b>both</b> - "
-    "<font face='Courier' size='8.6'>resolve_argv</font> then "
-    "<font face='Courier' size='8.6'>dry_run_command</font> - spawning two bash "
-    "subprocesses for one dry-run line. The second already sources everything the first "
-    "does, and <font face='Courier' size='8.6'>resolve_argv</font> has no other caller. "
-    "That is about 46 lines and a subprocess that could go.", Body))
-A(p("The other soft spot is <font face='Courier' size='8.6'>discovery.py</font>'s "
-    "dataclass properties (~110 lines) - typed accessors over a dict. They centralise "
-    "the parsing that is easy to get wrong, but a dict plus three helpers would do the "
-    "job in a third of the space.", Body))
+A(p("What was redundant, and is now gone", H2))
+A(p("Two things this document previously listed as slop have been removed. "
+    "<font face='Courier' size='8.6'>discovery._load_env</font> and "
+    "<font face='Courier' size='8.6'>cli.load_global_env</font> were the same "
+    "function differing only in which exception they raised - and both exceptions "
+    "were caught on one line and produced the same exit code. They are now one "
+    "<font face='Courier' size='8.6'>envfile.load_layers</font>.", Body))
+A(p("And <font face='Courier' size='8.6'>_print_dry_run</font> used to call two "
+    "resolvers backed by two nearly identical bash scripts, spawning two "
+    "subprocesses for one printed line. They are now one "
+    "<font face='Courier' size='8.6'>resolve_dry_run</font> and one subprocess.", Body))
+A(p("The bigger change is in <font face='Courier' size='8.6'>cmd_run</font>: its "
+    "inner loop body - the eight steps for one (package, profiler) pair - is now "
+    "<font face='Courier' size='8.6'>_run_pair</font>, and "
+    "<font face='Courier' size='8.6'>cmd_run</font> fell from 174 lines to 71. See "
+    "Section 7.", Body))
 
 A(p("Where the length is defensible", H2))
 A(p("<font face='Courier' size='8.6'>cmd_run</font>'s 174 lines look like the problem "

@@ -40,7 +40,7 @@ __all__ = [
     "render_target_sh",
     "execute",
     "reset_run_dir",
-    "resolve_argv",
+    "resolve_dry_run",
 ]
 
 RUN_ID_RE = re.compile(r"^\d{8}-\d{6}-[0-9a-f]{4}$")
@@ -120,7 +120,7 @@ def build_target(package: Package) -> Target:
     """Derive the target contract from the package's `.env` declarations.
 
     A ``package_command`` hook may override this wholesale; see
-    ``resolve_argv``, which asks bash for the final arrays.
+    ``resolve_dry_run``, which asks bash for the final arrays.
     """
     kind = package.kind
     entry = package.entry_point
@@ -191,23 +191,14 @@ def render_target_sh(target: Target, package: Package, profiler: Profiler) -> st
 
 # ------------------------------------------------------------- harnesses ---
 
-# Resolves the final argv without running anything: sources the same files the
-# real harness does and lets a package_command hook have the last word.  Used
-# by --dry-run and to record the true argv in meta.json.
-_RESOLVE_HARNESS = r"""
-set -e
-. "$PROFILING_ROOT/lib/common.sh"
-. "$PROFILING_TARGET_FILE"
-if [ -f "$PROFILING_PACKAGE_SH" ]; then . "$PROFILING_PACKAGE_SH"; fi
-if declare -F package_command >/dev/null; then
-  package_command
-fi
-printf '%s\0' "${TARGET_ARGV[@]}" > "$PROFILING_ARGV_FILE"
-"""
-
-# Asks the profiler for the exact command it would run, via the optional
-# profiler_dry_run hook.  Profilers that do not implement it simply produce no
-# output and --dry-run falls back to naming the wrapper.
+# Everything --dry-run needs, without running anything: sources the same files
+# the real harness does, lets a package_command hook have the last word on the
+# argv, then asks the profiler for the exact command it would execute.
+#
+# The argv is written before profiler_dry_run runs, so a profiler whose hook
+# fails still yields a usable workload line.  Profilers that do not implement
+# the hook simply produce no second file, and --dry-run names the wrapper
+# instead of guessing.
 _DRYRUN_HARNESS = r"""
 set -e
 . "$PROFILING_ROOT/lib/common.sh"
@@ -217,8 +208,9 @@ if [ -f "$PROFILING_PROFILER_SH" ]; then . "$PROFILING_PROFILER_SH"; fi
 if declare -F package_command >/dev/null; then
   package_command
 fi
+printf '%s\0' "${TARGET_ARGV[@]}" > "$PROFILING_ARGV_FILE"
 if declare -F profiler_dry_run >/dev/null; then
-  profiler_dry_run > "$PROFILING_ARGV_FILE"
+  profiler_dry_run > "$PROFILING_DRYRUN_FILE"
 fi
 """
 
@@ -312,7 +304,7 @@ def _read_argv(argv_file: Path) -> Optional[List[str]]:
     return parts or None
 
 
-def resolve_argv(
+def resolve_dry_run(
     env: Mapping[str, str],
     package: Package,
     profiler: Profiler,
@@ -320,61 +312,30 @@ def resolve_argv(
     scratch_dir: Path,
     run_dir: Path,
     run_id: str,
-) -> List[str]:
-    """Ask bash for the final argv, honouring a ``package_command`` override.
+) -> "tuple[List[str], Optional[List[str]]]":
+    """Resolve what --dry-run should print, without creating or running anything.
 
-    Used by ``--dry-run`` so the printed command is the one that would really
-    run, without creating the run directory or starting the workload.
+    Returns (workload argv, profiler command).  The argv honours a
+    ``package_command`` override, so the printed workload is the one that would
+    really run.  The command comes from the optional ``profiler_dry_run`` hook
+    and is ``None`` for a profiler that does not implement it -- exactness for
+    an arbitrary bash function needs that function's cooperation, so the
+    alternative would be a plausible guess, which is worse than saying nothing.
+
+    One bash process answers both questions: the second needs everything the
+    first sources anyway.
     """
     scratch_dir.mkdir(parents=True, exist_ok=True)
     target_file = scratch_dir / "target.sh"
     argv_file = scratch_dir / "argv"
+    command_file = scratch_dir / "dryrun-argv"
     target_file.write_text(render_target_sh(target, package, profiler), "utf-8")
 
     hook_env = _hook_env(
         env, package, profiler, run_dir, run_id, argv_file, target_file=target_file
     )
-    proc = subprocess.run(
-        ["bash", "-c", _RESOLVE_HARNESS],
-        env=hook_env,
-        cwd=_existing_dir(package.workdir, package.entry.path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if proc.returncode != 0:
-        detail = proc.stderr.decode("utf-8", "replace").strip()
-        raise RunError(
-            f"could not resolve the command for {package.name}/{profiler.name}"
-            + (f":\n{detail}" if detail else "")
-        )
-    return _read_argv(argv_file) or list(target.argv)
+    hook_env["PROFILING_DRYRUN_FILE"] = str(command_file)
 
-
-def dry_run_command(
-    env: Mapping[str, str],
-    package: Package,
-    profiler: Profiler,
-    target: Target,
-    scratch_dir: Path,
-    run_dir: Path,
-    run_id: str,
-) -> Optional[List[str]]:
-    """The exact command the profiler would execute, or ``None``.
-
-    Exactness for an arbitrary bash hook is only possible with the hook's
-    cooperation, so this asks the optional ``profiler_dry_run`` hook -- which
-    every shipped profiler implements by sharing its argv builder with
-    ``profiler_wrap``.  Third-party profilers without the hook get ``None``
-    and --dry-run degrades to naming the wrapper.
-    """
-    scratch_dir.mkdir(parents=True, exist_ok=True)
-    target_file = scratch_dir / "target.sh"
-    argv_file = scratch_dir / "dryrun-argv"
-    target_file.write_text(render_target_sh(target, package, profiler), "utf-8")
-
-    hook_env = _hook_env(
-        env, package, profiler, run_dir, run_id, argv_file, target_file=target_file
-    )
     proc = subprocess.run(
         ["bash", "-c", _DRYRUN_HARNESS],
         env=hook_env,
@@ -382,12 +343,21 @@ def dry_run_command(
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
+
+    argv = _read_argv(argv_file)
     if proc.returncode != 0:
         detail = proc.stderr.decode("utf-8", "replace").strip()
+        if argv is None:
+            # The failure happened before the argv was written, so there is
+            # nothing to show: report it rather than printing a half-truth.
+            raise RunError(
+                f"could not resolve the command for {package.name}/{profiler.name}"
+                + (f":\n{detail}" if detail else "")
+            )
         if detail:
             print(detail, file=sys.stderr)
-        return None
-    return _read_argv(argv_file)
+
+    return argv or list(target.argv), _read_argv(command_file)
 
 
 # ------------------------------------------------------------- execution ---
