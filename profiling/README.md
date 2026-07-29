@@ -439,6 +439,24 @@ read.
 Runs are **sequential** and each profiler is a **separate execution** of the
 workload — they cannot be stacked.
 
+### Interrupting a run
+
+The workload runs in its own session so that a timeout can take the profiler
+and everything it spawned down together. That also means a signal sent to the
+harness does not reach it, so `SIGINT` (Ctrl-C), `SIGTERM` (a cancelled CI
+job) and `SIGHUP` are handled explicitly: the harness kills the workload's
+process group before exiting, and returns 1.
+
+Termination escalates `SIGTERM` → `SIGKILL`, driven by whether the process
+*group* is empty rather than by whether the direct child exited. Those differ:
+GNU time sets `SIGTERM` to `SIG_IGN`, and an ignored disposition survives
+`exec`, so `time -- sleep 99` leaves a `sleep` that shrugs off the signal that
+killed its parent. There is a ~2 s courtesy window after `SIGTERM` for
+workloads that clean up on it before `SIGKILL` lands.
+
+Re-running a pinned `RUN_ID` clears that run directory first, so a rebuilt
+`build-123` cannot report the previous attempt's artifacts as its own.
+
 ---
 
 ## Retention

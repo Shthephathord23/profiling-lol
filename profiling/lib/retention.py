@@ -108,7 +108,10 @@ def plan_prune(
             plan.skipped.extend(other)
             runs.sort(key=_sort_key)
 
-            survivors = runs[len(runs) - keep :] if keep > 0 else []
+            # runs[-keep:] clamps when keep exceeds the count; computing the
+            # index as len(runs) - keep would go negative and silently delete
+            # runs that --keep asked to preserve.
+            survivors = runs[-keep:] if keep > 0 else []
             doomed = runs[: len(runs) - len(survivors)]
 
             plan.remove.extend(doomed)

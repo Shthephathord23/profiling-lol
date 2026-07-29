@@ -19,6 +19,7 @@ import os
 import re
 import secrets
 import shlex
+import shutil
 import signal
 import subprocess
 import sys
@@ -38,6 +39,7 @@ __all__ = [
     "make_run_id",
     "render_target_sh",
     "execute",
+    "reset_run_dir",
     "resolve_argv",
 ]
 
@@ -47,6 +49,26 @@ _RUN_ID_SAFE = re.compile(r"[^A-Za-z0-9._-]+")
 
 class RunError(Exception):
     """Raised for a run that cannot be set up (bad kind, missing entry, ...)."""
+
+
+# The run currently in flight, so an interrupt can take its process group down
+# with it.  Runs are strictly sequential, so a single slot is enough.
+_ACTIVE: "Optional[subprocess.Popen]" = None
+
+
+def terminate_active() -> bool:
+    """Kill the in-flight run's process group, if there is one.
+
+    The workload runs in its own session so that a timeout can kill the
+    profiler and everything it spawned together.  The flip side is that a
+    signal sent to the harness does *not* reach it, so an interrupted run
+    would otherwise leave py-spy and the workload orphaned in the container.
+    """
+    proc = _ACTIVE
+    if proc is None or proc.poll() is not None:
+        return False
+    _kill_group(proc)
+    return True
 
 
 @dataclass
@@ -371,6 +393,36 @@ def dry_run_command(
 # ------------------------------------------------------------- execution ---
 
 
+def reset_run_dir(run_dir: Path, output_root: Path) -> bool:
+    """Clear a run directory that already exists.
+
+    Only reachable when ``RUN_ID`` is pinned (a CI build number) and that build
+    is re-run.  Without this, the previous run's artifacts survive alongside
+    the new one and get listed in ``meta.json`` as if this run had produced
+    them -- e.g. a stale ``profile.svg`` next to a fresh ``profile.json``.
+
+    Returns True if anything was cleared.  The containment check is belt and
+    braces: ``run_id`` is already sanitized to a single path component.
+    """
+    if not run_dir.is_dir():
+        return False
+    try:
+        run_dir.resolve().relative_to(output_root.resolve())
+    except ValueError:
+        raise RunError(
+            f"refusing to reset {run_dir}: it resolves outside {output_root}"
+        )
+    if not any(run_dir.iterdir()):
+        return False
+
+    for child in run_dir.iterdir():
+        if child.is_dir() and not child.is_symlink():
+            shutil.rmtree(child)
+        else:
+            child.unlink()
+    return True
+
+
 def execute(
     env: Mapping[str, str],
     package: Package,
@@ -418,13 +470,24 @@ def execute(
     for t in teams:
         t.start()
 
+    global _ACTIVE
+    _ACTIVE = proc
+
     timed_out = False
     try:
-        exit_code = proc.wait(timeout=timeout)
-    except subprocess.TimeoutExpired:
-        timed_out = True
-        _kill_group(proc)
-        exit_code = proc.wait()
+        try:
+            exit_code = proc.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            _kill_group(proc)
+            exit_code = proc.wait()
+        except BaseException:
+            # Ctrl-C, SIGTERM from a cancelled CI job, anything else: take the
+            # process group with us rather than orphaning the workload.
+            _kill_group(proc)
+            raise
+    finally:
+        _ACTIVE = None
 
     for t in teams:
         t.join(timeout=5)
@@ -477,22 +540,66 @@ def _tee(stream, path: Path, console) -> None:
             pass
 
 
-def _kill_group(proc: "subprocess.Popen") -> None:
-    """SIGTERM the process group, then SIGKILL anything that ignored it."""
+def _group_alive(pgid: int) -> bool:
+    """True while any process remains in the group (signal 0 probes it)."""
+    try:
+        os.killpg(pgid, 0)
+        return True
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+
+
+def _signal_group(pgid: int, sig: int) -> bool:
+    try:
+        os.killpg(pgid, sig)
+        return True
+    except (ProcessLookupError, PermissionError):
+        return False
+
+
+def _kill_group(
+    proc: "subprocess.Popen",
+    term_grace: float = 2.0,
+    kill_grace: float = 5.0,
+) -> None:
+    """SIGTERM the process group, then SIGKILL whatever is still in it.
+
+    Escalation is driven by whether the *group* is empty, not by whether the
+    direct child exited.  Those differ in practice: GNU time sets SIGTERM to
+    SIG_IGN, and an ignored disposition survives exec, so `time -- sleep 99`
+    leaves a sleep that shrugs off the SIGTERM that killed its parent. Keying
+    on the child alone let that sleep outlive the harness.
+    """
     try:
         pgid = os.getpgid(proc.pid)
     except ProcessLookupError:
         return
-    for sig, grace in ((signal.SIGTERM, 5.0), (signal.SIGKILL, 5.0)):
-        try:
-            os.killpg(pgid, sig)
-        except ProcessLookupError:
-            return
-        try:
-            proc.wait(timeout=grace)
-            return
-        except subprocess.TimeoutExpired:
-            continue
+
+    _signal_group(pgid, signal.SIGTERM)
+
+    # Reap the direct child first.  An un-reaped zombie is still a member of
+    # the group, so probing before this would always report the group alive
+    # and stall for the full grace period on every kill.
+    try:
+        proc.wait(timeout=term_grace)
+    except subprocess.TimeoutExpired:
+        pass
+
+    if _group_alive(pgid):
+        _signal_group(pgid, signal.SIGKILL)
+        deadline = time.monotonic() + kill_grace
+        while time.monotonic() < deadline and _group_alive(pgid):
+            time.sleep(0.05)
+    _reap(proc)
+
+
+def _reap(proc: "subprocess.Popen") -> None:
+    try:
+        proc.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        pass
 
 
 def _existing_dir(*candidates) -> str:

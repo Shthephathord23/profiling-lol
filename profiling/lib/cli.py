@@ -17,6 +17,7 @@ import argparse
 import json
 import os
 import shutil
+import signal
 import sys
 import tempfile
 from pathlib import Path
@@ -471,6 +472,10 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
                 continue
 
             print(f"==> {package_name} / {profiler_name} -> {run_dir}")
+            if runner.reset_run_dir(run_dir, output_dir):
+                # Only happens when RUN_ID is pinned and re-run; say so rather
+                # than deleting the previous build's artifacts silently.
+                print(f"    cleared previous artifacts in {run_id}")
             result = runner.execute(
                 env=package.env,
                 package=package,
@@ -616,9 +621,29 @@ def _print_totals(records: Sequence[Dict]) -> None:
 # ------------------------------------------------------------------ main ---
 
 
+def _install_signal_handlers() -> None:
+    """Route SIGTERM through the same path as Ctrl-C.
+
+    SIGINT already raises KeyboardInterrupt, which ``runner.execute`` turns
+    into a process-group kill.  SIGTERM has no such default, so a cancelled CI
+    job would return from the harness while leaving the profiler and the
+    workload running.
+    """
+
+    def handler(signum, frame):  # noqa: ARG001 - signal handler signature
+        raise KeyboardInterrupt
+
+    for sig in (signal.SIGTERM, signal.SIGHUP):
+        try:
+            signal.signal(sig, handler)
+        except (ValueError, OSError, AttributeError):
+            pass  # not the main thread, or the platform lacks the signal
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    _install_signal_handlers()
 
     try:
         env = load_global_env()
@@ -651,6 +676,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"ERROR: {exc}", file=sys.stderr)
         return EXIT_USAGE
     except KeyboardInterrupt:
+        # execute() has already killed the in-flight process group; this is a
+        # backstop for an interrupt that landed between runs.
+        runner.terminate_active()
         print("\nInterrupted.", file=sys.stderr)
         return EXIT_RUN_FAILED
 
