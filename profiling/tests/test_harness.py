@@ -537,6 +537,36 @@ class TestCliUsage(TreeFixture):
         r = self.run_cli("--list-packages", "--env-package", "ARGS=--opt=1 --other=2")
         self.assertEqual(r.returncode, 0, r.stderr)
 
+    def test_listing_and_run_agree_on_the_matrix(self):
+        """The README says the `profilers` field is exactly what --profiler all
+        runs, so a CI matrix built from it must not contain an impossible job."""
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\n'
+            'PACKAGE_PROFILERS="real ghost"\n',
+        )
+        self.add_profiler("real", env='PROFILER_KINDS="exec"\n')
+
+        listed = self.run_cli("--list-packages", "--json")
+        ran = self.run_cli("--package", "p", "--profiler", "all")
+
+        self.assertEqual(listed.returncode, 2, listed.stdout + listed.stderr)
+        self.assertIn("unknown profiler", listed.stderr)
+        self.assertEqual(ran.returncode, listed.returncode)
+
+    def test_listing_matches_what_runs_once_valid(self):
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="b a"\n'
+        )
+        self.add_profiler("a", env='PROFILER_KINDS="exec"\n')
+        self.add_profiler("b", env='PROFILER_KINDS="exec"\n')
+        self.add_profiler("unlisted", env='PROFILER_KINDS="exec"\n')
+
+        rows = json.loads(self.run_cli("--list-packages", "--json").stdout)
+        self.run_cli("--package", "p", "--profiler", "all")
+        ran = [r["profiler"] for r in json.loads((self.out / "summary.json").read_text())["runs"]]
+        self.assertEqual(rows[0]["profilers"], ran)
+
     def test_list_json_is_machine_readable(self):
         self.add_package("p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="noop"\n')
         self.add_profiler("noop")

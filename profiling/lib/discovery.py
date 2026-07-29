@@ -12,7 +12,7 @@ import re
 import shlex
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Mapping, Optional
+from typing import Dict, List, Mapping, Optional, Sequence
 
 from envfile import load_layers
 
@@ -24,6 +24,7 @@ __all__ = [
     "NAME_RE",
     "discover_packages",
     "discover_profilers",
+    "effective_profilers",
     "load_package",
     "load_profiler",
     "resolve_selection",
@@ -206,6 +207,36 @@ def load_package(
     return Package(
         entry=entry, env=load_layers(config_env, *layers, overrides=overrides)
     )
+
+
+def effective_profilers(
+    package: Package,
+    default_profilers: Sequence[str],
+    all_profilers: Sequence[str],
+) -> List[str]:
+    """Which profilers apply to a package when none are named on the command line.
+
+    The one definition of the fallback chain -- the package's own list, then
+    DEFAULT_PROFILERS, then every discovered profiler.  Both ``--profiler all``
+    and ``--list-packages`` go through here, so the listing cannot advertise a
+    matrix the run would not honour.
+
+    An unknown name in PACKAGE_PROFILERS is a configuration error raised here
+    rather than once the run reaches that pair, so a CI matrix built from
+    ``--list-packages --json`` cannot contain a job that can never pass.
+    """
+    unknown = [n for n in package.profilers if n not in all_profilers]
+    if unknown:
+        raise DiscoveryError(
+            f"package '{package.name}' lists unknown profiler "
+            + ", ".join(repr(n) for n in unknown)
+            + " in PACKAGE_PROFILERS; available: "
+            + (", ".join(sorted(all_profilers)) or "(none)")
+        )
+    for candidate in (package.profilers, default_profilers, all_profilers):
+        if candidate:
+            return sorted(set(candidate))
+    return []
 
 
 def resolve_selection(

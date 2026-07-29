@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import discovery  # noqa: E402
 import envfile  # noqa: E402
+import listing  # noqa: E402
 import report  # noqa: E402
 import retention  # noqa: E402
 import runner  # noqa: E402
@@ -219,7 +220,7 @@ def cmd_list_packages(
         name: discovery.load_package(CONFIG_ENV, entry, overrides=overrides)
         for name, entry in entries.items()
     }
-    rows = report.packages_listing(
+    rows = listing.packages_listing(
         packages,
         default_profilers=(env.get("DEFAULT_PROFILERS") or "").split(),
         all_profilers=sorted(profiler_entries),
@@ -228,7 +229,7 @@ def cmd_list_packages(
         print(json.dumps(rows, indent=2))
     else:
         print(
-            report.render_table(
+            listing.render_table(
                 rows,
                 [
                     ("NAME", "name"),
@@ -249,12 +250,12 @@ def cmd_list_profilers(
         name: discovery.load_profiler(CONFIG_ENV, entry, overrides)
         for name, entry in entries.items()
     }
-    rows = report.profilers_listing(profilers)
+    rows = listing.profilers_listing(profilers)
     if as_json:
         print(json.dumps(rows, indent=2))
     else:
         print(
-            report.render_table(
+            listing.render_table(
                 rows,
                 [
                     ("NAME", "name"),
@@ -358,10 +359,10 @@ def _select_profilers_for_package(
     if explicit:
         return _dedupe(requested), True
 
-    for candidate in (package.profilers, default_profilers, all_profilers):
-        if candidate:
-            return sorted(_dedupe(candidate)), False
-    return [], False
+    return (
+        discovery.effective_profilers(package, default_profilers, all_profilers),
+        False,
+    )
 
 
 def _dedupe(names: List[str]) -> List[str]:

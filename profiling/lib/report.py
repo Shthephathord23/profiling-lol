@@ -1,4 +1,4 @@
-"""Artifact metadata, the invocation summary, and the listing renderers."""
+"""What a run leaves behind: meta.json, summary.json, and the latest symlink."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import platform
 import subprocess
 import time
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, Optional, Sequence
+from typing import Dict, Iterable, List, Optional, Sequence
 
 from discovery import Package, Profiler
 from runner import RunResult
@@ -18,9 +18,6 @@ __all__ = [
     "write_meta",
     "write_summary",
     "update_latest",
-    "render_table",
-    "packages_listing",
-    "profilers_listing",
 ]
 
 def _is_internal(rel: str) -> bool:
@@ -158,74 +155,3 @@ def _counts(records: Iterable[Dict]) -> Dict[str, int]:
             counts.get(record.get("status", "failed"), 0) + 1
         )
     return counts
-
-
-# --------------------------------------------------------------- listings ---
-
-
-def packages_listing(
-    packages: Mapping[str, Package],
-    default_profilers: List[str],
-    all_profilers: List[str],
-) -> List[Dict]:
-    rows = []
-    for name in sorted(packages):
-        pkg = packages[name]
-        # Must match what `--profiler all` actually runs, ordering included:
-        # this list is what a CI job iterates to build its matrix.
-        effective = pkg.profilers or default_profilers or all_profilers
-        rows.append(
-            {
-                "name": name,
-                "description": pkg.description,
-                "kind": pkg.kind,
-                "profilers": sorted(set(effective)),
-                "declared_profilers": pkg.profilers,
-                "entry": pkg.entry_point,
-                "workdir": str(pkg.workdir),
-            }
-        )
-    return rows
-
-
-def profilers_listing(profilers: Mapping[str, Profiler]) -> List[Dict]:
-    rows = []
-    for name in sorted(profilers):
-        prof = profilers[name]
-        rows.append(
-            {
-                "name": name,
-                "description": prof.description,
-                "kinds": prof.kinds,
-                "flamegraph": prof.flamegraph,
-                "requires_bin": prof.requires_bin,
-            }
-        )
-    return rows
-
-
-def render_table(rows: Sequence[Mapping], columns: Sequence["tuple"]) -> str:
-    """Render an aligned table.  ``columns`` is a sequence of (header, key-or-
-    callable) pairs."""
-    if not rows:
-        return "(none)"
-
-    def cell(row, accessor):
-        value = accessor(row) if callable(accessor) else row.get(accessor, "")
-        if isinstance(value, bool):
-            return "yes" if value else "no"
-        if isinstance(value, (list, tuple)):
-            return " ".join(str(v) for v in value)
-        return "" if value is None else str(value)
-
-    headers = [h for h, _ in columns]
-    body = [[cell(row, acc) for _, acc in columns] for row in rows]
-    widths = [
-        max(len(headers[i]), *(len(r[i]) for r in body)) for i in range(len(columns))
-    ]
-
-    lines = ["  ".join(h.ljust(widths[i]) for i, h in enumerate(headers)).rstrip()]
-    lines.append("  ".join("-" * w for w in widths))
-    for row in body:
-        lines.append("  ".join(c.ljust(widths[i]) for i, c in enumerate(row)).rstrip())
-    return "\n".join(lines)
