@@ -190,20 +190,28 @@ def render_target_sh(target: Target, package: Package, profiler: Profiler) -> st
 HARNESS_SH = Path(__file__).resolve().parent / "harness.sh"
 
 
-
-def _hook_env(
+def _prepare(
     env: Mapping[str, str],
     package: Package,
     profiler: Profiler,
+    target: Target,
+    work_dir: Path,
     run_dir: Path,
     run_id: str,
-    target_file: Path,
-    argv_file: Path,
-    command_file: Path,
-) -> Dict[str, str]:
-    """The environment every hook sees."""
-    out = dict(env)
-    out.update(
+) -> "tuple[Dict[str, str], str]":
+    """Write the target contract; return the hook environment and the run cwd.
+
+    ``work_dir`` holds the harness's own files while ``run_dir`` is where hooks
+    are told to put artifacts.  They are the same for a real run; --dry-run
+    points work_dir at a scratch directory but still names the real run_dir, so
+    it resolves true artifact paths without creating anything under output/.
+    """
+    work_dir.mkdir(parents=True, exist_ok=True)
+    target_file = work_dir / "target.sh"
+    target_file.write_text(render_target_sh(target, package, profiler), "utf-8")
+
+    hook_env = dict(env)
+    hook_env.update(
         {
             "RUN_DIR": str(run_dir),
             "RUN_ID": run_id,
@@ -217,11 +225,18 @@ def _hook_env(
             "PROFILING_PACKAGE_SH": str(package.entry.script_file),
             "PROFILING_PROFILER_SH": str(profiler.entry.script_file),
             "PROFILING_TARGET_FILE": str(target_file),
-            "PROFILING_ARGV_FILE": str(argv_file),
-            "PROFILING_COMMAND_FILE": str(command_file),
+            "PROFILING_ARGV_FILE": str(work_dir / ".argv"),
+            "PROFILING_COMMAND_FILE": str(work_dir / ".command"),
         }
     )
-    return out
+    return hook_env, _existing_dir(package.workdir, package.entry.path)
+
+
+def _resolved(work_dir: Path) -> "tuple[List[str], List[str]]":
+    """What the harness actually built, read back rather than predicted: a
+    package_command hook may have rewritten the workload, and the profiler's
+    command only exists once its builder has run."""
+    return _read_nul(work_dir / ".argv") or [], _read_nul(work_dir / ".command") or []
 
 
 def _read_nul(path: Path) -> Optional[List[str]]:
@@ -242,24 +257,18 @@ def resolve(
 ) -> "tuple[List[str], List[str]]":
     """Resolve (workload argv, profiler command) without running anything.
 
-    Used by --dry-run.  ``run_dir`` is where the run *would* go, so the printed
-    command names the real artifact paths; nothing is created there.
+    Used by --dry-run: the same preparation and the same harness as a real run,
+    stopped by PROFILING_RESOLVE_ONLY before it executes the command it built.
     """
-    scratch_dir.mkdir(parents=True, exist_ok=True)
-    target_file = scratch_dir / "target.sh"
-    argv_file = scratch_dir / "argv"
-    command_file = scratch_dir / "command"
-    target_file.write_text(render_target_sh(target, package, profiler), "utf-8")
-
-    hook_env = _hook_env(
-        env, package, profiler, run_dir, run_id, target_file, argv_file, command_file
+    hook_env, cwd = _prepare(
+        env, package, profiler, target, scratch_dir, run_dir, run_id
     )
     hook_env["PROFILING_RESOLVE_ONLY"] = "1"
 
     proc = subprocess.run(
         ["bash", str(HARNESS_SH)],
         env=hook_env,
-        cwd=_existing_dir(package.workdir, package.entry.path),
+        cwd=cwd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
@@ -270,11 +279,14 @@ def resolve(
             + (f":\n{detail}" if detail else "")
         )
 
-    return _read_nul(argv_file) or list(target.argv), _read_nul(command_file) or []
+    argv, command = _resolved(scratch_dir)
+    return argv or list(target.argv), command
 
 
 #: ``run_package_init`` returns this when package.sh defines no such hook.
 NO_INIT_HOOK = 79
+
+INIT_SH = Path(__file__).resolve().parent / "init.sh"
 
 
 def run_package_init(env: Mapping[str, str], package: Package) -> int:
@@ -284,20 +296,11 @@ def run_package_init(env: Mapping[str, str], package: Package) -> int:
     ``--init`` can be pointed at any package.  Nothing is cached; whether there
     is work to do is the hook's own business.
     """
-    script = (
-        "set -o pipefail\n"
-        '. "$PROFILING_ROOT/lib/common.sh"\n'
-        '. "$1"\n'
-        "if ! declare -F package_init >/dev/null; then\n"
-        f"  exit {NO_INIT_HOOK}\n"
-        "fi\n"
-        "package_init\n"
-    )
     hook_env = dict(env)
     hook_env["PACKAGE_NAME"] = package.name
     hook_env["PACKAGE_DIR"] = str(package.entry.path)
     proc = subprocess.run(
-        ["bash", "-c", script, "_", str(package.entry.script_file)],
+        ["bash", str(INIT_SH), str(package.entry.script_file)],
         env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
     )
@@ -343,15 +346,8 @@ def execute(
 ) -> RunResult:
     """Run the workload under the profiler, tee'ing output and enforcing the
     package timeout by killing the whole process group."""
-    run_dir.mkdir(parents=True, exist_ok=True)
-    target_file = run_dir / "target.sh"
-    target_file.write_text(render_target_sh(target, package, profiler), "utf-8")
-
-    argv_file = run_dir / ".argv"
-    command_file = run_dir / ".command"
-    hook_env = _hook_env(
-        env, package, profiler, run_dir, run_id, target_file, argv_file, command_file
-    )
+    # Same preparation as --dry-run; here work_dir is the run directory itself.
+    hook_env, cwd = _prepare(env, package, profiler, target, run_dir, run_dir, run_id)
 
     started_at = _stamp()
     started = time.time()
@@ -359,7 +355,7 @@ def execute(
     proc = subprocess.Popen(
         ["bash", str(HARNESS_SH)],
         env=hook_env,
-        cwd=_existing_dir(package.workdir, package.entry.path),
+        cwd=cwd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         # Its own session, so a timeout can take the profiler *and* the
@@ -405,13 +401,9 @@ def execute(
     duration = time.time() - started
     finished_at = _stamp()
 
-    # What the harness actually resolved, which is what belongs in meta.json:
-    # a package_command hook may have rewritten the workload, and the profiler
-    # command is only known once its builder has run.
-    argv = _read_nul(argv_file) or list(target.argv)
-    command = _read_nul(command_file) or []
-    argv_file.unlink(missing_ok=True)
-    command_file.unlink(missing_ok=True)
+    argv, command = _resolved(run_dir)
+    for bookkeeping in (run_dir / ".argv", run_dir / ".command"):
+        bookkeeping.unlink(missing_ok=True)
 
     if timed_out:
         status, reason = "timeout", f"exceeded PACKAGE_TIMEOUT of {timeout:g}s"
@@ -430,7 +422,7 @@ def execute(
         duration_s=duration,
         reason=reason,
         forced=forced,
-        argv=argv,
+        argv=argv or list(target.argv),
         command=command,
         started_at=started_at,
         finished_at=finished_at,

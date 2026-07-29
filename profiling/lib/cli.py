@@ -404,7 +404,7 @@ def _warn_unset_knobs(profiler: Profiler, package: Package, env: Dict[str, str])
 
 @dataclass
 class RunContext:
-    """Everything a single run needs that does not vary between runs."""
+    """Everything a run needs that does not vary between packages."""
 
     args: argparse.Namespace
     overrides: Overrides
@@ -412,6 +412,10 @@ class RunContext:
     all_profilers: List[str]
     output_dir: Path
     repo_root: Path
+    # The profiler selection, resolved once from the command line and config.
+    requested_profilers: List[str]
+    explicit: bool
+    default_profilers: List[str]
 
 
 def _run_pair(
@@ -559,6 +563,72 @@ def _run_pair(
     return meta, EXIT_RUN_FAILED if failed else EXIT_OK
 
 
+def _run_package(
+    ctx: RunContext, package_entry: discovery.Entry
+) -> "tuple[List[Dict], int]":
+    """Everything one package contributes: its init, then each of its profilers.
+
+    Returns its records and the exit-code category they add up to, so the sweep
+    above only has to accumulate.
+    """
+    package_name = package_entry.name
+    # Loaded without a profiler beneath it, purely to read PACKAGE_PROFILERS:
+    # which profilers apply cannot be known until the package has been read.
+    base_package = discovery.load_package(
+        CONFIG_ENV, package_entry, overrides=ctx.overrides.package
+    )
+
+    selected, forced = _select_profilers_for_package(
+        base_package,
+        ctx.requested_profilers,
+        ctx.explicit,
+        ctx.all_profilers,
+        ctx.default_profilers,
+    )
+    if not selected:
+        print(
+            f"WARN: no profiler applies to {package_name}: its PACKAGE_PROFILERS "
+            "is empty, so is DEFAULT_PROFILERS, and profilers/ has nothing to "
+            "fall back on",
+            file=sys.stderr,
+        )
+        return [], EXIT_OK
+
+    # PACKAGE_INIT=1: call the hook once, before this package's runs.  Set it to
+    # 0 and a run never builds the package; --init still can.
+    if base_package.init_enabled and not _package_init_ok(ctx, base_package):
+        return (
+            [
+                _record_status(package_name, name, "failed", "package init failed")
+                for name in selected
+            ],
+            EXIT_INIT_FAILED,
+        )
+
+    records, exit_code = [], EXIT_OK
+    for profiler_name in selected:
+        record, category = _run_pair(
+            ctx, package_entry, base_package, profiler_name, forced
+        )
+        records.append(record)
+        exit_code = max(exit_code, category)
+    return records, exit_code
+
+
+def _package_init_ok(ctx: RunContext, package: Package) -> bool:
+    """Run package_init if this is not a dry run.  False means its runs are off."""
+    if ctx.args.dry_run:
+        print(f"    [dry-run] would run package_init for {package.name}")
+        return True
+    if _init_for_run(package, package.name) == 0:
+        return True
+    print(
+        f"ERROR: package_init failed for {package.name}; skipping its runs",
+        file=sys.stderr,
+    )
+    return False
+
+
 def cmd_run(
     args: argparse.Namespace, env: Dict[str, str], overrides: Overrides
 ) -> int:
@@ -580,24 +650,22 @@ def cmd_run(
     package_names = discovery.resolve_selection(
         args.package, package_entries, "package"
     )
-    requested_profilers = discovery.resolve_selection(
-        args.profiler, profiler_entries, "profiler"
-    )
-    # "--profiler all" means "each package's own list"; explicit names are forced.
-    explicit = not _is_all(args.profiler)
-
-    all_profilers = sorted(profiler_entries)
-    default_profilers = (env.get("DEFAULT_PROFILERS") or "").split()
 
     ctx = RunContext(
         args=args,
         overrides=overrides,
         profiler_entries=profiler_entries,
-        all_profilers=all_profilers,
+        all_profilers=sorted(profiler_entries),
         output_dir=Path(
             env.get("PROFILING_OUTPUT_DIR") or (PROFILING_ROOT / "output")
         ),
         repo_root=Path(env.get("REPO_ROOT") or PROFILING_ROOT.parent),
+        requested_profilers=discovery.resolve_selection(
+            args.profiler, profiler_entries, "profiler"
+        ),
+        # "--profiler all" means "each package's own list"; names are forced.
+        explicit=not _is_all(args.profiler),
+        default_profilers=(env.get("DEFAULT_PROFILERS") or "").split(),
     )
 
     records: List[Dict] = []
@@ -605,58 +673,11 @@ def cmd_run(
 
     try:
         for package_name in package_names:
-            package_entry = package_entries[package_name]
-            # Loaded without a profiler beneath it, purely to read
-            # PACKAGE_PROFILERS: which profilers apply cannot be known until
-            # the package has been read.
-            base_package = discovery.load_package(
-                CONFIG_ENV, package_entry, overrides=ctx.overrides.package
+            package_records, category = _run_package(
+                ctx, package_entries[package_name]
             )
-
-            selected, forced = _select_profilers_for_package(
-                base_package,
-                requested_profilers,
-                explicit,
-                all_profilers,
-                default_profilers,
-            )
-            if not selected:
-                print(
-                    f"WARN: no profiler applies to {package_name}: its "
-                    "PACKAGE_PROFILERS is empty, so is DEFAULT_PROFILERS, and "
-                    "profilers/ has nothing to fall back on",
-                    file=sys.stderr,
-                )
-
-            # PACKAGE_INIT=1: call the hook once, before this package's runs.
-            # Set it to 0 and a run never builds the package; --init still can.
-            if base_package.init_enabled:
-                if args.dry_run:
-                    print(f"    [dry-run] would run package_init for {package_name}")
-                elif _init_for_run(base_package, package_name) != 0:
-                    print(
-                        f"ERROR: package_init failed for {package_name}; "
-                        "skipping its runs",
-                        file=sys.stderr,
-                    )
-                    for profiler_name in selected:
-                        records.append(
-                            _record_status(
-                                package_name,
-                                profiler_name,
-                                "failed",
-                                "package init failed",
-                            )
-                        )
-                    exit_code = max(exit_code, EXIT_INIT_FAILED)
-                    continue
-
-            for profiler_name in selected:
-                record, category = _run_pair(
-                    ctx, package_entry, base_package, profiler_name, forced
-                )
-                records.append(record)
-                exit_code = max(exit_code, category)
+            records.extend(package_records)
+            exit_code = max(exit_code, category)
 
         # A run was asked for, so producing no outcome at all is a failure and
         # not a quiet success.  Skips still count as outcomes -- they have

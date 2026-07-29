@@ -63,36 +63,47 @@ def prune(
     Scope follows --package / --profiler; with neither, the whole tree.
     Returns what was removed (or would be, under ``dry_run``).
     """
-    removed: List[Path] = []
     if not output_dir.is_dir():
-        return removed
-
+        return []
+    removed: List[Path] = []
     for pair in sorted(output_dir.glob("*/*")):
-        if not pair.is_dir() or pair.is_symlink():
-            continue
-        if packages and pair.parent.name not in packages:
-            continue
-        if profilers and pair.name not in profilers:
-            continue
-
-        # Newest last.  mtime rather than name, because run ids are only
-        # chronological when the harness generated them -- a CI-supplied
-        # RUN_ID like "build-9" would sort after "build-10".
-        runs = sorted(
-            (d for d in pair.iterdir() if d.is_dir() and not d.is_symlink()),
-            key=lambda d: (d.stat().st_mtime, d.name),
-        )
-        survivors = runs[-keep:] if keep > 0 else []
-
-        for doomed in runs[: len(runs) - len(survivors)]:
-            removed.append(doomed)
-            if not dry_run:
-                shutil.rmtree(doomed)
-
-        if not dry_run:
-            _relink_latest(pair, survivors)
-
+        if _in_scope(pair, packages, profilers):
+            removed.extend(_prune_pair(pair, keep, dry_run))
     return removed
+
+
+def _in_scope(
+    pair: Path,
+    packages: Optional[Sequence[str]],
+    profilers: Optional[Sequence[str]],
+) -> bool:
+    """True for a ``<package>/<profiler>`` directory the selection covers."""
+    if not pair.is_dir() or pair.is_symlink():
+        return False
+    if packages and pair.parent.name not in packages:
+        return False
+    if profilers and pair.name not in profilers:
+        return False
+    return True
+
+
+def _prune_pair(pair: Path, keep: int, dry_run: bool) -> List[Path]:
+    """Keep the newest `keep` runs in one pair directory; return what goes."""
+    # Newest last.  mtime rather than name, because run ids are only
+    # chronological when the harness generated them -- a CI-supplied RUN_ID like
+    # "build-9" would sort after "build-10".
+    runs = sorted(
+        (d for d in pair.iterdir() if d.is_dir() and not d.is_symlink()),
+        key=lambda d: (d.stat().st_mtime, d.name),
+    )
+    survivors = runs[-keep:] if keep > 0 else []
+    doomed = runs[: len(runs) - len(survivors)]
+
+    if not dry_run:
+        for run in doomed:
+            shutil.rmtree(run)
+        _relink_latest(pair, survivors)
+    return doomed
 
 
 def _relink_latest(pair: Path, survivors: Sequence[Path]) -> None:

@@ -29,6 +29,10 @@ _VOLATILE = frozenset({"_", "PWD", "OLDPWD", "SHLVL", "BASH_ENV"})
 # Internal names used by the sourcing snippet below.
 _INTERNAL_PREFIX = "__profiling_"
 
+#: Printed by the EXIT trap below and read by ``_split_stderr``.  The snippet
+#: must spell it literally, so the two are kept adjacent.
+_FAIL_MARKER = "__PROFILING_ENV_FAIL__"
+
 # Sourced in a fresh bash process.  "$@" is the list of files, in order.
 # The EXIT trap names the offending file even when a syntax error kills the
 # shell outright, which a plain `if ! source` cannot catch.
@@ -123,29 +127,36 @@ def source_files(
 
 
 def _parse(proc: "subprocess.CompletedProcess[bytes]", paths) -> Dict[str, str]:
-    stderr = proc.stderr.decode("utf-8", "replace")
-    culprit = None
-    lines = []
-    for line in stderr.splitlines():
-        if line.startswith("__PROFILING_ENV_FAIL__"):
-            culprit = line[len("__PROFILING_ENV_FAIL__") :].strip() or None
-        else:
-            lines.append(line)
-    detail = "\n".join(lines).strip()
+    """Turn the subshell's result into an environment, or raise naming the file."""
+    culprit, detail = _split_stderr(proc.stderr.decode("utf-8", "replace"))
 
     if proc.returncode != 0:
         where = culprit or (paths[-1] if paths else "<unknown>")
-        msg = f"failed to source env file: {where}"
-        if detail:
-            msg += f"\n{detail}"
-        raise EnvFileError(msg)
-
+        raise EnvFileError(
+            f"failed to source env file: {where}" + (f"\n{detail}" if detail else "")
+        )
     if detail:
         # A `.env` may legitimately print warnings; pass them through.
         print(detail, file=sys.stderr)
 
+    return _parse_env0(proc.stdout)
+
+
+def _split_stderr(stderr: str) -> "tuple[Optional[str], str]":
+    """Separate the trap's failure marker from whatever the `.env` itself wrote."""
+    culprit, lines = None, []
+    for line in stderr.splitlines():
+        if line.startswith(_FAIL_MARKER):
+            culprit = line[len(_FAIL_MARKER) :].strip() or None
+        else:
+            lines.append(line)
+    return culprit, "\n".join(lines).strip()
+
+
+def _parse_env0(stdout: bytes) -> Dict[str, str]:
+    """Decode ``env -0``, dropping the harness's own bookkeeping variables."""
     out: Dict[str, str] = {}
-    for chunk in proc.stdout.split(b"\0"):
+    for chunk in stdout.split(b"\0"):
         if not chunk:
             continue
         name, sep, value = chunk.partition(b"=")

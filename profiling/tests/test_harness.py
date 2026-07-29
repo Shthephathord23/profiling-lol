@@ -1260,6 +1260,49 @@ class TestProfilerContract(TreeFixture):
         self.assertIn("PACKAGE_TIMEOUT must be a number", dry.stderr)
         self.assertEqual(real.returncode, 2)
 
+    def test_dry_run_prints_exactly_what_the_real_run_executes(self):
+        """resolve() and execute() now share one preparation step, so this pins
+        the claim the design makes: the printed command *is* the command."""
+        import shlex as _shlex
+
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/echo\nPACKAGE_ARGS="a b"\n'
+            'PACKAGE_PROFILERS="wrap"\n',
+        )
+        self.add_profiler(
+            "wrap",
+            script='profiler_command() { cmd=(/bin/echo "--out" "$(run_artifact o.txt)" '
+            '-- "${TARGET_ARGV[@]}"); }\n',
+        )
+        # A pinned RUN_ID makes both invocations name the same run directory, so
+        # the two commands are comparable character for character.
+        pin = {"RUN_ID": "compare-1"}
+        dry = self.run_cli("--package", "p", "--profiler", "wrap", "--dry-run", env_extra=pin)
+        self.run_cli("--package", "p", "--profiler", "wrap", env_extra=pin)
+
+        printed = next(
+            l.split("command : ", 1)[1]
+            for l in dry.stdout.splitlines()
+            if "command : " in l
+        )
+        meta = json.loads(
+            (self.out / "p" / "wrap" / "compare-1" / "meta.json").read_text()
+        )
+        executed = " ".join(_shlex.quote(a) for a in meta["command"])
+        self.assertEqual(printed, executed)
+
+    def test_init_rejects_a_package_sh_that_will_not_source(self):
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_INIT=1\n',
+            script='package_init() { echo unterminated\n',
+        )
+        self.add_profiler("noop")
+        r = self.run_cli("--init", "--package", "p")
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("failed to source", r.stderr)
+
     def test_dry_run_fails_when_the_command_cannot_be_resolved(self):
         """--dry-run is a preflight gate, so a resolution failure must reach the
         exit code and not only stderr."""
