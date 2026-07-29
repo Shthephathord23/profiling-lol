@@ -13,7 +13,13 @@ import sys
 from pathlib import Path
 from typing import Dict, Iterable, Mapping, Optional
 
-__all__ = ["EnvFileError", "base_environment", "source_files", "apply_real_env"]
+__all__ = [
+    "EnvFileError",
+    "load_layers",
+    "base_environment",
+    "source_files",
+    "apply_real_env",
+]
 
 
 class EnvFileError(RuntimeError):
@@ -64,6 +70,28 @@ set +e
 trap - EXIT
 env -0
 """
+
+
+def load_layers(
+    *paths: Path,
+    real_env: Optional[Mapping[str, str]] = None,
+) -> Dict[str, str]:
+    """Source `paths` in order, then apply the real environment on top.
+
+    This is the whole operation this module exists to perform, and the only
+    one callers should need.  Sourcing and the precedence overlay are never
+    useful apart -- an overlay without a source has nothing to overlay, and a
+    source without the overlay silently drops layer 4 of the precedence rule.
+
+    Computing the base environment once and handing it to both halves also
+    means they cannot disagree about what they inherited, which is what makes
+    the PATHLIKE comparison in ``apply_real_env`` meaningful.
+
+    Raises ``EnvFileError`` naming the offending file if any layer fails.
+    """
+    base = base_environment(real_env)
+    sourced = source_files(paths, base=base)
+    return apply_real_env(sourced, real_env=real_env, base=base)
 
 
 def base_environment(real_env: Optional[Mapping[str, str]] = None) -> Dict[str, str]:

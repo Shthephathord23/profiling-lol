@@ -26,12 +26,13 @@ from typing import Dict, List, Optional, Sequence
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import discovery  # noqa: E402
+import envfile  # noqa: E402
 import initstate  # noqa: E402
 import report  # noqa: E402
 import retention  # noqa: E402
 import runner  # noqa: E402
 from discovery import DiscoveryError, Package, Profiler  # noqa: E402
-from envfile import EnvFileError, apply_real_env, base_environment, source_files  # noqa: E402
+from envfile import EnvFileError  # noqa: E402
 
 EXIT_OK = 0
 EXIT_RUN_FAILED = 1
@@ -123,16 +124,6 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 # ----------------------------------------------------------- global setup ---
-
-
-def load_global_env() -> Dict[str, str]:
-    """config.env plus the real process environment: the harness's own view of
-    paths and defaults, independent of any package or profiler."""
-    try:
-        sourced = source_files([CONFIG_ENV])
-    except EnvFileError as exc:
-        raise UsageError(str(exc)) from exc
-    return apply_real_env(sourced, base=base_environment())
 
 
 def _int_env(env: Dict[str, str], key: str, default: int) -> int:
@@ -660,7 +651,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     _install_signal_handlers()
 
     try:
-        env = load_global_env()
+        # config.env plus the real process environment: the harness's own view
+        # of paths and defaults, independent of any package or profiler.
+        env = envfile.load_layers(CONFIG_ENV)
 
         terminal = [args.list_packages, args.list_profilers, args.remove_output is not None]
         if sum(1 for t in terminal if t) > 1:
@@ -683,7 +676,10 @@ def main(argv: Optional[List[str]] = None) -> int:
 
         return cmd_run(args, env)
 
-    except (UsageError, DiscoveryError) as exc:
+    except (UsageError, DiscoveryError, EnvFileError) as exc:
+        # All three mean "the harness was asked to do something it cannot make
+        # sense of" -- a bad flag, an unknown name, a .env that will not source.
+        # They are one category to a caller, so they share one exit code.
         print(f"ERROR: {exc}", file=sys.stderr)
         return EXIT_USAGE
     except retention.RetentionError as exc:

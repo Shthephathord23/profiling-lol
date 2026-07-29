@@ -156,7 +156,7 @@ def cover(canvas, doc):
     canvas.setFont("Courier", 8.6)
     canvas.setFillColor(colors.HexColor("#7f8ea3"))
     canvas.drawString(21 * mm, h - 72 * mm,
-                      "2340 lines  /  7 Python modules  /  4 profilers  /  111 checks")
+                      "2356 lines  /  7 Python modules  /  4 profilers  /  111 checks")
     canvas.setStrokeColor(RULE)
     canvas.setLineWidth(0.5)
     canvas.line(21 * mm, 15 * mm, w - 21 * mm, 15 * mm)
@@ -1197,20 +1197,20 @@ A(p("SECTION 15", Kick))
 A(p("Is this too much code?", H1))
 A(p("An honest accounting", Cap))
 
-A(p("2340 lines total, 1871 excluding comments and blanks. That is a fair thing to "
+A(p("2356 lines total, 1881 excluding comments and blanks. That is a fair thing to "
     "challenge. Here is where it actually goes.", Body))
 
 A(table(
     ["Module", "Lines", "What it owns"],
-    [["cli.py", "701", "Parser (70), three terminal commands (116), the main loop (174), "
+    [["cli.py", "697", "Parser (70), three terminal commands (116), the main loop (174), "
       "dry-run printing (43), helpers, signals"],
      ["runner.py", "613", "Three bash harnesses as string constants (~90), execute (96), "
       "target building (70), dry-run resolution (74), process-group control (60)"],
-     ["discovery.py", "244", "Scanning (40), typed accessors (110), selection (35)"],
+     ["discovery.py", "236", "Scanning (40), typed accessors (110), selection (35)"],
      ["report.py", "228", "meta.json (60), listings (40), table renderer (25), summary (40)"],
      ["initstate.py", "207", "Fingerprint (40), decision table (30), execution (60)"],
      ["retention.py", "175", "Safety checks (30), planning (50), applying (40)"],
-     ["envfile.py", "172", "Sourcing (50), parsing (40), precedence (25)"]],
+     ["envfile.py", "200", "load_layers entry point, sourcing (50), parsing (40), precedence (25)"]],
     [26 * mm, 14 * mm, 128 * mm], mono_cols=(0, 1)))
 
 A(p("Roughly a third is features, not core", H2))

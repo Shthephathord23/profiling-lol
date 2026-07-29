@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from envfile import EnvFileError, apply_real_env, base_environment, source_files
+from envfile import load_layers
 
 __all__ = [
     "DiscoveryError",
@@ -176,17 +176,9 @@ def discover_profilers(profiling_root: Path) -> Dict[str, Entry]:
     return _scan(profiling_root / "profilers", "profiler", "profiler.sh")
 
 
-def _load_env(config_env: Path, *layers: Path) -> Dict[str, str]:
-    try:
-        sourced = source_files([config_env, *layers])
-    except EnvFileError as exc:
-        raise DiscoveryError(str(exc)) from exc
-    return apply_real_env(sourced, base=base_environment())
-
-
 def load_profiler(config_env: Path, entry: Entry) -> Profiler:
     """Load a profiler with only config.env beneath it (listing / metadata)."""
-    return Profiler(entry=entry, env=_load_env(config_env, entry.env_file))
+    return Profiler(entry=entry, env=load_layers(config_env, entry.env_file))
 
 
 def load_package(
@@ -202,7 +194,7 @@ def load_package(
     """
     layers = [profiler_env_file] if profiler_env_file else []
     layers.append(entry.env_file)
-    return Package(entry=entry, env=_load_env(config_env, *layers))
+    return Package(entry=entry, env=load_layers(config_env, *layers))
 
 
 def resolve_selection(
