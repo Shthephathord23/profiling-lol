@@ -583,14 +583,34 @@ LINE_PROFILER_TARGETS="my_tool.core"   # comma-separated modules/functions
 The harness warns — it does not fail — when a package selects line-profiler
 without setting it.
 
-**py-spy starts the workload and attaches to it.** `py-spy record -- <cmd>`
-exits 0 even when `<cmd>` failed, which would silently record broken workloads
-as successful runs. So the profiler starts the workload itself and attaches
-py-spy to the resulting pid; the shell then owns the process and `wait` yields
-its exact exit code. The cost is that sampling begins a few milliseconds late,
-so the very start of interpreter startup can be missed. Set
-`PYSPY_CAPTURE_EXIT_CODE=0` for plain launch mode, at the cost of failed runs
-reporting as `ok`.
+**py-spy starts the workload and attaches to it.** py-spy's exit status
+describes *py-spy*, not the program it ran, and the two are uncorrelated.
+Running one command repeatedly, `py-spy record -- <cmd>` returns 0 for a
+workload that exited 3, and 1 for a workload that exited 0 — the latter
+whenever its flamegraph renderer found no samples to plot, which depends on
+how long the workload ran rather than on whether it worked:
+
+```
+child exits 0 -> py-spy exits  0 1 1 1 1 0 1 1 1 1
+child exits 3 -> py-spy exits  1 0 1 1 1 1 1 0 0 1
+```
+
+Since `profiler_wrap`'s status *is* the workload's status, trusting py-spy's
+would report broken workloads as successful and healthy ones as broken, at
+random. So the profiler starts the workload itself and attaches py-spy to the
+resulting pid; the shell then owns the process and `wait` yields its exact
+exit code. The cost is that sampling begins a few milliseconds late, so the
+very start of interpreter startup can be missed.
+
+A non-zero py-spy status is still used, but only to tell its two failure modes
+apart — and the discriminator is the output file, not the status. When py-spy
+cannot attach at all (ptrace denied, process already gone) it writes nothing,
+and that *is* a failed profiling run. When it attached but collected no
+samples it still writes a file, and the run is reported on the workload's own
+status with a warning suggesting more work or a higher `PYSPY_RATE`.
+
+Set `PYSPY_CAPTURE_EXIT_CODE=0` for plain launch mode, where the workload's
+exit status is simply not observable and is reported as 0.
 
 **The global flamegraph kill switch.** `PROFILING_FLAMEGRAPHS=0` makes
 flamegraph-capable profilers degrade to a cheaper format rather than fail —
