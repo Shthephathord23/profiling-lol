@@ -2,7 +2,7 @@
 #
 # Run a workload under py-spy and exit with the WORKLOAD's status.
 #
-#   pyspy-attach.sh [options] -- <workload argv...>
+#   attach.sh [options] -- <workload argv...>
 #
 # Why this exists: py-spy's own exit status describes py-spy, not the program
 # it ran, and the two are uncorrelated.  Measured over ten runs of one command,
@@ -22,7 +22,9 @@
 # and 4 in 8 of runs, depending on machine load), which is a far worse trade
 # than a few milliseconds.
 #
-# This lives in its own file rather than in profiler.sh because the harness
+# This lives beside its profiler rather than in lib/ because it is py-spy code,
+# not shared code.  It is a separate file rather than part of profiler.sh because
+# the harness
 # runs a profiler's *resolved command*, and a command is one argv.  Anything
 # needing two processes and a wait has to be a program.
 
@@ -36,7 +38,7 @@ native=0
 capture=1
 
 die() {
-    printf 'pyspy-attach: %s\n' "$*" >&2
+    printf 'py-spy/attach: %s\n' "$*" >&2
     exit 64
 }
 

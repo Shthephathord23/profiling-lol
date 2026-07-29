@@ -21,15 +21,18 @@
 #   TARGET_KIND          the package's PACKAGE_KIND.
 #
 # Also exported: RUN_DIR RUN_ID PACKAGE_NAME PROFILER_NAME PROFILING_ROOT
-#                REPO_ROOT PACKAGE_WORKDIR
+#                REPO_ROOT PACKAGE_WORKDIR PACKAGE_DIR PROFILER_DIR
+#
+# PROFILER_DIR is this directory, so helper scripts can live beside this file.
 
 # REQUIRED.  Populate `cmd` with the command to run.  Do not run anything here.
 #
 # The command is one argv.  If your profiler needs two processes, a wait, or
-# any sequencing, put that in a small script under lib/ and make the command
-# invoke it -- see lib/pyspy-attach.sh.  Do not reach for `bash -c '...'`:
-# it technically fits in one argv, but it hides a shell script inside a string
-# and makes --dry-run unreadable.
+# any sequencing, put that in a small script in THIS directory and invoke it as
+# "$PROFILER_DIR/<script>" -- see profilers/py-spy/attach.sh.  It belongs here
+# rather than in lib/ because it is this profiler's implementation, not shared
+# machinery.  Do not reach for `bash -c '...'`: it technically fits in one argv,
+# but it hides a shell script inside a string and makes --dry-run unreadable.
 profiler_command() {
     cmd=(
         mytool

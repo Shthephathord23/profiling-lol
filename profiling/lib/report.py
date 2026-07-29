@@ -69,6 +69,7 @@ def write_meta(
     package: Package,
     profiler: Profiler,
     repo_root: Path,
+    overrides: Optional[Dict[str, Dict[str, str]]] = None,
 ) -> Dict:
     """Write ``<RUN_DIR>/meta.json`` and return the record."""
     run_dir = result.run_dir
@@ -100,6 +101,10 @@ def write_meta(
     }
     if result.reason:
         meta["reason"] = result.reason
+    if overrides:
+        # Provenance for the --env-* layer: which keys the command line forced,
+        # and at which level.  Absent when nothing was overridden.
+        meta["env_overrides"] = overrides
 
     sha = git_sha(repo_root)
     if sha:  # omit the field entirely rather than erroring when git is absent

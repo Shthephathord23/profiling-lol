@@ -280,6 +280,10 @@ def _hook_env(
             "PACKAGE_NAME": package.name,
             "PROFILER_NAME": profiler.name,
             "PACKAGE_WORKDIR": str(package.workdir),
+            # A hook's own directory, so profiler-specific helper scripts can
+            # live beside the profiler that needs them instead of in lib/.
+            "PACKAGE_DIR": str(package.entry.path),
+            "PROFILER_DIR": str(profiler.entry.path),
             "PROFILING_PACKAGE_SH": str(package.entry.script_file),
             "PROFILING_PROFILER_SH": str(profiler.entry.script_file),
             "PROFILING_TARGET_FILE": str(target_file),
@@ -365,9 +369,12 @@ def run_package_init(env: Mapping[str, str], package: Package) -> int:
         "fi\n"
         "package_init\n"
     )
+    hook_env = dict(env)
+    hook_env["PACKAGE_NAME"] = package.name
+    hook_env["PACKAGE_DIR"] = str(package.entry.path)
     proc = subprocess.run(
         ["bash", "-c", script, "_", str(package.entry.script_file)],
-        env=dict(env),
+        env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
     )
     return proc.returncode

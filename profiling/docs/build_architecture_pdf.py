@@ -156,7 +156,7 @@ def cover(canvas, doc):
     canvas.setFont("Courier", 8.6)
     canvas.setFillColor(colors.HexColor("#7f8ea3"))
     canvas.drawString(21 * mm, h - 72 * mm,
-                      "2096 lines  /  6 Python modules  /  4 profilers  /  111 checks")
+                      "2180 lines  /  6 Python modules  /  4 profilers  /  123 checks")
     canvas.setStrokeColor(RULE)
     canvas.setLineWidth(0.5)
     canvas.line(21 * mm, 15 * mm, w - 21 * mm, 15 * mm)
@@ -292,15 +292,15 @@ profiling/
   install.sh              discovery-driven dependency installer
   config.env              all paths and global defaults
   README.md               user-facing documentation
-  .gitignore              output/ and .state/
+  .gitignore              output/, __pycache__/, the example venv
 
   lib/                    the core - the only Python in the tree
-    cli.py         701   argument parsing, dispatch, the main loop
-    runner.py      613   the target contract, bash harnesses, process control
-    discovery.py   244   enumerate packages/profilers, typed access to .env
-    report.py      228   meta.json, summary.json, tables and JSON listings
-    retention.py   175   --remove-output planning and execution
-    envfile.py     172   source .env layers, apply precedence
+    cli.py         814   argument parsing, dispatch, the main loop
+    runner.py      608   the target contract, bash harness, process control
+    discovery.py   252   enumerate packages/profilers, typed access to .env
+    report.py      234   meta.json, summary.json, tables and JSON listings
+    envfile.py     165   source the .env layers
+    retention.py   107   --remove-output planning and execution
     common.sh            helpers sourced into every leaf hook
 
   packages/<name>/        a workload to measure
@@ -310,9 +310,10 @@ profiling/
   profilers/<name>/       a way to measure
     .env                  declares it
     profiler.sh           required profiler_command, optional profiler_post
+    <helpers>             anything that profiler alone needs, e.g. attach.sh
 
-  output/                 run artifacts        (gitignored)
-  .state/                 package init stamps  (gitignored)
+$PROFILING_OUT_PATH/
+  output/<package>/<profiler>/<run-id>/    run artifacts, outside the repo
 """))
 
 A(p("The discovery rule", H2))
@@ -328,18 +329,19 @@ A(p("The underscore prefix is what keeps <font face='Courier' size='8.6'>_templa
     "<font face='Courier' size='8.6'>.env</font> is ignored entirely, so editor "
     "droppings and stray folders cause no trouble.", Body))
 
-A(p("Why state and output are separate trees", H2))
-A(p("<font face='Courier' size='8.6'>.state/</font> holds the answer to \"has this "
-    "package been built?\". <font face='Courier' size='8.6'>output/</font> holds run "
-    "artifacts. They are separate directories, and the init log is written to "
-    "<font face='Courier' size='8.6'>.state/</font> rather than into a run directory, "
-    "for one specific reason: <b>pruning artifacts must never trigger a rebuild.</b> "
-    "If the build stamp lived under <font face='Courier' size='8.6'>output/</font>, "
-    "then <font face='Courier' size='8.6'>--remove-output</font> would silently cost "
-    "you a full rebuild on the next run.", Body))
-A(p("It also means you can mount <font face='Courier' size='8.6'>.state/</font> as a "
-    "Docker volume to carry \"already built\" across containers, while letting "
-    "<font face='Courier' size='8.6'>output/</font> stay ephemeral.", Body))
+A(p("Why output lives outside the tree", H2))
+A(p("Artifacts are written under "
+    "<font face='Courier' size='8.6'>$PROFILING_OUT_PATH/output/</font>, which defaults "
+    "to this directory only so a fresh checkout runs with no configuration. In "
+    "production it points somewhere a commit can never reach:", Body))
+A(code("""
+PROFILING_OUT_PATH=/var/lib/profiling ./run_profiling.sh --package all --profiler all
+"""))
+A(p("One variable moves the whole tree, and the layout beneath it is always "
+    "<font face='Courier' size='8.6'>output/&lt;package&gt;/&lt;profiler&gt;/&lt;run-id&gt;/</font> - "
+    "which is what lets retention be a loop over two glob levels rather than a policy "
+    "engine. There is no second state tree: nothing about a package's build is cached "
+    "anywhere, so pruning artifacts can never trigger a rebuild.", Body))
 
 A(PageBreak())
 
@@ -362,16 +364,18 @@ A(p("Four lines, and the <font face='Courier' size='8.6'>exec</font> matters. It
     "cancellation possible at all.", Body))
 
 A(p("main()", H2))
-A(p("<font face='Courier' size='8.6'>cli.py:657</font>. Four steps, in order:", Body))
+A(p("<font face='Courier' size='8.6'>cli.py:755</font>. Five steps, in order:", Body))
 A(table(
     ["#", "Step", "Why here"],
     [["1", "<font face='Courier' size='8'>parser.parse_args()</font>",
       "argparse exits 2 on a bad flag, which is already the code the spec wants"],
      ["2", "<font face='Courier' size='8'>_install_signal_handlers()</font>",
       "Before anything can spawn a child, so no window exists where a signal orphans work"],
-     ["3", "<font face='Courier' size='8'>load_global_env()</font>",
+     ["3", "<font face='Courier' size='8'>envfile.load_layers(CONFIG_ENV)</font>",
       "Sources config.env alone. Even --remove-output needs PROFILING_OUTPUT_DIR"],
-     ["4", "dispatch",
+     ["4", "<font face='Courier' size='8'>Overrides.from_args()</font>",
+      "Before dispatch, so a malformed --env-* is exit 2 whichever command was asked for"],
+     ["5", "dispatch",
       "A flat if-chain, because three of four commands are terminal"]],
     [8 * mm, 54 * mm, 106 * mm]))
 
@@ -385,13 +389,13 @@ A(p("<font face='Courier' size='8.6'>--list-packages</font>, "
     "of the program.", Body))
 
 A(code("""
-if args.list_packages:              return cmd_list_packages(env, args.json)
-if args.list_profilers:             return cmd_list_profilers(env, args.json)
+if args.list_packages:   return cmd_list_packages(env, args.json, overrides.package)
+if args.list_profilers:  return cmd_list_profilers(env, args.json, overrides.profiler)
 if args.remove_output is not None:  return cmd_remove_output(args, env)
 
 if args.keep is not None:   raise UsageError("--keep only with --remove-output")
 if args.json:               raise UsageError("--json only with --list-*")
-return cmd_run(args, env)
+return cmd_run(args, env, overrides)
 """))
 A(p("The two guards before <font face='Courier' size='8.6'>cmd_run</font> catch flags "
     "that parse fine but mean nothing in context. Silently ignoring "
@@ -501,13 +505,13 @@ A(p("SECTION 5", Kick))
 A(p("Environment layering", H1))
 A(p("envfile.py - the first of two central ideas", Cap))
 
-A(p("Every run builds its environment by sourcing four layers in order. Later layers "
-    "win:", Body))
+A(p("Every run builds its environment in five layers. Later layers win:", Body))
 A(code("""
+   0.  the ambient environment        the subshell's starting point
    1.  config.env                     global paths and defaults
    2.  profilers/<profiler>/.env      that profiler's knobs
    3.  packages/<package>/.env        the package, ON TOP of the profiler
-   4.  the real process environment   whatever the caller exported
+   4.  --env-profiler / --env-package  the command line, always last
 """))
 
 A(spacer(2))
@@ -556,24 +560,49 @@ A(p("Python looks for that marker on stderr and reports the offending path. In "
     "bash's own diagnostic with a line number - which is more useful than either "
     "alone.", Body))
 
-A(p("The one exception to \"the real environment wins\"", H2))
-A(p("Strict layer-4 precedence has a flaw. If a package writes "
-    "<font face='Courier' size='8.6'>PYTHONPATH=\"$MY_SRC:$PYTHONPATH\"</font>, the "
-    "overlay would immediately clobber it back to the inherited value, making the "
-    "line a no-op. So PATH-like variables are treated as <i>extended</i> rather than "
-    "assigned:", Body))
-A(code("""
-PATHLIKE = {PATH, PYTHONPATH, LD_LIBRARY_PATH, LD_PRELOAD,
-            MANPATH, PKG_CONFIG_PATH, CPATH}
+A(p("The ambient environment is the floor, not the ceiling", H2))
+A(p("Layer 0 is the <i>base</i> the sourcing subshell starts from, not an overlay "
+    "applied afterwards. A <font face='Courier' size='8.6'>.env</font> assigns "
+    "unconditionally, so it beats whatever was exported into the caller's shell. "
+    "That means <font face='Courier' size='8.6'>PACKAGE_ARGS=... ./run_profiling.sh</font> "
+    "does not redirect a run: a stray variable in a session, or one inherited from a CI "
+    "job that knows nothing about this harness, cannot silently change what is "
+    "profiled.", Body))
+A(p("It also removes a wart. An earlier version applied the real environment as a "
+    "final overlay, which clobbered "
+    "<font face='Courier' size='8.6'>PYTHONPATH=\"$MY_SRC:$PYTHONPATH\"</font> back to "
+    "the inherited value - so it carried a hardcoded set of PATH-like names exempt from "
+    "the rule. Making the environment the base rather than the winner deletes both the "
+    "exemption list and the caveat it needed.", Body))
+A(spacer(2))
+A(callout("Harness configuration still answers to the environment",
+          "Every variable in <font face='Courier' size='8.4'>config.env</font> is "
+          "declared <font face='Courier' size='8.4'>: \"${VAR:=default}\"</font>, which "
+          "defers to anything already set. So "
+          "<font face='Courier' size='8.4'>PROFILING_OUT_PATH=/var/lib/profiling</font> "
+          "and <font face='Courier' size='8.4'>docker run -e</font> keep working for the "
+          "harness's own knobs, while package and profiler knobs are owned by their "
+          "<font face='Courier' size='8.4'>.env</font> files.", "ok"))
 
-for key, value in real_env.items():
-    if key in PATHLIKE and merged.get(key) != base.get(key):
-        continue                  # a layer changed it deliberately - keep that
-    merged[key] = value           # everything else: the real environment wins
+A(p("Layer 4: overriding a knob for one invocation", H2))
+A(p("Editing a file is the wrong way to change one run, so the command line is the top "
+    "layer. Both flags are repeatable and take "
+    "<font face='Courier' size='8.6'>KEY=VALUE</font>:", Body))
+A(code("""
+./run_profiling.sh --package my-tool --profiler py-spy \\
+  --env-package  PACKAGE_ARGS="--input data/big.json --iterations 50" \\
+  --env-profiler PYSPY_RATE=500
 """))
-A(p("Every other variable follows the documented rule exactly. This exception is "
-    "called out in the README because it is the one place where the four-layer model "
-    "is not literally true.", Body))
+A(p("Both land on the <i>same</i> layer - the command line always wins - so why two "
+    "flags? <b>Provenance.</b> Each set is recorded separately in "
+    "<font face='Courier' size='8.6'>meta.json</font> under "
+    "<font face='Courier' size='8.6'>env_overrides</font> and printed by "
+    "<font face='Courier' size='8.6'>--dry-run</font>, so a run says what was forced and "
+    "at which level rather than presenting one anonymous bag of variables. On a "
+    "collision <font face='Courier' size='8.6'>--env-package</font> wins, matching the "
+    "layering beneath it. A value that is not "
+    "<font face='Courier' size='8.6'>KEY=VALUE</font> is a usage error, and it is parsed "
+    "before dispatch so that holds for every command.", Body))
 
 A(PageBreak())
 
@@ -1161,6 +1190,16 @@ A(p("So the profiler starts the workload itself and attaches py-spy to the resul
     "pid. The shell then owns the process and "
     "<font face='Courier' size='8.6'>wait</font> yields its exact code. The cost is "
     "that sampling begins a few milliseconds late.", Body))
+A(p("That is two processes and a wait, which is a <i>program</i>, not a command - so it "
+    "lives in a file of its own, "
+    "<font face='Courier' size='8.6'>profilers/py-spy/attach.sh</font>, which "
+    "<font face='Courier' size='8.6'>profiler_command</font> invokes as "
+    "<font face='Courier' size='8.6'>\"$PROFILER_DIR/attach.sh\"</font>. It sits beside "
+    "the profiler rather than in "
+    "<font face='Courier' size='8.6'>lib/</font> because it is py-spy's implementation "
+    "and nothing else's: deleting the profiler directory deletes all of it. Any profiler "
+    "can do the same - <font face='Courier' size='8.6'>PROFILER_DIR</font> and "
+    "<font face='Courier' size='8.6'>PACKAGE_DIR</font> are exported into every hook.", Body))
 A(p("The obvious alternative - keep launch mode and wrap the workload in a shell that "
     "records <font face='Courier' size='8.6'>$?</font> - was measured and rejected: the "
     "extra fork makes py-spy miss the Python process entirely on <b>4 of 8</b> "
@@ -1213,19 +1252,19 @@ A(p("SECTION 15", Kick))
 A(p("Is this too much code?", H1))
 A(p("An honest accounting", Cap))
 
-A(p("2096 lines total, 1655 excluding comments and blanks. That is a fair thing to "
-    "challenge. Here is where it actually goes.", Body))
+A(p("2180 lines total. That is a fair thing to challenge. Here is where it actually "
+    "goes.", Body))
 
 A(table(
     ["Module", "Lines", "What it owns"],
-    [["cli.py", "720", "Parser (70), three terminal commands (116), _run_pair (113), "
-      "cmd_run (71), dry-run printing, helpers, signals"],
-     ["runner.py", "583", "One bash harness as a string constant (~55), execute (96), "
-      "target building (70), dry-run resolution (57), process-group control (60)"],
-     ["discovery.py", "236", "Scanning (40), typed accessors (110), selection (35)"],
-     ["report.py", "228", "meta.json (60), listings (40), table renderer (25), summary (40)"],
-     ["retention.py", "107", "Safety check (25), prune (45), latest symlink (12)"],
-     ["envfile.py", "200", "load_layers entry point, sourcing (50), parsing (40), precedence (25)"]],
+    [["cli.py", "814", "Parser (86), the --env-* override layer (50), three terminal "
+      "commands (116), _run_pair (115), cmd_run (74), dry-run printing, signals"],
+     ["runner.py", "608", "One bash harness as a string constant (90), execute (104), "
+      "process-group control (84), the target contract (69), resolve (40)"],
+     ["discovery.py", "252", "Scanning (40), typed accessors (110), selection (35)"],
+     ["report.py", "234", "meta.json (65), listings (40), table renderer (25), summary (40)"],
+     ["envfile.py", "165", "Sourcing (50), parsing (40), the base environment (20)"],
+     ["retention.py", "107", "Safety check (25), prune (45), latest symlink (12)"]],
     [26 * mm, 14 * mm, 128 * mm], mono_cols=(0, 1)))
 
 A(p("Roughly a third is features, not core", H2))
@@ -1251,8 +1290,16 @@ A(p("Two things this document previously listed as slop have been removed. "
     "<font face='Courier' size='8.6'>envfile.load_layers</font>.", Body))
 A(p("And <font face='Courier' size='8.6'>_print_dry_run</font> used to call two "
     "resolvers backed by two nearly identical bash scripts, spawning two "
-    "subprocesses for one printed line. They are now one "
-    "<font face='Courier' size='8.6'>resolve_dry_run</font> and one subprocess.", Body))
+    "subprocesses for one printed line. There is now one "
+    "<font face='Courier' size='8.6'>_HARNESS</font> string serving both the dry run and "
+    "the real run, gated by "
+    "<font face='Courier' size='8.6'>PROFILING_RESOLVE_ONLY</font>, and one "
+    "<font face='Courier' size='8.6'>resolve</font>.", Body))
+A(p("<font face='Courier' size='8.6'>envfile.py</font> lost 35 lines with the layering "
+    "change in Section 5: applying the real environment as a final overlay needed an "
+    "<font face='Courier' size='8.6'>apply_real_env</font> pass and a hardcoded set of "
+    "PATH-like names exempt from it. Making the environment the base rather than the "
+    "winner deleted both.", Body))
 A(p("The bigger change is in <font face='Courier' size='8.6'>cmd_run</font>: its "
     "inner loop body - the eight steps for one (package, profiler) pair - is now "
     "<font face='Courier' size='8.6'>_run_pair</font>, and "
@@ -1260,26 +1307,27 @@ A(p("The bigger change is in <font face='Courier' size='8.6'>cmd_run</font>: its
     "Section 7.", Body))
 
 A(p("Where the length is defensible", H2))
-A(p("<font face='Courier' size='8.6'>cmd_run</font>'s 174 lines look like the problem "
+A(p("<font face='Courier' size='8.6'>_run_pair</font>'s 115 lines look like the problem "
     "and are not, for the reason given in Section 7: the ordering of its steps is the "
     "fragile part, and ordering is only visible when the steps are adjacent.", Body))
-A(p("<font face='Courier' size='8.6'>envfile.py</font>'s 132 lines look like a lot for "
-    "\"source a file\", but the precedence rule and the error attribution are the "
-    "subtle parts, and both were arrived at by fixing observed problems.", Body))
+A(p("<font face='Courier' size='8.6'>envfile.py</font>'s 165 lines look like a lot for "
+    "\"source a file\", but the error attribution is the subtle part, and it was "
+    "arrived at by fixing an observed problem.", Body))
 
 A(PageBreak())
 
 # ============================================================ 16. TESTING
 A(p("SECTION 16", Kick))
 A(p("Testing", H1))
-A(p("111 checks across five suites", Cap))
+A(p("123 checks across five suites", Cap))
 
 A(table(
     ["Suite", "Checks", "Covers"],
-    [["acceptance", "22", "The specification's own acceptance list"],
-     ["bughunt", "21", "Quoting torture, hook ordering and failure, package_command, "
+    [["acceptance", "26", "The specification's own acceptance list"],
+     ["bughunt", "25", "Quoting torture, hook ordering and failure, package_command, "
       "PACKAGE_TIMEOUT=0, malformed .env, unknown profiler, a real directory named 'latest'"],
-     ["bughunt2", "16", "All four environment layers individually, exit-code aggregation, "
+     ["bughunt2", "20", "All five environment layers individually including both "
+      "--env-* flags and their collision rule, exit-code aggregation, "
       "50k-line tee integrity by checksum, unicode, signal cleanup by process group"],
      ["compliance", "33", "File tree, stdlib-only imports, every contract variable reaching "
       "hooks, cwd, hook ordering, init-once, meta.json fields, run-id format, run ordering"],
@@ -1316,30 +1364,39 @@ A(p("The specification shows "
     "installed versions and adjust reads as licence for this, but it is a departure "
     "from the literal text and is documented in both the profiler and the README.", Body))
 
-A(p("2. PATH-like variables are the one exception to layer-4 precedence", H3))
-A(p("Strict precedence would make "
-    "<font face='Courier' size='8.6'>PYTHONPATH=\"$MY_SRC:$PYTHONPATH\"</font> in a "
-    "package a no-op, contradicting the specification's own example. Section 5 gives "
-    "the rule; it is called out in the README.", Body))
+A(p("2. The ambient environment is the base layer, not the top one", H3))
+A(p("The specification put the real process environment above the "
+    "<font face='Courier' size='8.6'>.env</font> files. It is now the base the sourcing "
+    "subshell starts from, with the command line "
+    "(<font face='Courier' size='8.6'>--env-package</font> / "
+    "<font face='Courier' size='8.6'>--env-profiler</font>) as the top layer instead. A "
+    "stray exported variable can no longer redirect a run, PATH-like extension in a "
+    "<font face='Courier' size='8.6'>.env</font> works without an exemption list, and "
+    "harness configuration still responds to the environment through "
+    "<font face='Courier' size='8.6'>: \"${VAR:=default}\"</font> in "
+    "<font face='Courier' size='8.6'>config.env</font>. Section 5 gives the rule.", Body))
 
-A(p("3. --dry-run exactness needs the profiler's cooperation", H3))
-A(p("Achieved through an optional "
-    "<font face='Courier' size='8.6'>profiler_dry_run</font> hook rather than by "
-    "guessing. All shipped profilers implement it; third-party ones degrade to a "
-    "labelled fallback instead of printing something that might be wrong.", Body))
+A(p("3. A profiler declares a command; it does not run one", H3))
+A(p("The specification's <font face='Courier' size='8.6'>profiler_wrap</font> both built "
+    "and executed the command, which makes an exact "
+    "<font face='Courier' size='8.6'>--dry-run</font> impossible without a second, "
+    "parallel implementation that can drift. "
+    "<font face='Courier' size='8.6'>profiler_command</font> populates an array and runs "
+    "nothing, so one builder serves both paths and they cannot disagree.", Body))
 
 A(p("4. viztracer gains a tracer_entries cap", H3))
 A(p("Beyond the specification's <font face='Courier' size='8.6'>VIZTRACER_MAX_DEPTH</font>, "
     "because depth alone left 106 MB artifacts. The specification asks for conservative "
     "defaults and permits adjusting knobs, so this is within its intent.", Body))
 
-A(p("Open item", H2))
-A(p("The redundant dry-run harness described in Section 15 is known and unfixed. It is "
-    "a contained change - delete "
-    "<font face='Courier' size='8.6'>_RESOLVE_HARNESS</font> and "
-    "<font face='Courier' size='8.6'>resolve_argv</font>, have "
-    "<font face='Courier' size='8.6'>dry_run_command</font> return both values in one "
-    "pass - and would want the 111 checks re-run afterwards.", Body))
+A(p("5. PACKAGE_INIT is a flag, not a fingerprint", H3))
+A(p("The specification asked for staleness tracking - hash the declared inputs, store a "
+    "stamp, rebuild when they differ. That was implemented, measured at 207 lines, and "
+    "removed: the stamp described something it never looked at, so deleting a "
+    "virtualenv while keeping the stamp meant every run died at exit 127. "
+    "<font face='Courier' size='8.6'>PACKAGE_INIT=1</font> now means \"call the hook\", "
+    "and making the hook cheap when there is nothing to do is the hook's job. Section 8 "
+    "carries the full accounting.", Body))
 
 A(spacer(6))
 A(callout("The through-line",
