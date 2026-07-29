@@ -1,0 +1,12002 @@
+[
+ {
+  "id": 0,
+  "name": "  iota  Kappa ",
+  "label": "IOTA",
+  "weight": 6.9132
+ },
+ {
+  "id": 1,
+  "name": "  Epsilon   zeta ",
+  "label": "EPSILON ",
+  "weight": 1.7901
+ },
+ {
+  "id": 2,
+  "name": "  Epsilon   zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.191
+ },
+ {
+  "id": 3,
+  "name": "  Kappa  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 7.1496
+ },
+ {
+  "id": 4,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 6.7498
+ },
+ {
+  "id": 5,
+  "name": "  BETA  iota ",
+  "label": "ALPHA",
+  "weight": 9.3992
+ },
+ {
+  "id": 6,
+  "name": "  Kappa  zeta ",
+  "label": "ETA THETA",
+  "weight": 4.3177
+ },
+ {
+  "id": 7,
+  "name": "  Epsilon   Kappa ",
+  "label": "KAPPA",
+  "weight": 9.5655
+ },
+ {
+  "id": 8,
+  "name": "  zeta  BETA ",
+  "label": "KAPPA",
+  "weight": 0.616
+ },
+ {
+  "id": 9,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 9.2096
+ },
+ {
+  "id": 10,
+  "name": "  gamma  Delta  zeta ",
+  "label": "KAPPA",
+  "weight": 5.425
+ },
+ {
+  "id": 11,
+  "name": "  ETA theta  Alpha ",
+  "label": "IOTA",
+  "weight": 3.0777
+ },
+ {
+  "id": 12,
+  "name": "  iota  zeta ",
+  "label": "ETA THETA",
+  "weight": 5.2881
+ },
+ {
+  "id": 13,
+  "name": "  ETA theta  zeta ",
+  "label": "BETA",
+  "weight": 4.0853
+ },
+ {
+  "id": 14,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.9839
+ },
+ {
+  "id": 15,
+  "name": "  BETA  Kappa ",
+  "label": "BETA",
+  "weight": 5.1418
+ },
+ {
+  "id": 16,
+  "name": "  Epsilon   Kappa ",
+  "label": "ZETA",
+  "weight": 4.8578
+ },
+ {
+  "id": 17,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 0.6653
+ },
+ {
+  "id": 18,
+  "name": "  gamma  Delta  BETA ",
+  "label": "KAPPA",
+  "weight": 6.5875
+ },
+ {
+  "id": 19,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "IOTA",
+  "weight": 3.8617
+ },
+ {
+  "id": 20,
+  "name": "  zeta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 0.5354
+ },
+ {
+  "id": 21,
+  "name": "  Kappa  Epsilon  ",
+  "label": "IOTA",
+  "weight": 4.32
+ },
+ {
+  "id": 22,
+  "name": "  Epsilon   iota ",
+  "label": "ETA THETA",
+  "weight": 1.981
+ },
+ {
+  "id": 23,
+  "name": "  zeta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.6424
+ },
+ {
+  "id": 24,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 1.2229
+ },
+ {
+  "id": 25,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.4367
+ },
+ {
+  "id": 26,
+  "name": "  Kappa  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 5.4409
+ },
+ {
+  "id": 27,
+  "name": "  Alpha  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 2.2101
+ },
+ {
+  "id": 28,
+  "name": "  zeta  zeta ",
+  "label": "IOTA",
+  "weight": 4.3527
+ },
+ {
+  "id": 29,
+  "name": "  ETA theta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.4165
+ },
+ {
+  "id": 30,
+  "name": "  gamma  Delta  iota ",
+  "label": "IOTA",
+  "weight": 3.413
+ },
+ {
+  "id": 31,
+  "name": "  iota  BETA ",
+  "label": "BETA",
+  "weight": 3.5306
+ },
+ {
+  "id": 32,
+  "name": "  BETA  Kappa ",
+  "label": "ALPHA",
+  "weight": 6.2757
+ },
+ {
+  "id": 33,
+  "name": "  zeta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 2.4929
+ },
+ {
+  "id": 34,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "ZETA",
+  "weight": 3.8826
+ },
+ {
+  "id": 35,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 7.9098
+ },
+ {
+  "id": 36,
+  "name": "  zeta  Kappa ",
+  "label": "IOTA",
+  "weight": 0.4204
+ },
+ {
+  "id": 37,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "KAPPA",
+  "weight": 8.4612
+ },
+ {
+  "id": 38,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 9.1464
+ },
+ {
+  "id": 39,
+  "name": "  ETA theta  zeta ",
+  "label": "ZETA",
+  "weight": 1.5083
+ },
+ {
+  "id": 40,
+  "name": "  Kappa  Kappa ",
+  "label": "ALPHA",
+  "weight": 0.6054
+ },
+ {
+  "id": 41,
+  "name": "  Alpha  Kappa ",
+  "label": "BETA",
+  "weight": 8.2496
+ },
+ {
+  "id": 42,
+  "name": "  zeta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 0.5689
+ },
+ {
+  "id": 43,
+  "name": "  BETA  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.3569
+ },
+ {
+  "id": 44,
+  "name": "  zeta  zeta ",
+  "label": "KAPPA",
+  "weight": 3.1625
+ },
+ {
+  "id": 45,
+  "name": "  gamma  Delta  zeta ",
+  "label": "KAPPA",
+  "weight": 5.7637
+ },
+ {
+  "id": 46,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "BETA",
+  "weight": 3.0808
+ },
+ {
+  "id": 47,
+  "name": "  Alpha  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.7398
+ },
+ {
+  "id": 48,
+  "name": "  BETA  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 2.6891
+ },
+ {
+  "id": 49,
+  "name": "  ETA theta  BETA ",
+  "label": "ALPHA",
+  "weight": 7.5229
+ },
+ {
+  "id": 50,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 9.6786
+ },
+ {
+  "id": 51,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "BETA",
+  "weight": 5.1218
+ },
+ {
+  "id": 52,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 8.4104
+ },
+ {
+  "id": 53,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 7.1806
+ },
+ {
+  "id": 54,
+  "name": "  zeta  BETA ",
+  "label": "IOTA",
+  "weight": 5.9773
+ },
+ {
+  "id": 55,
+  "name": "  Kappa  zeta ",
+  "label": "ZETA",
+  "weight": 5.6617
+ },
+ {
+  "id": 56,
+  "name": "  Epsilon   BETA ",
+  "label": "ZETA",
+  "weight": 5.9192
+ },
+ {
+  "id": 57,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 6.78
+ },
+ {
+  "id": 58,
+  "name": "  Alpha  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 1.8654
+ },
+ {
+  "id": 59,
+  "name": "  iota  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 2.0663
+ },
+ {
+  "id": 60,
+  "name": "  gamma  Delta  BETA ",
+  "label": "KAPPA",
+  "weight": 6.177
+ },
+ {
+  "id": 61,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 7.5857
+ },
+ {
+  "id": 62,
+  "name": "  Kappa  iota ",
+  "label": "KAPPA",
+  "weight": 7.3297
+ },
+ {
+  "id": 63,
+  "name": "  Kappa  iota ",
+  "label": "ETA THETA",
+  "weight": 6.1402
+ },
+ {
+  "id": 64,
+  "name": "  ETA theta  ETA theta ",
+  "label": "IOTA",
+  "weight": 1.8162
+ },
+ {
+  "id": 65,
+  "name": "  Epsilon   iota ",
+  "label": "EPSILON ",
+  "weight": 6.5129
+ },
+ {
+  "id": 66,
+  "name": "  Alpha  BETA ",
+  "label": "ZETA",
+  "weight": 2.9792
+ },
+ {
+  "id": 67,
+  "name": "  Epsilon   zeta ",
+  "label": "BETA",
+  "weight": 8.4844
+ },
+ {
+  "id": 68,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 0.8448
+ },
+ {
+  "id": 69,
+  "name": "  BETA  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.8816
+ },
+ {
+  "id": 70,
+  "name": "  zeta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 2.2106
+ },
+ {
+  "id": 71,
+  "name": "  Alpha  Kappa ",
+  "label": "BETA",
+  "weight": 2.1535
+ },
+ {
+  "id": 72,
+  "name": "  BETA  iota ",
+  "label": "IOTA",
+  "weight": 2.7987
+ },
+ {
+  "id": 73,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 8.222
+ },
+ {
+  "id": 74,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 1.5014
+ },
+ {
+  "id": 75,
+  "name": "  Kappa  Kappa ",
+  "label": "IOTA",
+  "weight": 4.4936
+ },
+ {
+  "id": 76,
+  "name": "  iota  Epsilon  ",
+  "label": "ZETA",
+  "weight": 7.0475
+ },
+ {
+  "id": 77,
+  "name": "  zeta  BETA ",
+  "label": "IOTA",
+  "weight": 3.9417
+ },
+ {
+  "id": 78,
+  "name": "  Alpha  Kappa ",
+  "label": "IOTA",
+  "weight": 4.1334
+ },
+ {
+  "id": 79,
+  "name": "  zeta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 7.0528
+ },
+ {
+  "id": 80,
+  "name": "  Alpha  ETA theta ",
+  "label": "ZETA",
+  "weight": 2.5759
+ },
+ {
+  "id": 81,
+  "name": "  BETA  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.0483
+ },
+ {
+  "id": 82,
+  "name": "  zeta  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.3227
+ },
+ {
+  "id": 83,
+  "name": "  ETA theta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 9.4906
+ },
+ {
+  "id": 84,
+  "name": "  Alpha  zeta ",
+  "label": "BETA",
+  "weight": 4.6218
+ },
+ {
+  "id": 85,
+  "name": "  Alpha  BETA ",
+  "label": "ETA THETA",
+  "weight": 3.7796
+ },
+ {
+  "id": 86,
+  "name": "  Epsilon   Alpha ",
+  "label": "ZETA",
+  "weight": 0.5365
+ },
+ {
+  "id": 87,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 7.951
+ },
+ {
+  "id": 88,
+  "name": "  zeta  iota ",
+  "label": "BETA",
+  "weight": 2.7014
+ },
+ {
+  "id": 89,
+  "name": "  zeta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 1.175
+ },
+ {
+  "id": 90,
+  "name": "  BETA  BETA ",
+  "label": "IOTA",
+  "weight": 7.407
+ },
+ {
+  "id": 91,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 7.9951
+ },
+ {
+  "id": 92,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 0.9227
+ },
+ {
+  "id": 93,
+  "name": "  iota  BETA ",
+  "label": "ZETA",
+  "weight": 9.7219
+ },
+ {
+  "id": 94,
+  "name": "  Kappa  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.6908
+ },
+ {
+  "id": 95,
+  "name": "  Epsilon   Alpha ",
+  "label": "ETA THETA",
+  "weight": 3.4407
+ },
+ {
+  "id": 96,
+  "name": "  Alpha  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 5.887
+ },
+ {
+  "id": 97,
+  "name": "  iota  Alpha ",
+  "label": "EPSILON ",
+  "weight": 4.5876
+ },
+ {
+  "id": 98,
+  "name": "  Epsilon   Alpha ",
+  "label": "BETA",
+  "weight": 7.4451
+ },
+ {
+  "id": 99,
+  "name": "  BETA  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 6.1796
+ },
+ {
+  "id": 100,
+  "name": "  iota  Kappa ",
+  "label": "KAPPA",
+  "weight": 9.4787
+ },
+ {
+  "id": 101,
+  "name": "  Alpha  BETA ",
+  "label": "KAPPA",
+  "weight": 9.7853
+ },
+ {
+  "id": 102,
+  "name": "  zeta  iota ",
+  "label": "IOTA",
+  "weight": 5.6974
+ },
+ {
+  "id": 103,
+  "name": "  iota  ETA theta ",
+  "label": "BETA",
+  "weight": 7.6536
+ },
+ {
+  "id": 104,
+  "name": "  Epsilon   Alpha ",
+  "label": "EPSILON ",
+  "weight": 7.9239
+ },
+ {
+  "id": 105,
+  "name": "  zeta  Alpha ",
+  "label": "BETA",
+  "weight": 3.3569
+ },
+ {
+  "id": 106,
+  "name": "  iota  zeta ",
+  "label": "ZETA",
+  "weight": 1.747
+ },
+ {
+  "id": 107,
+  "name": "  iota  zeta ",
+  "label": "KAPPA",
+  "weight": 2.6689
+ },
+ {
+  "id": 108,
+  "name": "  Epsilon   iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.8817
+ },
+ {
+  "id": 109,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 2.9457
+ },
+ {
+  "id": 110,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 6.5535
+ },
+ {
+  "id": 111,
+  "name": "  ETA theta  Kappa ",
+  "label": "KAPPA",
+  "weight": 2.7326
+ },
+ {
+  "id": 112,
+  "name": "  iota  ETA theta ",
+  "label": "KAPPA",
+  "weight": 3.1966
+ },
+ {
+  "id": 113,
+  "name": "  iota  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.528
+ },
+ {
+  "id": 114,
+  "name": "  iota  Kappa ",
+  "label": "IOTA",
+  "weight": 9.6731
+ },
+ {
+  "id": 115,
+  "name": "  Alpha  Alpha ",
+  "label": "BETA",
+  "weight": 8.8304
+ },
+ {
+  "id": 116,
+  "name": "  Epsilon   Alpha ",
+  "label": "ALPHA",
+  "weight": 2.1031
+ },
+ {
+  "id": 117,
+  "name": "  Alpha  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.7995
+ },
+ {
+  "id": 118,
+  "name": "  gamma  Delta  BETA ",
+  "label": "IOTA",
+  "weight": 4.2698
+ },
+ {
+  "id": 119,
+  "name": "  zeta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 9.5811
+ },
+ {
+  "id": 120,
+  "name": "  BETA  iota ",
+  "label": "BETA",
+  "weight": 9.3959
+ },
+ {
+  "id": 121,
+  "name": "  iota  BETA ",
+  "label": "ALPHA",
+  "weight": 7.865
+ },
+ {
+  "id": 122,
+  "name": "  ETA theta  zeta ",
+  "label": "EPSILON ",
+  "weight": 4.3357
+ },
+ {
+  "id": 123,
+  "name": "  ETA theta  Kappa ",
+  "label": "ZETA",
+  "weight": 8.5519
+ },
+ {
+  "id": 124,
+  "name": "  Alpha  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.1234
+ },
+ {
+  "id": 125,
+  "name": "  iota  Alpha ",
+  "label": "BETA",
+  "weight": 8.4693
+ },
+ {
+  "id": 126,
+  "name": "  zeta  zeta ",
+  "label": "BETA",
+  "weight": 7.6652
+ },
+ {
+  "id": 127,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ZETA",
+  "weight": 5.5113
+ },
+ {
+  "id": 128,
+  "name": "  BETA  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 3.2334
+ },
+ {
+  "id": 129,
+  "name": "  Kappa  zeta ",
+  "label": "ZETA",
+  "weight": 3.4933
+ },
+ {
+  "id": 130,
+  "name": "  ETA theta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.7537
+ },
+ {
+  "id": 131,
+  "name": "  ETA theta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 0.3421
+ },
+ {
+  "id": 132,
+  "name": "  Epsilon   BETA ",
+  "label": "ALPHA",
+  "weight": 4.7049
+ },
+ {
+  "id": 133,
+  "name": "  Kappa  ETA theta ",
+  "label": "ALPHA",
+  "weight": 6.5417
+ },
+ {
+  "id": 134,
+  "name": "  Kappa  Alpha ",
+  "label": "EPSILON ",
+  "weight": 4.9388
+ },
+ {
+  "id": 135,
+  "name": "  iota  iota ",
+  "label": "BETA",
+  "weight": 9.18
+ },
+ {
+  "id": 136,
+  "name": "  Alpha  zeta ",
+  "label": "ZETA",
+  "weight": 2.4872
+ },
+ {
+  "id": 137,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 4.1469
+ },
+ {
+  "id": 138,
+  "name": "  Alpha  Alpha ",
+  "label": "BETA",
+  "weight": 4.001
+ },
+ {
+  "id": 139,
+  "name": "  Epsilon   iota ",
+  "label": "ALPHA",
+  "weight": 9.335
+ },
+ {
+  "id": 140,
+  "name": "  iota  Epsilon  ",
+  "label": "IOTA",
+  "weight": 5.1069
+ },
+ {
+  "id": 141,
+  "name": "  ETA theta  BETA ",
+  "label": "ALPHA",
+  "weight": 3.4561
+ },
+ {
+  "id": 142,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 6.3192
+ },
+ {
+  "id": 143,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.6501
+ },
+ {
+  "id": 144,
+  "name": "  ETA theta  Alpha ",
+  "label": "IOTA",
+  "weight": 7.3288
+ },
+ {
+  "id": 145,
+  "name": "  gamma  Delta  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.9338
+ },
+ {
+  "id": 146,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 0.8072
+ },
+ {
+  "id": 147,
+  "name": "  ETA theta  iota ",
+  "label": "ZETA",
+  "weight": 6.6831
+ },
+ {
+  "id": 148,
+  "name": "  Kappa  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.0233
+ },
+ {
+  "id": 149,
+  "name": "  Kappa  Alpha ",
+  "label": "ETA THETA",
+  "weight": 7.9338
+ },
+ {
+  "id": 150,
+  "name": "  Alpha  zeta ",
+  "label": "KAPPA",
+  "weight": 3.2614
+ },
+ {
+  "id": 151,
+  "name": "  Epsilon   Kappa ",
+  "label": "KAPPA",
+  "weight": 4.0861
+ },
+ {
+  "id": 152,
+  "name": "  Kappa  iota ",
+  "label": "ZETA",
+  "weight": 8.2881
+ },
+ {
+  "id": 153,
+  "name": "  Alpha  zeta ",
+  "label": "ALPHA",
+  "weight": 2.5183
+ },
+ {
+  "id": 154,
+  "name": "  BETA  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 0.8298
+ },
+ {
+  "id": 155,
+  "name": "  BETA  Alpha ",
+  "label": "ALPHA",
+  "weight": 0.7297
+ },
+ {
+  "id": 156,
+  "name": "  Kappa  Alpha ",
+  "label": "KAPPA",
+  "weight": 4.4874
+ },
+ {
+  "id": 157,
+  "name": "  Alpha  Kappa ",
+  "label": "BETA",
+  "weight": 2.5549
+ },
+ {
+  "id": 158,
+  "name": "  ETA theta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 3.2981
+ },
+ {
+  "id": 159,
+  "name": "  ETA theta  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.2414
+ },
+ {
+  "id": 160,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 2.5762
+ },
+ {
+  "id": 161,
+  "name": "  iota  BETA ",
+  "label": "ALPHA",
+  "weight": 6.7288
+ },
+ {
+  "id": 162,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 3.5156
+ },
+ {
+  "id": 163,
+  "name": "  zeta  zeta ",
+  "label": "ETA THETA",
+  "weight": 8.4133
+ },
+ {
+  "id": 164,
+  "name": "  iota  ETA theta ",
+  "label": "ZETA",
+  "weight": 6.518
+ },
+ {
+  "id": 165,
+  "name": "  Alpha  Kappa ",
+  "label": "ALPHA",
+  "weight": 0.3019
+ },
+ {
+  "id": 166,
+  "name": "  Alpha  zeta ",
+  "label": "ZETA",
+  "weight": 5.1638
+ },
+ {
+  "id": 167,
+  "name": "  gamma  Delta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.9907
+ },
+ {
+  "id": 168,
+  "name": "  BETA  iota ",
+  "label": "KAPPA",
+  "weight": 4.4566
+ },
+ {
+  "id": 169,
+  "name": "  Kappa  BETA ",
+  "label": "ZETA",
+  "weight": 9.827
+ },
+ {
+  "id": 170,
+  "name": "  Alpha  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 0.4506
+ },
+ {
+  "id": 171,
+  "name": "  zeta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 6.994
+ },
+ {
+  "id": 172,
+  "name": "  BETA  iota ",
+  "label": "BETA",
+  "weight": 5.6704
+ },
+ {
+  "id": 173,
+  "name": "  iota  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.2442
+ },
+ {
+  "id": 174,
+  "name": "  Epsilon   Kappa ",
+  "label": "ZETA",
+  "weight": 4.2912
+ },
+ {
+  "id": 175,
+  "name": "  ETA theta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 5.3466
+ },
+ {
+  "id": 176,
+  "name": "  ETA theta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 9.681
+ },
+ {
+  "id": 177,
+  "name": "  zeta  BETA ",
+  "label": "EPSILON ",
+  "weight": 5.163
+ },
+ {
+  "id": 178,
+  "name": "  Kappa  Kappa ",
+  "label": "ALPHA",
+  "weight": 8.9174
+ },
+ {
+  "id": 179,
+  "name": "  iota  zeta ",
+  "label": "KAPPA",
+  "weight": 3.4017
+ },
+ {
+  "id": 180,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 0.1295
+ },
+ {
+  "id": 181,
+  "name": "  ETA theta  zeta ",
+  "label": "ETA THETA",
+  "weight": 2.5946
+ },
+ {
+  "id": 182,
+  "name": "  iota  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 7.1141
+ },
+ {
+  "id": 183,
+  "name": "  zeta  ETA theta ",
+  "label": "IOTA",
+  "weight": 0.2765
+ },
+ {
+  "id": 184,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "KAPPA",
+  "weight": 2.5796
+ },
+ {
+  "id": 185,
+  "name": "  ETA theta  BETA ",
+  "label": "ETA THETA",
+  "weight": 2.5543
+ },
+ {
+  "id": 186,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 9.5283
+ },
+ {
+  "id": 187,
+  "name": "  Kappa  Kappa ",
+  "label": "EPSILON ",
+  "weight": 0.3545
+ },
+ {
+  "id": 188,
+  "name": "  zeta  zeta ",
+  "label": "ETA THETA",
+  "weight": 5.7002
+ },
+ {
+  "id": 189,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ZETA",
+  "weight": 3.9723
+ },
+ {
+  "id": 190,
+  "name": "  BETA  Alpha ",
+  "label": "ETA THETA",
+  "weight": 8.1049
+ },
+ {
+  "id": 191,
+  "name": "  Kappa  zeta ",
+  "label": "EPSILON ",
+  "weight": 5.9003
+ },
+ {
+  "id": 192,
+  "name": "  zeta  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.6373
+ },
+ {
+  "id": 193,
+  "name": "  iota  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 5.7531
+ },
+ {
+  "id": 194,
+  "name": "  ETA theta  BETA ",
+  "label": "ZETA",
+  "weight": 2.155
+ },
+ {
+  "id": 195,
+  "name": "  Alpha  iota ",
+  "label": "ALPHA",
+  "weight": 5.8967
+ },
+ {
+  "id": 196,
+  "name": "  ETA theta  Alpha ",
+  "label": "ALPHA",
+  "weight": 1.9383
+ },
+ {
+  "id": 197,
+  "name": "  gamma  Delta  iota ",
+  "label": "BETA",
+  "weight": 2.2537
+ },
+ {
+  "id": 198,
+  "name": "  Kappa  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.9508
+ },
+ {
+  "id": 199,
+  "name": "  iota  zeta ",
+  "label": "ETA THETA",
+  "weight": 4.4748
+ },
+ {
+  "id": 200,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 0.2047
+ },
+ {
+  "id": 201,
+  "name": "  Alpha  Alpha ",
+  "label": "ALPHA",
+  "weight": 1.8418
+ },
+ {
+  "id": 202,
+  "name": "  iota  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.7198
+ },
+ {
+  "id": 203,
+  "name": "  BETA  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 8.1091
+ },
+ {
+  "id": 204,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 6.4321
+ },
+ {
+  "id": 205,
+  "name": "  Epsilon   zeta ",
+  "label": "ALPHA",
+  "weight": 8.3834
+ },
+ {
+  "id": 206,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 9.6747
+ },
+ {
+  "id": 207,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 6.67
+ },
+ {
+  "id": 208,
+  "name": "  zeta  Kappa ",
+  "label": "KAPPA",
+  "weight": 9.7612
+ },
+ {
+  "id": 209,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.4976
+ },
+ {
+  "id": 210,
+  "name": "  zeta  Kappa ",
+  "label": "IOTA",
+  "weight": 9.8471
+ },
+ {
+  "id": 211,
+  "name": "  zeta  iota ",
+  "label": "ALPHA",
+  "weight": 8.8801
+ },
+ {
+  "id": 212,
+  "name": "  ETA theta  ETA theta ",
+  "label": "IOTA",
+  "weight": 9.4072
+ },
+ {
+  "id": 213,
+  "name": "  Epsilon   Kappa ",
+  "label": "ZETA",
+  "weight": 8.2753
+ },
+ {
+  "id": 214,
+  "name": "  Kappa  ETA theta ",
+  "label": "BETA",
+  "weight": 1.339
+ },
+ {
+  "id": 215,
+  "name": "  zeta  Kappa ",
+  "label": "KAPPA",
+  "weight": 0.873
+ },
+ {
+  "id": 216,
+  "name": "  iota  Epsilon  ",
+  "label": "ZETA",
+  "weight": 5.6481
+ },
+ {
+  "id": 217,
+  "name": "  Epsilon   iota ",
+  "label": "IOTA",
+  "weight": 2.1534
+ },
+ {
+  "id": 218,
+  "name": "  ETA theta  iota ",
+  "label": "EPSILON ",
+  "weight": 1.7314
+ },
+ {
+  "id": 219,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "BETA",
+  "weight": 0.8232
+ },
+ {
+  "id": 220,
+  "name": "  iota  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.1022
+ },
+ {
+  "id": 221,
+  "name": "  Kappa  iota ",
+  "label": "ETA THETA",
+  "weight": 5.0114
+ },
+ {
+  "id": 222,
+  "name": "  iota  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 4.2987
+ },
+ {
+  "id": 223,
+  "name": "  Epsilon   BETA ",
+  "label": "ALPHA",
+  "weight": 0.2173
+ },
+ {
+  "id": 224,
+  "name": "  zeta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.108
+ },
+ {
+  "id": 225,
+  "name": "  Alpha  Kappa ",
+  "label": "IOTA",
+  "weight": 1.3227
+ },
+ {
+  "id": 226,
+  "name": "  Kappa  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.0762
+ },
+ {
+  "id": 227,
+  "name": "  ETA theta  BETA ",
+  "label": "IOTA",
+  "weight": 5.2509
+ },
+ {
+  "id": 228,
+  "name": "  BETA  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.3695
+ },
+ {
+  "id": 229,
+  "name": "  BETA  Kappa ",
+  "label": "ETA THETA",
+  "weight": 6.6079
+ },
+ {
+  "id": 230,
+  "name": "  iota  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 2.7139
+ },
+ {
+  "id": 231,
+  "name": "  BETA  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 7.5753
+ },
+ {
+  "id": 232,
+  "name": "  Kappa  Kappa ",
+  "label": "BETA",
+  "weight": 8.2784
+ },
+ {
+  "id": 233,
+  "name": "  zeta  Kappa ",
+  "label": "BETA",
+  "weight": 6.1719
+ },
+ {
+  "id": 234,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 5.8707
+ },
+ {
+  "id": 235,
+  "name": "  BETA  Kappa ",
+  "label": "ZETA",
+  "weight": 7.5812
+ },
+ {
+  "id": 236,
+  "name": "  gamma  Delta  BETA ",
+  "label": "BETA",
+  "weight": 5.1227
+ },
+ {
+  "id": 237,
+  "name": "  Alpha  ETA theta ",
+  "label": "KAPPA",
+  "weight": 1.412
+ },
+ {
+  "id": 238,
+  "name": "  ETA theta  BETA ",
+  "label": "ZETA",
+  "weight": 7.4228
+ },
+ {
+  "id": 239,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 5.793
+ },
+ {
+  "id": 240,
+  "name": "  Epsilon   iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.4652
+ },
+ {
+  "id": 241,
+  "name": "  ETA theta  Alpha ",
+  "label": "KAPPA",
+  "weight": 3.6474
+ },
+ {
+  "id": 242,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.169
+ },
+ {
+  "id": 243,
+  "name": "  BETA  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 3.8438
+ },
+ {
+  "id": 244,
+  "name": "  ETA theta  Alpha ",
+  "label": "IOTA",
+  "weight": 2.1589
+ },
+ {
+  "id": 245,
+  "name": "  BETA  BETA ",
+  "label": "ZETA",
+  "weight": 3.1999
+ },
+ {
+  "id": 246,
+  "name": "  Kappa  ETA theta ",
+  "label": "ALPHA",
+  "weight": 1.4821
+ },
+ {
+  "id": 247,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 7.4779
+ },
+ {
+  "id": 248,
+  "name": "  Alpha  zeta ",
+  "label": "ZETA",
+  "weight": 0.7929
+ },
+ {
+  "id": 249,
+  "name": "  Kappa  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 0.206
+ },
+ {
+  "id": 250,
+  "name": "  Kappa  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 3.6985
+ },
+ {
+  "id": 251,
+  "name": "  Epsilon   Kappa ",
+  "label": "ZETA",
+  "weight": 6.9535
+ },
+ {
+  "id": 252,
+  "name": "  Alpha  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.3419
+ },
+ {
+  "id": 253,
+  "name": "  Kappa  Alpha ",
+  "label": "BETA",
+  "weight": 1.004
+ },
+ {
+  "id": 254,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 0.9296
+ },
+ {
+  "id": 255,
+  "name": "  Epsilon   Alpha ",
+  "label": "ALPHA",
+  "weight": 7.4375
+ },
+ {
+  "id": 256,
+  "name": "  zeta  Alpha ",
+  "label": "BETA",
+  "weight": 7.716
+ },
+ {
+  "id": 257,
+  "name": "  BETA  Epsilon  ",
+  "label": "BETA",
+  "weight": 1.8781
+ },
+ {
+  "id": 258,
+  "name": "  ETA theta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 1.0338
+ },
+ {
+  "id": 259,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 2.4347
+ },
+ {
+  "id": 260,
+  "name": "  ETA theta  iota ",
+  "label": "BETA",
+  "weight": 5.3711
+ },
+ {
+  "id": 261,
+  "name": "  BETA  Alpha ",
+  "label": "BETA",
+  "weight": 8.0972
+ },
+ {
+  "id": 262,
+  "name": "  BETA  Alpha ",
+  "label": "ETA THETA",
+  "weight": 0.5627
+ },
+ {
+  "id": 263,
+  "name": "  ETA theta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.4055
+ },
+ {
+  "id": 264,
+  "name": "  gamma  Delta  BETA ",
+  "label": "EPSILON ",
+  "weight": 7.9237
+ },
+ {
+  "id": 265,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 6.5482
+ },
+ {
+  "id": 266,
+  "name": "  zeta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 4.2836
+ },
+ {
+  "id": 267,
+  "name": "  ETA theta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 8.9773
+ },
+ {
+  "id": 268,
+  "name": "  BETA  BETA ",
+  "label": "BETA",
+  "weight": 5.624
+ },
+ {
+  "id": 269,
+  "name": "  Kappa  iota ",
+  "label": "EPSILON ",
+  "weight": 9.6091
+ },
+ {
+  "id": 270,
+  "name": "  Alpha  Kappa ",
+  "label": "BETA",
+  "weight": 4.7715
+ },
+ {
+  "id": 271,
+  "name": "  Kappa  iota ",
+  "label": "BETA",
+  "weight": 5.2355
+ },
+ {
+  "id": 272,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "BETA",
+  "weight": 5.3992
+ },
+ {
+  "id": 273,
+  "name": "  zeta  zeta ",
+  "label": "KAPPA",
+  "weight": 2.7648
+ },
+ {
+  "id": 274,
+  "name": "  Alpha  zeta ",
+  "label": "EPSILON ",
+  "weight": 3.1891
+ },
+ {
+  "id": 275,
+  "name": "  gamma  Delta  BETA ",
+  "label": "IOTA",
+  "weight": 9.0293
+ },
+ {
+  "id": 276,
+  "name": "  Epsilon   BETA ",
+  "label": "EPSILON ",
+  "weight": 5.1044
+ },
+ {
+  "id": 277,
+  "name": "  Epsilon   Alpha ",
+  "label": "ETA THETA",
+  "weight": 8.5759
+ },
+ {
+  "id": 278,
+  "name": "  Alpha  iota ",
+  "label": "KAPPA",
+  "weight": 8.9498
+ },
+ {
+  "id": 279,
+  "name": "  Kappa  Alpha ",
+  "label": "ZETA",
+  "weight": 2.8341
+ },
+ {
+  "id": 280,
+  "name": "  Kappa  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.4176
+ },
+ {
+  "id": 281,
+  "name": "  zeta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 4.0806
+ },
+ {
+  "id": 282,
+  "name": "  Epsilon   Alpha ",
+  "label": "ALPHA",
+  "weight": 4.7788
+ },
+ {
+  "id": 283,
+  "name": "  ETA theta  BETA ",
+  "label": "EPSILON ",
+  "weight": 3.5324
+ },
+ {
+  "id": 284,
+  "name": "  zeta  ETA theta ",
+  "label": "IOTA",
+  "weight": 7.4394
+ },
+ {
+  "id": 285,
+  "name": "  Alpha  BETA ",
+  "label": "ZETA",
+  "weight": 0.607
+ },
+ {
+  "id": 286,
+  "name": "  Alpha  zeta ",
+  "label": "BETA",
+  "weight": 2.5943
+ },
+ {
+  "id": 287,
+  "name": "  ETA theta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 6.8891
+ },
+ {
+  "id": 288,
+  "name": "  iota  BETA ",
+  "label": "KAPPA",
+  "weight": 0.3117
+ },
+ {
+  "id": 289,
+  "name": "  zeta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 4.4282
+ },
+ {
+  "id": 290,
+  "name": "  Kappa  zeta ",
+  "label": "EPSILON ",
+  "weight": 6.2707
+ },
+ {
+  "id": 291,
+  "name": "  Alpha  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.6979
+ },
+ {
+  "id": 292,
+  "name": "  zeta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 3.8732
+ },
+ {
+  "id": 293,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 6.4417
+ },
+ {
+  "id": 294,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "BETA",
+  "weight": 0.722
+ },
+ {
+  "id": 295,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "ALPHA",
+  "weight": 0.213
+ },
+ {
+  "id": 296,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.4718
+ },
+ {
+  "id": 297,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 5.0596
+ },
+ {
+  "id": 298,
+  "name": "  Alpha  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.84
+ },
+ {
+  "id": 299,
+  "name": "  BETA  BETA ",
+  "label": "BETA",
+  "weight": 4.9409
+ },
+ {
+  "id": 300,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 8.8622
+ },
+ {
+  "id": 301,
+  "name": "  Alpha  BETA ",
+  "label": "KAPPA",
+  "weight": 2.2265
+ },
+ {
+  "id": 302,
+  "name": "  iota  BETA ",
+  "label": "KAPPA",
+  "weight": 6.4434
+ },
+ {
+  "id": 303,
+  "name": "  iota  iota ",
+  "label": "ETA THETA",
+  "weight": 0.18
+ },
+ {
+  "id": 304,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 8.8823
+ },
+ {
+  "id": 305,
+  "name": "  zeta  Alpha ",
+  "label": "ALPHA",
+  "weight": 7.5611
+ },
+ {
+  "id": 306,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 2.9004
+ },
+ {
+  "id": 307,
+  "name": "  BETA  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 0.2126
+ },
+ {
+  "id": 308,
+  "name": "  Alpha  ETA theta ",
+  "label": "IOTA",
+  "weight": 7.2065
+ },
+ {
+  "id": 309,
+  "name": "  BETA  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 3.7089
+ },
+ {
+  "id": 310,
+  "name": "  Alpha  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 0.7419
+ },
+ {
+  "id": 311,
+  "name": "  Kappa  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 4.2199
+ },
+ {
+  "id": 312,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 0.848
+ },
+ {
+  "id": 313,
+  "name": "  ETA theta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 2.6538
+ },
+ {
+  "id": 314,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 2.0663
+ },
+ {
+  "id": 315,
+  "name": "  zeta  Alpha ",
+  "label": "KAPPA",
+  "weight": 3.6585
+ },
+ {
+  "id": 316,
+  "name": "  BETA  Alpha ",
+  "label": "BETA",
+  "weight": 7.2985
+ },
+ {
+  "id": 317,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 3.9422
+ },
+ {
+  "id": 318,
+  "name": "  Kappa  iota ",
+  "label": "IOTA",
+  "weight": 7.4866
+ },
+ {
+  "id": 319,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 0.8575
+ },
+ {
+  "id": 320,
+  "name": "  ETA theta  BETA ",
+  "label": "BETA",
+  "weight": 1.9975
+ },
+ {
+  "id": 321,
+  "name": "  iota  ETA theta ",
+  "label": "ALPHA",
+  "weight": 0.9172
+ },
+ {
+  "id": 322,
+  "name": "  Kappa  Kappa ",
+  "label": "BETA",
+  "weight": 0.7095
+ },
+ {
+  "id": 323,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 3.4313
+ },
+ {
+  "id": 324,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 2.7285
+ },
+ {
+  "id": 325,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 9.3055
+ },
+ {
+  "id": 326,
+  "name": "  Alpha  Epsilon  ",
+  "label": "ZETA",
+  "weight": 8.2361
+ },
+ {
+  "id": 327,
+  "name": "  iota  ETA theta ",
+  "label": "ALPHA",
+  "weight": 4.2839
+ },
+ {
+  "id": 328,
+  "name": "  ETA theta  BETA ",
+  "label": "KAPPA",
+  "weight": 6.1088
+ },
+ {
+  "id": 329,
+  "name": "  Kappa  Alpha ",
+  "label": "KAPPA",
+  "weight": 5.4186
+ },
+ {
+  "id": 330,
+  "name": "  iota  iota ",
+  "label": "ALPHA",
+  "weight": 1.9321
+ },
+ {
+  "id": 331,
+  "name": "  zeta  BETA ",
+  "label": "ALPHA",
+  "weight": 6.5822
+ },
+ {
+  "id": 332,
+  "name": "  ETA theta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.2361
+ },
+ {
+  "id": 333,
+  "name": "  BETA  ETA theta ",
+  "label": "KAPPA",
+  "weight": 4.0143
+ },
+ {
+  "id": 334,
+  "name": "  BETA  BETA ",
+  "label": "IOTA",
+  "weight": 6.273
+ },
+ {
+  "id": 335,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "BETA",
+  "weight": 8.3701
+ },
+ {
+  "id": 336,
+  "name": "  ETA theta  BETA ",
+  "label": "ETA THETA",
+  "weight": 6.2612
+ },
+ {
+  "id": 337,
+  "name": "  iota  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.7136
+ },
+ {
+  "id": 338,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 6.6044
+ },
+ {
+  "id": 339,
+  "name": "  iota  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 7.9091
+ },
+ {
+  "id": 340,
+  "name": "  iota  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 7.9497
+ },
+ {
+  "id": 341,
+  "name": "  BETA  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 2.5191
+ },
+ {
+  "id": 342,
+  "name": "  zeta  ETA theta ",
+  "label": "BETA",
+  "weight": 9.4211
+ },
+ {
+  "id": 343,
+  "name": "  zeta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 7.0487
+ },
+ {
+  "id": 344,
+  "name": "  Epsilon   Kappa ",
+  "label": "ALPHA",
+  "weight": 6.4421
+ },
+ {
+  "id": 345,
+  "name": "  BETA  zeta ",
+  "label": "KAPPA",
+  "weight": 7.08
+ },
+ {
+  "id": 346,
+  "name": "  Kappa  ETA theta ",
+  "label": "ZETA",
+  "weight": 0.6055
+ },
+ {
+  "id": 347,
+  "name": "  iota  Alpha ",
+  "label": "ZETA",
+  "weight": 3.9114
+ },
+ {
+  "id": 348,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "BETA",
+  "weight": 4.0377
+ },
+ {
+  "id": 349,
+  "name": "  Kappa  BETA ",
+  "label": "BETA",
+  "weight": 9.4197
+ },
+ {
+  "id": 350,
+  "name": "  BETA  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 2.8815
+ },
+ {
+  "id": 351,
+  "name": "  iota  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.2689
+ },
+ {
+  "id": 352,
+  "name": "  zeta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.8938
+ },
+ {
+  "id": 353,
+  "name": "  Alpha  Alpha ",
+  "label": "BETA",
+  "weight": 1.9029
+ },
+ {
+  "id": 354,
+  "name": "  iota  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 7.8671
+ },
+ {
+  "id": 355,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ZETA",
+  "weight": 0.4726
+ },
+ {
+  "id": 356,
+  "name": "  BETA  ETA theta ",
+  "label": "ALPHA",
+  "weight": 3.4072
+ },
+ {
+  "id": 357,
+  "name": "  Epsilon   Alpha ",
+  "label": "ALPHA",
+  "weight": 1.6032
+ },
+ {
+  "id": 358,
+  "name": "  Kappa  BETA ",
+  "label": "BETA",
+  "weight": 4.5674
+ },
+ {
+  "id": 359,
+  "name": "  zeta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 2.1507
+ },
+ {
+  "id": 360,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 8.3952
+ },
+ {
+  "id": 361,
+  "name": "  iota  iota ",
+  "label": "ALPHA",
+  "weight": 7.6281
+ },
+ {
+  "id": 362,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 4.5761
+ },
+ {
+  "id": 363,
+  "name": "  gamma  Delta  BETA ",
+  "label": "IOTA",
+  "weight": 0.98
+ },
+ {
+  "id": 364,
+  "name": "  Alpha  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.823
+ },
+ {
+  "id": 365,
+  "name": "  iota  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.3876
+ },
+ {
+  "id": 366,
+  "name": "  BETA  gamma  Delta ",
+  "label": "BETA",
+  "weight": 4.8393
+ },
+ {
+  "id": 367,
+  "name": "  iota  Kappa ",
+  "label": "BETA",
+  "weight": 2.9267
+ },
+ {
+  "id": 368,
+  "name": "  iota  iota ",
+  "label": "ZETA",
+  "weight": 2.9717
+ },
+ {
+  "id": 369,
+  "name": "  BETA  zeta ",
+  "label": "ETA THETA",
+  "weight": 2.4142
+ },
+ {
+  "id": 370,
+  "name": "  iota  ETA theta ",
+  "label": "ALPHA",
+  "weight": 4.7824
+ },
+ {
+  "id": 371,
+  "name": "  BETA  gamma  Delta ",
+  "label": "BETA",
+  "weight": 3.3893
+ },
+ {
+  "id": 372,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 4.6954
+ },
+ {
+  "id": 373,
+  "name": "  zeta  ETA theta ",
+  "label": "IOTA",
+  "weight": 0.2744
+ },
+ {
+  "id": 374,
+  "name": "  BETA  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 2.0734
+ },
+ {
+  "id": 375,
+  "name": "  Kappa  Kappa ",
+  "label": "ALPHA",
+  "weight": 7.0181
+ },
+ {
+  "id": 376,
+  "name": "  BETA  iota ",
+  "label": "EPSILON ",
+  "weight": 4.8488
+ },
+ {
+  "id": 377,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.1279
+ },
+ {
+  "id": 378,
+  "name": "  BETA  zeta ",
+  "label": "EPSILON ",
+  "weight": 0.1561
+ },
+ {
+  "id": 379,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 2.4487
+ },
+ {
+  "id": 380,
+  "name": "  iota  Alpha ",
+  "label": "IOTA",
+  "weight": 0.7132
+ },
+ {
+  "id": 381,
+  "name": "  iota  ETA theta ",
+  "label": "BETA",
+  "weight": 5.2519
+ },
+ {
+  "id": 382,
+  "name": "  Epsilon   iota ",
+  "label": "BETA",
+  "weight": 7.1911
+ },
+ {
+  "id": 383,
+  "name": "  zeta  Alpha ",
+  "label": "KAPPA",
+  "weight": 4.3222
+ },
+ {
+  "id": 384,
+  "name": "  Kappa  ETA theta ",
+  "label": "IOTA",
+  "weight": 2.8199
+ },
+ {
+  "id": 385,
+  "name": "  zeta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 4.8172
+ },
+ {
+  "id": 386,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 7.7131
+ },
+ {
+  "id": 387,
+  "name": "  ETA theta  BETA ",
+  "label": "KAPPA",
+  "weight": 1.126
+ },
+ {
+  "id": 388,
+  "name": "  BETA  zeta ",
+  "label": "IOTA",
+  "weight": 6.6815
+ },
+ {
+  "id": 389,
+  "name": "  ETA theta  Kappa ",
+  "label": "KAPPA",
+  "weight": 8.4938
+ },
+ {
+  "id": 390,
+  "name": "  BETA  Alpha ",
+  "label": "BETA",
+  "weight": 0.4551
+ },
+ {
+  "id": 391,
+  "name": "  Alpha  ETA theta ",
+  "label": "KAPPA",
+  "weight": 3.8001
+ },
+ {
+  "id": 392,
+  "name": "  Epsilon   zeta ",
+  "label": "KAPPA",
+  "weight": 6.5198
+ },
+ {
+  "id": 393,
+  "name": "  zeta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.5054
+ },
+ {
+  "id": 394,
+  "name": "  zeta  Kappa ",
+  "label": "ALPHA",
+  "weight": 1.0014
+ },
+ {
+  "id": 395,
+  "name": "  zeta  BETA ",
+  "label": "IOTA",
+  "weight": 8.1614
+ },
+ {
+  "id": 396,
+  "name": "  iota  Alpha ",
+  "label": "EPSILON ",
+  "weight": 6.2634
+ },
+ {
+  "id": 397,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 2.328
+ },
+ {
+  "id": 398,
+  "name": "  Kappa  zeta ",
+  "label": "BETA",
+  "weight": 0.8402
+ },
+ {
+  "id": 399,
+  "name": "  zeta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 9.809
+ },
+ {
+  "id": 400,
+  "name": "  iota  iota ",
+  "label": "IOTA",
+  "weight": 2.1368
+ },
+ {
+  "id": 401,
+  "name": "  BETA  Alpha ",
+  "label": "ZETA",
+  "weight": 5.1602
+ },
+ {
+  "id": 402,
+  "name": "  zeta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 2.941
+ },
+ {
+  "id": 403,
+  "name": "  BETA  iota ",
+  "label": "KAPPA",
+  "weight": 5.6262
+ },
+ {
+  "id": 404,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 1.2651
+ },
+ {
+  "id": 405,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 5.389
+ },
+ {
+  "id": 406,
+  "name": "  ETA theta  iota ",
+  "label": "ZETA",
+  "weight": 7.8178
+ },
+ {
+  "id": 407,
+  "name": "  zeta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 0.1493
+ },
+ {
+  "id": 408,
+  "name": "  zeta  BETA ",
+  "label": "ZETA",
+  "weight": 7.7655
+ },
+ {
+  "id": 409,
+  "name": "  Epsilon   iota ",
+  "label": "ZETA",
+  "weight": 3.1384
+ },
+ {
+  "id": 410,
+  "name": "  ETA theta  iota ",
+  "label": "IOTA",
+  "weight": 6.7952
+ },
+ {
+  "id": 411,
+  "name": "  ETA theta  iota ",
+  "label": "IOTA",
+  "weight": 0.8581
+ },
+ {
+  "id": 412,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 3.7268
+ },
+ {
+  "id": 413,
+  "name": "  Epsilon   ETA theta ",
+  "label": "KAPPA",
+  "weight": 8.6885
+ },
+ {
+  "id": 414,
+  "name": "  iota  Epsilon  ",
+  "label": "IOTA",
+  "weight": 9.1501
+ },
+ {
+  "id": 415,
+  "name": "  zeta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 7.9864
+ },
+ {
+  "id": 416,
+  "name": "  Alpha  Kappa ",
+  "label": "IOTA",
+  "weight": 9.032
+ },
+ {
+  "id": 417,
+  "name": "  Epsilon   BETA ",
+  "label": "KAPPA",
+  "weight": 8.8618
+ },
+ {
+  "id": 418,
+  "name": "  ETA theta  BETA ",
+  "label": "ALPHA",
+  "weight": 6.9676
+ },
+ {
+  "id": 419,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 3.675
+ },
+ {
+  "id": 420,
+  "name": "  Kappa  Alpha ",
+  "label": "ZETA",
+  "weight": 7.5006
+ },
+ {
+  "id": 421,
+  "name": "  Alpha  Alpha ",
+  "label": "ETA THETA",
+  "weight": 6.519
+ },
+ {
+  "id": 422,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ZETA",
+  "weight": 7.2512
+ },
+ {
+  "id": 423,
+  "name": "  BETA  gamma  Delta ",
+  "label": "BETA",
+  "weight": 1.1917
+ },
+ {
+  "id": 424,
+  "name": "  zeta  zeta ",
+  "label": "ZETA",
+  "weight": 4.1145
+ },
+ {
+  "id": 425,
+  "name": "  Alpha  iota ",
+  "label": "BETA",
+  "weight": 3.7873
+ },
+ {
+  "id": 426,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.6018
+ },
+ {
+  "id": 427,
+  "name": "  BETA  ETA theta ",
+  "label": "IOTA",
+  "weight": 5.3839
+ },
+ {
+  "id": 428,
+  "name": "  zeta  Kappa ",
+  "label": "IOTA",
+  "weight": 6.0525
+ },
+ {
+  "id": 429,
+  "name": "  iota  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 6.148
+ },
+ {
+  "id": 430,
+  "name": "  iota  iota ",
+  "label": "ZETA",
+  "weight": 5.2995
+ },
+ {
+  "id": 431,
+  "name": "  Alpha  zeta ",
+  "label": "ZETA",
+  "weight": 6.6148
+ },
+ {
+  "id": 432,
+  "name": "  iota  Kappa ",
+  "label": "IOTA",
+  "weight": 6.6042
+ },
+ {
+  "id": 433,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "IOTA",
+  "weight": 2.812
+ },
+ {
+  "id": 434,
+  "name": "  BETA  zeta ",
+  "label": "ETA THETA",
+  "weight": 3.4871
+ },
+ {
+  "id": 435,
+  "name": "  zeta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 3.08
+ },
+ {
+  "id": 436,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "IOTA",
+  "weight": 5.4884
+ },
+ {
+  "id": 437,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "ZETA",
+  "weight": 4.7564
+ },
+ {
+  "id": 438,
+  "name": "  Kappa  iota ",
+  "label": "KAPPA",
+  "weight": 6.3771
+ },
+ {
+  "id": 439,
+  "name": "  iota  BETA ",
+  "label": "ALPHA",
+  "weight": 5.7043
+ },
+ {
+  "id": 440,
+  "name": "  BETA  iota ",
+  "label": "ALPHA",
+  "weight": 1.1791
+ },
+ {
+  "id": 441,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 6.8471
+ },
+ {
+  "id": 442,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "BETA",
+  "weight": 3.9283
+ },
+ {
+  "id": 443,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "IOTA",
+  "weight": 0.446
+ },
+ {
+  "id": 444,
+  "name": "  zeta  BETA ",
+  "label": "BETA",
+  "weight": 2.6978
+ },
+ {
+  "id": 445,
+  "name": "  iota  BETA ",
+  "label": "ZETA",
+  "weight": 8.3485
+ },
+ {
+  "id": 446,
+  "name": "  BETA  Kappa ",
+  "label": "BETA",
+  "weight": 4.4939
+ },
+ {
+  "id": 447,
+  "name": "  zeta  zeta ",
+  "label": "EPSILON ",
+  "weight": 0.991
+ },
+ {
+  "id": 448,
+  "name": "  gamma  Delta  iota ",
+  "label": "IOTA",
+  "weight": 5.7938
+ },
+ {
+  "id": 449,
+  "name": "  iota  Alpha ",
+  "label": "ZETA",
+  "weight": 9.6646
+ },
+ {
+  "id": 450,
+  "name": "  Kappa  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.3211
+ },
+ {
+  "id": 451,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 6.8973
+ },
+ {
+  "id": 452,
+  "name": "  BETA  Alpha ",
+  "label": "BETA",
+  "weight": 1.5844
+ },
+ {
+  "id": 453,
+  "name": "  gamma  Delta  iota ",
+  "label": "ETA THETA",
+  "weight": 8.046
+ },
+ {
+  "id": 454,
+  "name": "  ETA theta  iota ",
+  "label": "EPSILON ",
+  "weight": 3.8935
+ },
+ {
+  "id": 455,
+  "name": "  Kappa  iota ",
+  "label": "IOTA",
+  "weight": 9.3385
+ },
+ {
+  "id": 456,
+  "name": "  BETA  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 5.0178
+ },
+ {
+  "id": 457,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 1.2114
+ },
+ {
+  "id": 458,
+  "name": "  iota  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.1769
+ },
+ {
+  "id": 459,
+  "name": "  ETA theta  Alpha ",
+  "label": "IOTA",
+  "weight": 8.2373
+ },
+ {
+  "id": 460,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "BETA",
+  "weight": 3.9977
+ },
+ {
+  "id": 461,
+  "name": "  Epsilon   iota ",
+  "label": "BETA",
+  "weight": 8.6164
+ },
+ {
+  "id": 462,
+  "name": "  iota  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 7.5209
+ },
+ {
+  "id": 463,
+  "name": "  zeta  iota ",
+  "label": "BETA",
+  "weight": 6.729
+ },
+ {
+  "id": 464,
+  "name": "  gamma  Delta  iota ",
+  "label": "EPSILON ",
+  "weight": 8.3738
+ },
+ {
+  "id": 465,
+  "name": "  BETA  Kappa ",
+  "label": "BETA",
+  "weight": 4.9596
+ },
+ {
+  "id": 466,
+  "name": "  Alpha  Kappa ",
+  "label": "KAPPA",
+  "weight": 6.691
+ },
+ {
+  "id": 467,
+  "name": "  Alpha  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.4092
+ },
+ {
+  "id": 468,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 6.0517
+ },
+ {
+  "id": 469,
+  "name": "  Alpha  iota ",
+  "label": "IOTA",
+  "weight": 6.2668
+ },
+ {
+  "id": 470,
+  "name": "  Epsilon   ETA theta ",
+  "label": "KAPPA",
+  "weight": 8.2032
+ },
+ {
+  "id": 471,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 8.3576
+ },
+ {
+  "id": 472,
+  "name": "  Kappa  iota ",
+  "label": "ALPHA",
+  "weight": 9.4677
+ },
+ {
+  "id": 473,
+  "name": "  Epsilon   zeta ",
+  "label": "KAPPA",
+  "weight": 2.6663
+ },
+ {
+  "id": 474,
+  "name": "  zeta  zeta ",
+  "label": "EPSILON ",
+  "weight": 6.0655
+ },
+ {
+  "id": 475,
+  "name": "  BETA  Alpha ",
+  "label": "IOTA",
+  "weight": 0.4049
+ },
+ {
+  "id": 476,
+  "name": "  BETA  Alpha ",
+  "label": "EPSILON ",
+  "weight": 0.5813
+ },
+ {
+  "id": 477,
+  "name": "  Alpha  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.7029
+ },
+ {
+  "id": 478,
+  "name": "  Kappa  BETA ",
+  "label": "ALPHA",
+  "weight": 2.2002
+ },
+ {
+  "id": 479,
+  "name": "  ETA theta  zeta ",
+  "label": "IOTA",
+  "weight": 2.2553
+ },
+ {
+  "id": 480,
+  "name": "  zeta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.1114
+ },
+ {
+  "id": 481,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "IOTA",
+  "weight": 1.5605
+ },
+ {
+  "id": 482,
+  "name": "  ETA theta  zeta ",
+  "label": "ZETA",
+  "weight": 8.8842
+ },
+ {
+  "id": 483,
+  "name": "  Kappa  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.7737
+ },
+ {
+  "id": 484,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 2.8701
+ },
+ {
+  "id": 485,
+  "name": "  zeta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 2.2909
+ },
+ {
+  "id": 486,
+  "name": "  Epsilon   BETA ",
+  "label": "ZETA",
+  "weight": 2.7016
+ },
+ {
+  "id": 487,
+  "name": "  iota  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 6.7058
+ },
+ {
+  "id": 488,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 6.4612
+ },
+ {
+  "id": 489,
+  "name": "  BETA  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 3.6263
+ },
+ {
+  "id": 490,
+  "name": "  Alpha  Kappa ",
+  "label": "ALPHA",
+  "weight": 4.9047
+ },
+ {
+  "id": 491,
+  "name": "  ETA theta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 5.6543
+ },
+ {
+  "id": 492,
+  "name": "  Kappa  ETA theta ",
+  "label": "ZETA",
+  "weight": 1.3144
+ },
+ {
+  "id": 493,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 1.685
+ },
+ {
+  "id": 494,
+  "name": "  zeta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.9831
+ },
+ {
+  "id": 495,
+  "name": "  ETA theta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 1.9317
+ },
+ {
+  "id": 496,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 8.9921
+ },
+ {
+  "id": 497,
+  "name": "  iota  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 0.3514
+ },
+ {
+  "id": 498,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 7.0417
+ },
+ {
+  "id": 499,
+  "name": "  ETA theta  BETA ",
+  "label": "IOTA",
+  "weight": 7.8706
+ },
+ {
+  "id": 500,
+  "name": "  zeta  BETA ",
+  "label": "IOTA",
+  "weight": 1.1568
+ },
+ {
+  "id": 501,
+  "name": "  zeta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 2.6921
+ },
+ {
+  "id": 502,
+  "name": "  ETA theta  zeta ",
+  "label": "EPSILON ",
+  "weight": 8.6587
+ },
+ {
+  "id": 503,
+  "name": "  zeta  BETA ",
+  "label": "ALPHA",
+  "weight": 0.233
+ },
+ {
+  "id": 504,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.7754
+ },
+ {
+  "id": 505,
+  "name": "  iota  BETA ",
+  "label": "IOTA",
+  "weight": 2.8798
+ },
+ {
+  "id": 506,
+  "name": "  BETA  iota ",
+  "label": "EPSILON ",
+  "weight": 6.5875
+ },
+ {
+  "id": 507,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 1.6979
+ },
+ {
+  "id": 508,
+  "name": "  Kappa  zeta ",
+  "label": "ETA THETA",
+  "weight": 2.4778
+ },
+ {
+  "id": 509,
+  "name": "  Epsilon   BETA ",
+  "label": "ETA THETA",
+  "weight": 5.887
+ },
+ {
+  "id": 510,
+  "name": "  Kappa  zeta ",
+  "label": "ETA THETA",
+  "weight": 9.0118
+ },
+ {
+  "id": 511,
+  "name": "  iota  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 7.0095
+ },
+ {
+  "id": 512,
+  "name": "  gamma  Delta  BETA ",
+  "label": "KAPPA",
+  "weight": 5.4136
+ },
+ {
+  "id": 513,
+  "name": "  Kappa  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.0447
+ },
+ {
+  "id": 514,
+  "name": "  iota  ETA theta ",
+  "label": "IOTA",
+  "weight": 7.5347
+ },
+ {
+  "id": 515,
+  "name": "  BETA  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 1.6777
+ },
+ {
+  "id": 516,
+  "name": "  ETA theta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 6.1701
+ },
+ {
+  "id": 517,
+  "name": "  iota  ETA theta ",
+  "label": "ZETA",
+  "weight": 2.8608
+ },
+ {
+  "id": 518,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.4623
+ },
+ {
+  "id": 519,
+  "name": "  iota  BETA ",
+  "label": "EPSILON ",
+  "weight": 5.4907
+ },
+ {
+  "id": 520,
+  "name": "  Alpha  Kappa ",
+  "label": "BETA",
+  "weight": 2.9889
+ },
+ {
+  "id": 521,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.5645
+ },
+ {
+  "id": 522,
+  "name": "  gamma  Delta  iota ",
+  "label": "EPSILON ",
+  "weight": 9.3556
+ },
+ {
+  "id": 523,
+  "name": "  Kappa  BETA ",
+  "label": "ETA THETA",
+  "weight": 0.3883
+ },
+ {
+  "id": 524,
+  "name": "  iota  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 3.3072
+ },
+ {
+  "id": 525,
+  "name": "  zeta  Kappa ",
+  "label": "ALPHA",
+  "weight": 6.2394
+ },
+ {
+  "id": 526,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 3.9978
+ },
+ {
+  "id": 527,
+  "name": "  gamma  Delta  BETA ",
+  "label": "BETA",
+  "weight": 6.2277
+ },
+ {
+  "id": 528,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 7.4817
+ },
+ {
+  "id": 529,
+  "name": "  iota  ETA theta ",
+  "label": "BETA",
+  "weight": 6.4069
+ },
+ {
+  "id": 530,
+  "name": "  Kappa  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.612
+ },
+ {
+  "id": 531,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ALPHA",
+  "weight": 8.2582
+ },
+ {
+  "id": 532,
+  "name": "  BETA  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 2.203
+ },
+ {
+  "id": 533,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 7.6296
+ },
+ {
+  "id": 534,
+  "name": "  Alpha  ETA theta ",
+  "label": "ALPHA",
+  "weight": 2.0619
+ },
+ {
+  "id": 535,
+  "name": "  Epsilon   ETA theta ",
+  "label": "EPSILON ",
+  "weight": 1.626
+ },
+ {
+  "id": 536,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 2.8787
+ },
+ {
+  "id": 537,
+  "name": "  ETA theta  Kappa ",
+  "label": "ZETA",
+  "weight": 6.8188
+ },
+ {
+  "id": 538,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "IOTA",
+  "weight": 0.296
+ },
+ {
+  "id": 539,
+  "name": "  Epsilon   Kappa ",
+  "label": "KAPPA",
+  "weight": 2.6192
+ },
+ {
+  "id": 540,
+  "name": "  Kappa  Alpha ",
+  "label": "IOTA",
+  "weight": 9.4787
+ },
+ {
+  "id": 541,
+  "name": "  Epsilon   Kappa ",
+  "label": "ZETA",
+  "weight": 1.6529
+ },
+ {
+  "id": 542,
+  "name": "  Epsilon   Kappa ",
+  "label": "ETA THETA",
+  "weight": 2.9034
+ },
+ {
+  "id": 543,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "BETA",
+  "weight": 0.2089
+ },
+ {
+  "id": 544,
+  "name": "  gamma  Delta  zeta ",
+  "label": "KAPPA",
+  "weight": 0.7158
+ },
+ {
+  "id": 545,
+  "name": "  ETA theta  BETA ",
+  "label": "EPSILON ",
+  "weight": 0.9359
+ },
+ {
+  "id": 546,
+  "name": "  zeta  zeta ",
+  "label": "IOTA",
+  "weight": 0.738
+ },
+ {
+  "id": 547,
+  "name": "  iota  zeta ",
+  "label": "EPSILON ",
+  "weight": 1.5527
+ },
+ {
+  "id": 548,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 8.8666
+ },
+ {
+  "id": 549,
+  "name": "  iota  ETA theta ",
+  "label": "ZETA",
+  "weight": 6.0573
+ },
+ {
+  "id": 550,
+  "name": "  zeta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 4.3785
+ },
+ {
+  "id": 551,
+  "name": "  Kappa  zeta ",
+  "label": "ALPHA",
+  "weight": 1.6643
+ },
+ {
+  "id": 552,
+  "name": "  ETA theta  iota ",
+  "label": "ALPHA",
+  "weight": 7.1365
+ },
+ {
+  "id": 553,
+  "name": "  Epsilon   BETA ",
+  "label": "EPSILON ",
+  "weight": 9.1482
+ },
+ {
+  "id": 554,
+  "name": "  zeta  zeta ",
+  "label": "ZETA",
+  "weight": 8.6504
+ },
+ {
+  "id": 555,
+  "name": "  Epsilon   BETA ",
+  "label": "EPSILON ",
+  "weight": 3.5786
+ },
+ {
+  "id": 556,
+  "name": "  Alpha  BETA ",
+  "label": "BETA",
+  "weight": 2.3931
+ },
+ {
+  "id": 557,
+  "name": "  BETA  Alpha ",
+  "label": "EPSILON ",
+  "weight": 0.3796
+ },
+ {
+  "id": 558,
+  "name": "  Epsilon   ETA theta ",
+  "label": "BETA",
+  "weight": 3.4058
+ },
+ {
+  "id": 559,
+  "name": "  zeta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 4.8043
+ },
+ {
+  "id": 560,
+  "name": "  Epsilon   iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.5802
+ },
+ {
+  "id": 561,
+  "name": "  BETA  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 5.6633
+ },
+ {
+  "id": 562,
+  "name": "  iota  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 5.3618
+ },
+ {
+  "id": 563,
+  "name": "  Epsilon   BETA ",
+  "label": "BETA",
+  "weight": 5.0911
+ },
+ {
+  "id": 564,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 9.0086
+ },
+ {
+  "id": 565,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ETA THETA",
+  "weight": 4.4332
+ },
+ {
+  "id": 566,
+  "name": "  Alpha  BETA ",
+  "label": "ETA THETA",
+  "weight": 0.457
+ },
+ {
+  "id": 567,
+  "name": "  zeta  Alpha ",
+  "label": "KAPPA",
+  "weight": 8.277
+ },
+ {
+  "id": 568,
+  "name": "  iota  Alpha ",
+  "label": "KAPPA",
+  "weight": 2.1602
+ },
+ {
+  "id": 569,
+  "name": "  iota  zeta ",
+  "label": "EPSILON ",
+  "weight": 1.1909
+ },
+ {
+  "id": 570,
+  "name": "  ETA theta  iota ",
+  "label": "ALPHA",
+  "weight": 8.205
+ },
+ {
+  "id": 571,
+  "name": "  ETA theta  zeta ",
+  "label": "EPSILON ",
+  "weight": 4.3455
+ },
+ {
+  "id": 572,
+  "name": "  Kappa  Kappa ",
+  "label": "BETA",
+  "weight": 1.0804
+ },
+ {
+  "id": 573,
+  "name": "  BETA  Alpha ",
+  "label": "ETA THETA",
+  "weight": 5.2027
+ },
+ {
+  "id": 574,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.616
+ },
+ {
+  "id": 575,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ZETA",
+  "weight": 5.9798
+ },
+ {
+  "id": 576,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.7779
+ },
+ {
+  "id": 577,
+  "name": "  gamma  Delta  BETA ",
+  "label": "IOTA",
+  "weight": 2.7752
+ },
+ {
+  "id": 578,
+  "name": "  Alpha  BETA ",
+  "label": "EPSILON ",
+  "weight": 2.0065
+ },
+ {
+  "id": 579,
+  "name": "  BETA  iota ",
+  "label": "KAPPA",
+  "weight": 5.6775
+ },
+ {
+  "id": 580,
+  "name": "  Kappa  Alpha ",
+  "label": "KAPPA",
+  "weight": 8.7915
+ },
+ {
+  "id": 581,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 8.2625
+ },
+ {
+  "id": 582,
+  "name": "  BETA  zeta ",
+  "label": "ALPHA",
+  "weight": 9.1398
+ },
+ {
+  "id": 583,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 1.9424
+ },
+ {
+  "id": 584,
+  "name": "  Alpha  zeta ",
+  "label": "IOTA",
+  "weight": 9.3705
+ },
+ {
+  "id": 585,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 9.6125
+ },
+ {
+  "id": 586,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 5.4735
+ },
+ {
+  "id": 587,
+  "name": "  Epsilon   zeta ",
+  "label": "BETA",
+  "weight": 0.8382
+ },
+ {
+  "id": 588,
+  "name": "  Alpha  BETA ",
+  "label": "EPSILON ",
+  "weight": 9.589
+ },
+ {
+  "id": 589,
+  "name": "  Kappa  zeta ",
+  "label": "IOTA",
+  "weight": 6.2886
+ },
+ {
+  "id": 590,
+  "name": "  BETA  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.6039
+ },
+ {
+  "id": 591,
+  "name": "  zeta  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.0305
+ },
+ {
+  "id": 592,
+  "name": "  BETA  Alpha ",
+  "label": "ALPHA",
+  "weight": 1.1753
+ },
+ {
+  "id": 593,
+  "name": "  zeta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.9875
+ },
+ {
+  "id": 594,
+  "name": "  zeta  zeta ",
+  "label": "KAPPA",
+  "weight": 9.017
+ },
+ {
+  "id": 595,
+  "name": "  BETA  Alpha ",
+  "label": "KAPPA",
+  "weight": 5.646
+ },
+ {
+  "id": 596,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 0.2242
+ },
+ {
+  "id": 597,
+  "name": "  Alpha  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 2.5408
+ },
+ {
+  "id": 598,
+  "name": "  BETA  Alpha ",
+  "label": "ALPHA",
+  "weight": 1.6423
+ },
+ {
+  "id": 599,
+  "name": "  iota  BETA ",
+  "label": "ALPHA",
+  "weight": 2.3254
+ },
+ {
+  "id": 600,
+  "name": "  ETA theta  BETA ",
+  "label": "BETA",
+  "weight": 3.7887
+ },
+ {
+  "id": 601,
+  "name": "  Alpha  Alpha ",
+  "label": "BETA",
+  "weight": 6.3038
+ },
+ {
+  "id": 602,
+  "name": "  iota  iota ",
+  "label": "IOTA",
+  "weight": 1.0633
+ },
+ {
+  "id": 603,
+  "name": "  ETA theta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.1542
+ },
+ {
+  "id": 604,
+  "name": "  Kappa  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 4.4436
+ },
+ {
+  "id": 605,
+  "name": "  zeta  Alpha ",
+  "label": "IOTA",
+  "weight": 8.8858
+ },
+ {
+  "id": 606,
+  "name": "  Alpha  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.1902
+ },
+ {
+  "id": 607,
+  "name": "  ETA theta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.3826
+ },
+ {
+  "id": 608,
+  "name": "  ETA theta  Alpha ",
+  "label": "BETA",
+  "weight": 9.78
+ },
+ {
+  "id": 609,
+  "name": "  Epsilon   iota ",
+  "label": "ETA THETA",
+  "weight": 1.6828
+ },
+ {
+  "id": 610,
+  "name": "  iota  Epsilon  ",
+  "label": "BETA",
+  "weight": 6.6042
+ },
+ {
+  "id": 611,
+  "name": "  Alpha  Alpha ",
+  "label": "BETA",
+  "weight": 4.9866
+ },
+ {
+  "id": 612,
+  "name": "  iota  ETA theta ",
+  "label": "KAPPA",
+  "weight": 1.0386
+ },
+ {
+  "id": 613,
+  "name": "  iota  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.2591
+ },
+ {
+  "id": 614,
+  "name": "  zeta  zeta ",
+  "label": "ZETA",
+  "weight": 5.9068
+ },
+ {
+  "id": 615,
+  "name": "  zeta  Alpha ",
+  "label": "ALPHA",
+  "weight": 7.3872
+ },
+ {
+  "id": 616,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 0.282
+ },
+ {
+  "id": 617,
+  "name": "  gamma  Delta  zeta ",
+  "label": "ZETA",
+  "weight": 2.2595
+ },
+ {
+  "id": 618,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 0.2878
+ },
+ {
+  "id": 619,
+  "name": "  Alpha  ETA theta ",
+  "label": "ALPHA",
+  "weight": 4.4442
+ },
+ {
+  "id": 620,
+  "name": "  Epsilon   Alpha ",
+  "label": "ZETA",
+  "weight": 5.0377
+ },
+ {
+  "id": 621,
+  "name": "  BETA  ETA theta ",
+  "label": "ZETA",
+  "weight": 2.5837
+ },
+ {
+  "id": 622,
+  "name": "  zeta  ETA theta ",
+  "label": "BETA",
+  "weight": 5.0069
+ },
+ {
+  "id": 623,
+  "name": "  iota  iota ",
+  "label": "KAPPA",
+  "weight": 1.1792
+ },
+ {
+  "id": 624,
+  "name": "  Kappa  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 4.3623
+ },
+ {
+  "id": 625,
+  "name": "  BETA  Alpha ",
+  "label": "ZETA",
+  "weight": 9.4433
+ },
+ {
+  "id": 626,
+  "name": "  ETA theta  iota ",
+  "label": "ETA THETA",
+  "weight": 4.0527
+ },
+ {
+  "id": 627,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 7.748
+ },
+ {
+  "id": 628,
+  "name": "  BETA  iota ",
+  "label": "IOTA",
+  "weight": 2.1642
+ },
+ {
+  "id": 629,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.6941
+ },
+ {
+  "id": 630,
+  "name": "  iota  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 7.1428
+ },
+ {
+  "id": 631,
+  "name": "  iota  Alpha ",
+  "label": "ALPHA",
+  "weight": 6.4256
+ },
+ {
+  "id": 632,
+  "name": "  Epsilon   Kappa ",
+  "label": "KAPPA",
+  "weight": 8.616
+ },
+ {
+  "id": 633,
+  "name": "  ETA theta  zeta ",
+  "label": "EPSILON ",
+  "weight": 3.0823
+ },
+ {
+  "id": 634,
+  "name": "  iota  ETA theta ",
+  "label": "BETA",
+  "weight": 8.1206
+ },
+ {
+  "id": 635,
+  "name": "  Kappa  zeta ",
+  "label": "ZETA",
+  "weight": 6.8188
+ },
+ {
+  "id": 636,
+  "name": "  zeta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.293
+ },
+ {
+  "id": 637,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 3.3746
+ },
+ {
+  "id": 638,
+  "name": "  BETA  ETA theta ",
+  "label": "ALPHA",
+  "weight": 4.105
+ },
+ {
+  "id": 639,
+  "name": "  Alpha  iota ",
+  "label": "ALPHA",
+  "weight": 9.4086
+ },
+ {
+  "id": 640,
+  "name": "  ETA theta  BETA ",
+  "label": "EPSILON ",
+  "weight": 5.1736
+ },
+ {
+  "id": 641,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 9.2784
+ },
+ {
+  "id": 642,
+  "name": "  Kappa  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.6903
+ },
+ {
+  "id": 643,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 3.8252
+ },
+ {
+  "id": 644,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 2.1006
+ },
+ {
+  "id": 645,
+  "name": "  zeta  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 0.9659
+ },
+ {
+  "id": 646,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.7823
+ },
+ {
+  "id": 647,
+  "name": "  iota  gamma  Delta ",
+  "label": "BETA",
+  "weight": 6.2158
+ },
+ {
+  "id": 648,
+  "name": "  zeta  Alpha ",
+  "label": "IOTA",
+  "weight": 3.1341
+ },
+ {
+  "id": 649,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 9.3371
+ },
+ {
+  "id": 650,
+  "name": "  Epsilon   zeta ",
+  "label": "BETA",
+  "weight": 8.5022
+ },
+ {
+  "id": 651,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 5.6699
+ },
+ {
+  "id": 652,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 0.6813
+ },
+ {
+  "id": 653,
+  "name": "  iota  zeta ",
+  "label": "ALPHA",
+  "weight": 1.4978
+ },
+ {
+  "id": 654,
+  "name": "  BETA  Kappa ",
+  "label": "KAPPA",
+  "weight": 8.0888
+ },
+ {
+  "id": 655,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "IOTA",
+  "weight": 2.7198
+ },
+ {
+  "id": 656,
+  "name": "  Alpha  Kappa ",
+  "label": "BETA",
+  "weight": 2.8785
+ },
+ {
+  "id": 657,
+  "name": "  gamma  Delta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.6236
+ },
+ {
+  "id": 658,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "BETA",
+  "weight": 3.3925
+ },
+ {
+  "id": 659,
+  "name": "  Epsilon   Kappa ",
+  "label": "ZETA",
+  "weight": 5.4795
+ },
+ {
+  "id": 660,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "IOTA",
+  "weight": 1.9969
+ },
+ {
+  "id": 661,
+  "name": "  ETA theta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 8.6558
+ },
+ {
+  "id": 662,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 7.7256
+ },
+ {
+  "id": 663,
+  "name": "  Epsilon   BETA ",
+  "label": "KAPPA",
+  "weight": 2.5033
+ },
+ {
+  "id": 664,
+  "name": "  Kappa  Kappa ",
+  "label": "EPSILON ",
+  "weight": 2.0709
+ },
+ {
+  "id": 665,
+  "name": "  gamma  Delta  iota ",
+  "label": "IOTA",
+  "weight": 0.4175
+ },
+ {
+  "id": 666,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 8.9341
+ },
+ {
+  "id": 667,
+  "name": "  Alpha  zeta ",
+  "label": "KAPPA",
+  "weight": 6.8442
+ },
+ {
+  "id": 668,
+  "name": "  ETA theta  iota ",
+  "label": "BETA",
+  "weight": 8.4741
+ },
+ {
+  "id": 669,
+  "name": "  iota  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 0.767
+ },
+ {
+  "id": 670,
+  "name": "  iota  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 0.6361
+ },
+ {
+  "id": 671,
+  "name": "  Alpha  iota ",
+  "label": "BETA",
+  "weight": 3.5086
+ },
+ {
+  "id": 672,
+  "name": "  Epsilon   Kappa ",
+  "label": "EPSILON ",
+  "weight": 6.8534
+ },
+ {
+  "id": 673,
+  "name": "  Alpha  Kappa ",
+  "label": "KAPPA",
+  "weight": 7.4982
+ },
+ {
+  "id": 674,
+  "name": "  zeta  ETA theta ",
+  "label": "BETA",
+  "weight": 9.4886
+ },
+ {
+  "id": 675,
+  "name": "  Alpha  zeta ",
+  "label": "KAPPA",
+  "weight": 1.3354
+ },
+ {
+  "id": 676,
+  "name": "  Kappa  BETA ",
+  "label": "KAPPA",
+  "weight": 7.4844
+ },
+ {
+  "id": 677,
+  "name": "  zeta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 8.3015
+ },
+ {
+  "id": 678,
+  "name": "  zeta  iota ",
+  "label": "KAPPA",
+  "weight": 0.1315
+ },
+ {
+  "id": 679,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 7.1543
+ },
+ {
+  "id": 680,
+  "name": "  gamma  Delta  iota ",
+  "label": "KAPPA",
+  "weight": 6.8966
+ },
+ {
+  "id": 681,
+  "name": "  Kappa  iota ",
+  "label": "KAPPA",
+  "weight": 6.8445
+ },
+ {
+  "id": 682,
+  "name": "  ETA theta  zeta ",
+  "label": "ALPHA",
+  "weight": 0.9141
+ },
+ {
+  "id": 683,
+  "name": "  ETA theta  iota ",
+  "label": "ETA THETA",
+  "weight": 1.536
+ },
+ {
+  "id": 684,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 4.8167
+ },
+ {
+  "id": 685,
+  "name": "  iota  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.388
+ },
+ {
+  "id": 686,
+  "name": "  zeta  ETA theta ",
+  "label": "IOTA",
+  "weight": 6.8537
+ },
+ {
+  "id": 687,
+  "name": "  zeta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.8289
+ },
+ {
+  "id": 688,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 0.5093
+ },
+ {
+  "id": 689,
+  "name": "  Kappa  zeta ",
+  "label": "ALPHA",
+  "weight": 8.0596
+ },
+ {
+  "id": 690,
+  "name": "  Epsilon   zeta ",
+  "label": "ALPHA",
+  "weight": 0.4304
+ },
+ {
+  "id": 691,
+  "name": "  gamma  Delta  iota ",
+  "label": "EPSILON ",
+  "weight": 2.7311
+ },
+ {
+  "id": 692,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "KAPPA",
+  "weight": 7.4821
+ },
+ {
+  "id": 693,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ETA THETA",
+  "weight": 9.7693
+ },
+ {
+  "id": 694,
+  "name": "  ETA theta  BETA ",
+  "label": "KAPPA",
+  "weight": 8.0273
+ },
+ {
+  "id": 695,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.201
+ },
+ {
+  "id": 696,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.2619
+ },
+ {
+  "id": 697,
+  "name": "  zeta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 7.6927
+ },
+ {
+  "id": 698,
+  "name": "  BETA  iota ",
+  "label": "KAPPA",
+  "weight": 7.7241
+ },
+ {
+  "id": 699,
+  "name": "  iota  ETA theta ",
+  "label": "ALPHA",
+  "weight": 1.645
+ },
+ {
+  "id": 700,
+  "name": "  Epsilon   BETA ",
+  "label": "ZETA",
+  "weight": 8.9676
+ },
+ {
+  "id": 701,
+  "name": "  Alpha  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.6532
+ },
+ {
+  "id": 702,
+  "name": "  ETA theta  zeta ",
+  "label": "IOTA",
+  "weight": 7.9693
+ },
+ {
+  "id": 703,
+  "name": "  Epsilon   Alpha ",
+  "label": "EPSILON ",
+  "weight": 2.3956
+ },
+ {
+  "id": 704,
+  "name": "  Epsilon   Alpha ",
+  "label": "KAPPA",
+  "weight": 5.6223
+ },
+ {
+  "id": 705,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.6659
+ },
+ {
+  "id": 706,
+  "name": "  BETA  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.7924
+ },
+ {
+  "id": 707,
+  "name": "  Kappa  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 5.1266
+ },
+ {
+  "id": 708,
+  "name": "  BETA  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.9128
+ },
+ {
+  "id": 709,
+  "name": "  Alpha  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 9.814
+ },
+ {
+  "id": 710,
+  "name": "  iota  gamma  Delta ",
+  "label": "BETA",
+  "weight": 6.5598
+ },
+ {
+  "id": 711,
+  "name": "  zeta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 0.1745
+ },
+ {
+  "id": 712,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 4.1112
+ },
+ {
+  "id": 713,
+  "name": "  BETA  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.9115
+ },
+ {
+  "id": 714,
+  "name": "  zeta  Kappa ",
+  "label": "ALPHA",
+  "weight": 9.337
+ },
+ {
+  "id": 715,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 5.3053
+ },
+ {
+  "id": 716,
+  "name": "  ETA theta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 9.8174
+ },
+ {
+  "id": 717,
+  "name": "  Kappa  Alpha ",
+  "label": "EPSILON ",
+  "weight": 9.2676
+ },
+ {
+  "id": 718,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 8.0617
+ },
+ {
+  "id": 719,
+  "name": "  Alpha  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.845
+ },
+ {
+  "id": 720,
+  "name": "  Kappa  zeta ",
+  "label": "ALPHA",
+  "weight": 5.5571
+ },
+ {
+  "id": 721,
+  "name": "  iota  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 4.2752
+ },
+ {
+  "id": 722,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "BETA",
+  "weight": 6.5063
+ },
+ {
+  "id": 723,
+  "name": "  Alpha  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.5854
+ },
+ {
+  "id": 724,
+  "name": "  Kappa  zeta ",
+  "label": "ZETA",
+  "weight": 3.6699
+ },
+ {
+  "id": 725,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 2.4397
+ },
+ {
+  "id": 726,
+  "name": "  iota  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.7886
+ },
+ {
+  "id": 727,
+  "name": "  Kappa  ETA theta ",
+  "label": "ALPHA",
+  "weight": 8.4093
+ },
+ {
+  "id": 728,
+  "name": "  iota  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.4181
+ },
+ {
+  "id": 729,
+  "name": "  ETA theta  Kappa ",
+  "label": "KAPPA",
+  "weight": 9.4685
+ },
+ {
+  "id": 730,
+  "name": "  Kappa  iota ",
+  "label": "ZETA",
+  "weight": 0.5226
+ },
+ {
+  "id": 731,
+  "name": "  zeta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.0514
+ },
+ {
+  "id": 732,
+  "name": "  Epsilon   zeta ",
+  "label": "IOTA",
+  "weight": 8.8036
+ },
+ {
+  "id": 733,
+  "name": "  zeta  iota ",
+  "label": "EPSILON ",
+  "weight": 2.3953
+ },
+ {
+  "id": 734,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 3.5441
+ },
+ {
+  "id": 735,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 6.7597
+ },
+ {
+  "id": 736,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 6.9794
+ },
+ {
+  "id": 737,
+  "name": "  zeta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 5.9135
+ },
+ {
+  "id": 738,
+  "name": "  BETA  ETA theta ",
+  "label": "KAPPA",
+  "weight": 2.0312
+ },
+ {
+  "id": 739,
+  "name": "  Kappa  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.7559
+ },
+ {
+  "id": 740,
+  "name": "  Epsilon   Kappa ",
+  "label": "ZETA",
+  "weight": 9.1017
+ },
+ {
+  "id": 741,
+  "name": "  gamma  Delta  zeta ",
+  "label": "IOTA",
+  "weight": 5.967
+ },
+ {
+  "id": 742,
+  "name": "  Epsilon   Kappa ",
+  "label": "ETA THETA",
+  "weight": 6.0929
+ },
+ {
+  "id": 743,
+  "name": "  BETA  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.8867
+ },
+ {
+  "id": 744,
+  "name": "  ETA theta  iota ",
+  "label": "KAPPA",
+  "weight": 7.4387
+ },
+ {
+  "id": 745,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 6.1683
+ },
+ {
+  "id": 746,
+  "name": "  ETA theta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 6.8261
+ },
+ {
+  "id": 747,
+  "name": "  gamma  Delta  BETA ",
+  "label": "EPSILON ",
+  "weight": 3.2101
+ },
+ {
+  "id": 748,
+  "name": "  gamma  Delta  BETA ",
+  "label": "ETA THETA",
+  "weight": 0.8909
+ },
+ {
+  "id": 749,
+  "name": "  iota  Kappa ",
+  "label": "ALPHA",
+  "weight": 3.851
+ },
+ {
+  "id": 750,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 3.3168
+ },
+ {
+  "id": 751,
+  "name": "  Epsilon   BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.581
+ },
+ {
+  "id": 752,
+  "name": "  Alpha  Kappa ",
+  "label": "EPSILON ",
+  "weight": 2.3435
+ },
+ {
+  "id": 753,
+  "name": "  BETA  Alpha ",
+  "label": "ETA THETA",
+  "weight": 4.8045
+ },
+ {
+  "id": 754,
+  "name": "  BETA  iota ",
+  "label": "IOTA",
+  "weight": 3.8553
+ },
+ {
+  "id": 755,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 0.689
+ },
+ {
+  "id": 756,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 1.8724
+ },
+ {
+  "id": 757,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "KAPPA",
+  "weight": 6.8619
+ },
+ {
+  "id": 758,
+  "name": "  iota  iota ",
+  "label": "KAPPA",
+  "weight": 2.1878
+ },
+ {
+  "id": 759,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 3.0967
+ },
+ {
+  "id": 760,
+  "name": "  iota  BETA ",
+  "label": "ETA THETA",
+  "weight": 0.3892
+ },
+ {
+  "id": 761,
+  "name": "  iota  Kappa ",
+  "label": "ZETA",
+  "weight": 4.9852
+ },
+ {
+  "id": 762,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ZETA",
+  "weight": 5.5518
+ },
+ {
+  "id": 763,
+  "name": "  Kappa  Kappa ",
+  "label": "ZETA",
+  "weight": 3.1589
+ },
+ {
+  "id": 764,
+  "name": "  BETA  zeta ",
+  "label": "ALPHA",
+  "weight": 5.343
+ },
+ {
+  "id": 765,
+  "name": "  Epsilon   BETA ",
+  "label": "ALPHA",
+  "weight": 4.4705
+ },
+ {
+  "id": 766,
+  "name": "  Epsilon   iota ",
+  "label": "EPSILON ",
+  "weight": 1.3573
+ },
+ {
+  "id": 767,
+  "name": "  iota  Alpha ",
+  "label": "EPSILON ",
+  "weight": 5.6317
+ },
+ {
+  "id": 768,
+  "name": "  Alpha  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.6592
+ },
+ {
+  "id": 769,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ZETA",
+  "weight": 1.1282
+ },
+ {
+  "id": 770,
+  "name": "  BETA  Kappa ",
+  "label": "KAPPA",
+  "weight": 4.8207
+ },
+ {
+  "id": 771,
+  "name": "  gamma  Delta  iota ",
+  "label": "KAPPA",
+  "weight": 5.8909
+ },
+ {
+  "id": 772,
+  "name": "  Alpha  zeta ",
+  "label": "KAPPA",
+  "weight": 0.2685
+ },
+ {
+  "id": 773,
+  "name": "  zeta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 2.6796
+ },
+ {
+  "id": 774,
+  "name": "  iota  iota ",
+  "label": "ZETA",
+  "weight": 3.7844
+ },
+ {
+  "id": 775,
+  "name": "  zeta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 3.1147
+ },
+ {
+  "id": 776,
+  "name": "  Kappa  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.5965
+ },
+ {
+  "id": 777,
+  "name": "  zeta  Alpha ",
+  "label": "IOTA",
+  "weight": 3.1282
+ },
+ {
+  "id": 778,
+  "name": "  Epsilon   zeta ",
+  "label": "ZETA",
+  "weight": 5.0096
+ },
+ {
+  "id": 779,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 5.3988
+ },
+ {
+  "id": 780,
+  "name": "  Epsilon   ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.4596
+ },
+ {
+  "id": 781,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "IOTA",
+  "weight": 8.546
+ },
+ {
+  "id": 782,
+  "name": "  Alpha  Kappa ",
+  "label": "ETA THETA",
+  "weight": 5.0522
+ },
+ {
+  "id": 783,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 6.4262
+ },
+ {
+  "id": 784,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 0.6196
+ },
+ {
+  "id": 785,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 8.5755
+ },
+ {
+  "id": 786,
+  "name": "  BETA  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 0.3681
+ },
+ {
+  "id": 787,
+  "name": "  Alpha  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.0796
+ },
+ {
+  "id": 788,
+  "name": "  Epsilon   Alpha ",
+  "label": "KAPPA",
+  "weight": 5.2902
+ },
+ {
+  "id": 789,
+  "name": "  Alpha  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.5651
+ },
+ {
+  "id": 790,
+  "name": "  BETA  BETA ",
+  "label": "ALPHA",
+  "weight": 8.8119
+ },
+ {
+  "id": 791,
+  "name": "  Alpha  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.2864
+ },
+ {
+  "id": 792,
+  "name": "  ETA theta  Alpha ",
+  "label": "ALPHA",
+  "weight": 3.8491
+ },
+ {
+  "id": 793,
+  "name": "  gamma  Delta  zeta ",
+  "label": "EPSILON ",
+  "weight": 3.3719
+ },
+ {
+  "id": 794,
+  "name": "  zeta  ETA theta ",
+  "label": "ZETA",
+  "weight": 9.7997
+ },
+ {
+  "id": 795,
+  "name": "  Kappa  zeta ",
+  "label": "IOTA",
+  "weight": 0.5386
+ },
+ {
+  "id": 796,
+  "name": "  zeta  BETA ",
+  "label": "KAPPA",
+  "weight": 4.62
+ },
+ {
+  "id": 797,
+  "name": "  BETA  zeta ",
+  "label": "IOTA",
+  "weight": 6.8923
+ },
+ {
+  "id": 798,
+  "name": "  Kappa  Kappa ",
+  "label": "BETA",
+  "weight": 3.7964
+ },
+ {
+  "id": 799,
+  "name": "  Epsilon   zeta ",
+  "label": "EPSILON ",
+  "weight": 2.6272
+ },
+ {
+  "id": 800,
+  "name": "  ETA theta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 4.2996
+ },
+ {
+  "id": 801,
+  "name": "  ETA theta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.1318
+ },
+ {
+  "id": 802,
+  "name": "  ETA theta  Alpha ",
+  "label": "KAPPA",
+  "weight": 9.2544
+ },
+ {
+  "id": 803,
+  "name": "  Alpha  zeta ",
+  "label": "BETA",
+  "weight": 6.6928
+ },
+ {
+  "id": 804,
+  "name": "  BETA  Kappa ",
+  "label": "KAPPA",
+  "weight": 9.6028
+ },
+ {
+  "id": 805,
+  "name": "  Kappa  iota ",
+  "label": "BETA",
+  "weight": 6.197
+ },
+ {
+  "id": 806,
+  "name": "  Epsilon   Kappa ",
+  "label": "IOTA",
+  "weight": 3.587
+ },
+ {
+  "id": 807,
+  "name": "  ETA theta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.8913
+ },
+ {
+  "id": 808,
+  "name": "  BETA  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 6.7605
+ },
+ {
+  "id": 809,
+  "name": "  iota  ETA theta ",
+  "label": "BETA",
+  "weight": 8.4585
+ },
+ {
+  "id": 810,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 1.2776
+ },
+ {
+  "id": 811,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ZETA",
+  "weight": 2.6586
+ },
+ {
+  "id": 812,
+  "name": "  Alpha  ETA theta ",
+  "label": "ZETA",
+  "weight": 3.7128
+ },
+ {
+  "id": 813,
+  "name": "  zeta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 7.959
+ },
+ {
+  "id": 814,
+  "name": "  iota  Alpha ",
+  "label": "ETA THETA",
+  "weight": 4.776
+ },
+ {
+  "id": 815,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 3.6634
+ },
+ {
+  "id": 816,
+  "name": "  gamma  Delta  iota ",
+  "label": "ALPHA",
+  "weight": 2.9998
+ },
+ {
+  "id": 817,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 5.1904
+ },
+ {
+  "id": 818,
+  "name": "  zeta  iota ",
+  "label": "BETA",
+  "weight": 3.5526
+ },
+ {
+  "id": 819,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "BETA",
+  "weight": 3.6713
+ },
+ {
+  "id": 820,
+  "name": "  Kappa  zeta ",
+  "label": "BETA",
+  "weight": 6.4988
+ },
+ {
+  "id": 821,
+  "name": "  iota  ETA theta ",
+  "label": "ZETA",
+  "weight": 5.9544
+ },
+ {
+  "id": 822,
+  "name": "  iota  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 9.175
+ },
+ {
+  "id": 823,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.7823
+ },
+ {
+  "id": 824,
+  "name": "  BETA  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.5149
+ },
+ {
+  "id": 825,
+  "name": "  ETA theta  BETA ",
+  "label": "BETA",
+  "weight": 3.5659
+ },
+ {
+  "id": 826,
+  "name": "  BETA  Epsilon  ",
+  "label": "IOTA",
+  "weight": 2.8195
+ },
+ {
+  "id": 827,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 1.2418
+ },
+ {
+  "id": 828,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 4.328
+ },
+ {
+  "id": 829,
+  "name": "  iota  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 5.5881
+ },
+ {
+  "id": 830,
+  "name": "  zeta  ETA theta ",
+  "label": "BETA",
+  "weight": 3.9226
+ },
+ {
+  "id": 831,
+  "name": "  Epsilon   BETA ",
+  "label": "ETA THETA",
+  "weight": 0.5689
+ },
+ {
+  "id": 832,
+  "name": "  BETA  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 1.845
+ },
+ {
+  "id": 833,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 2.8527
+ },
+ {
+  "id": 834,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 0.2029
+ },
+ {
+  "id": 835,
+  "name": "  BETA  Alpha ",
+  "label": "ZETA",
+  "weight": 5.7824
+ },
+ {
+  "id": 836,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.8757
+ },
+ {
+  "id": 837,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ALPHA",
+  "weight": 1.4236
+ },
+ {
+  "id": 838,
+  "name": "  zeta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 0.6197
+ },
+ {
+  "id": 839,
+  "name": "  Alpha  Kappa ",
+  "label": "ALPHA",
+  "weight": 2.6095
+ },
+ {
+  "id": 840,
+  "name": "  Alpha  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 1.9531
+ },
+ {
+  "id": 841,
+  "name": "  ETA theta  iota ",
+  "label": "ETA THETA",
+  "weight": 1.5102
+ },
+ {
+  "id": 842,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 0.7287
+ },
+ {
+  "id": 843,
+  "name": "  zeta  Alpha ",
+  "label": "IOTA",
+  "weight": 9.1472
+ },
+ {
+  "id": 844,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 6.958
+ },
+ {
+  "id": 845,
+  "name": "  Kappa  Kappa ",
+  "label": "ETA THETA",
+  "weight": 4.4768
+ },
+ {
+  "id": 846,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.4658
+ },
+ {
+  "id": 847,
+  "name": "  ETA theta  zeta ",
+  "label": "EPSILON ",
+  "weight": 9.0889
+ },
+ {
+  "id": 848,
+  "name": "  ETA theta  Kappa ",
+  "label": "KAPPA",
+  "weight": 6.4918
+ },
+ {
+  "id": 849,
+  "name": "  gamma  Delta  iota ",
+  "label": "ZETA",
+  "weight": 6.9635
+ },
+ {
+  "id": 850,
+  "name": "  Epsilon   Alpha ",
+  "label": "EPSILON ",
+  "weight": 0.1618
+ },
+ {
+  "id": 851,
+  "name": "  zeta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 1.7425
+ },
+ {
+  "id": 852,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "IOTA",
+  "weight": 3.9472
+ },
+ {
+  "id": 853,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.963
+ },
+ {
+  "id": 854,
+  "name": "  BETA  BETA ",
+  "label": "IOTA",
+  "weight": 8.1464
+ },
+ {
+  "id": 855,
+  "name": "  Kappa  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.7286
+ },
+ {
+  "id": 856,
+  "name": "  Alpha  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.6816
+ },
+ {
+  "id": 857,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 8.7792
+ },
+ {
+  "id": 858,
+  "name": "  zeta  ETA theta ",
+  "label": "IOTA",
+  "weight": 1.239
+ },
+ {
+  "id": 859,
+  "name": "  BETA  ETA theta ",
+  "label": "IOTA",
+  "weight": 5.6007
+ },
+ {
+  "id": 860,
+  "name": "  Kappa  BETA ",
+  "label": "ETA THETA",
+  "weight": 0.4872
+ },
+ {
+  "id": 861,
+  "name": "  iota  BETA ",
+  "label": "ETA THETA",
+  "weight": 6.261
+ },
+ {
+  "id": 862,
+  "name": "  BETA  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.7513
+ },
+ {
+  "id": 863,
+  "name": "  Alpha  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 4.3329
+ },
+ {
+  "id": 864,
+  "name": "  zeta  BETA ",
+  "label": "KAPPA",
+  "weight": 5.8555
+ },
+ {
+  "id": 865,
+  "name": "  Epsilon   Alpha ",
+  "label": "ALPHA",
+  "weight": 9.071
+ },
+ {
+  "id": 866,
+  "name": "  BETA  Epsilon  ",
+  "label": "ZETA",
+  "weight": 5.7221
+ },
+ {
+  "id": 867,
+  "name": "  BETA  Kappa ",
+  "label": "IOTA",
+  "weight": 0.9367
+ },
+ {
+  "id": 868,
+  "name": "  Epsilon   zeta ",
+  "label": "KAPPA",
+  "weight": 7.7141
+ },
+ {
+  "id": 869,
+  "name": "  zeta  ETA theta ",
+  "label": "ZETA",
+  "weight": 9.2163
+ },
+ {
+  "id": 870,
+  "name": "  gamma  Delta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.1031
+ },
+ {
+  "id": 871,
+  "name": "  Alpha  BETA ",
+  "label": "ZETA",
+  "weight": 8.9856
+ },
+ {
+  "id": 872,
+  "name": "  gamma  Delta  iota ",
+  "label": "ALPHA",
+  "weight": 6.9083
+ },
+ {
+  "id": 873,
+  "name": "  iota  zeta ",
+  "label": "IOTA",
+  "weight": 1.9546
+ },
+ {
+  "id": 874,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.9049
+ },
+ {
+  "id": 875,
+  "name": "  Kappa  Alpha ",
+  "label": "KAPPA",
+  "weight": 1.7858
+ },
+ {
+  "id": 876,
+  "name": "  Kappa  iota ",
+  "label": "EPSILON ",
+  "weight": 6.3613
+ },
+ {
+  "id": 877,
+  "name": "  Alpha  Epsilon  ",
+  "label": "IOTA",
+  "weight": 3.2319
+ },
+ {
+  "id": 878,
+  "name": "  Epsilon   Kappa ",
+  "label": "ALPHA",
+  "weight": 4.1152
+ },
+ {
+  "id": 879,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "BETA",
+  "weight": 3.4697
+ },
+ {
+  "id": 880,
+  "name": "  gamma  Delta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.4076
+ },
+ {
+  "id": 881,
+  "name": "  iota  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.4642
+ },
+ {
+  "id": 882,
+  "name": "  Alpha  Alpha ",
+  "label": "IOTA",
+  "weight": 7.5963
+ },
+ {
+  "id": 883,
+  "name": "  BETA  BETA ",
+  "label": "IOTA",
+  "weight": 9.6425
+ },
+ {
+  "id": 884,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 2.8617
+ },
+ {
+  "id": 885,
+  "name": "  gamma  Delta  iota ",
+  "label": "ZETA",
+  "weight": 4.5306
+ },
+ {
+  "id": 886,
+  "name": "  zeta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 0.7281
+ },
+ {
+  "id": 887,
+  "name": "  Kappa  BETA ",
+  "label": "BETA",
+  "weight": 5.1386
+ },
+ {
+  "id": 888,
+  "name": "  Kappa  BETA ",
+  "label": "ALPHA",
+  "weight": 8.8119
+ },
+ {
+  "id": 889,
+  "name": "  Alpha  zeta ",
+  "label": "EPSILON ",
+  "weight": 7.6261
+ },
+ {
+  "id": 890,
+  "name": "  zeta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.9833
+ },
+ {
+  "id": 891,
+  "name": "  ETA theta  BETA ",
+  "label": "ETA THETA",
+  "weight": 5.6316
+ },
+ {
+  "id": 892,
+  "name": "  Epsilon   zeta ",
+  "label": "EPSILON ",
+  "weight": 6.6979
+ },
+ {
+  "id": 893,
+  "name": "  gamma  Delta  BETA ",
+  "label": "ALPHA",
+  "weight": 4.3225
+ },
+ {
+  "id": 894,
+  "name": "  Alpha  BETA ",
+  "label": "EPSILON ",
+  "weight": 6.2866
+ },
+ {
+  "id": 895,
+  "name": "  iota  Alpha ",
+  "label": "EPSILON ",
+  "weight": 4.2679
+ },
+ {
+  "id": 896,
+  "name": "  Kappa  zeta ",
+  "label": "ETA THETA",
+  "weight": 2.4069
+ },
+ {
+  "id": 897,
+  "name": "  ETA theta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 3.4921
+ },
+ {
+  "id": 898,
+  "name": "  Alpha  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.6362
+ },
+ {
+  "id": 899,
+  "name": "  iota  iota ",
+  "label": "ZETA",
+  "weight": 8.7477
+ },
+ {
+  "id": 900,
+  "name": "  zeta  Alpha ",
+  "label": "KAPPA",
+  "weight": 5.157
+ },
+ {
+  "id": 901,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "BETA",
+  "weight": 7.396
+ },
+ {
+  "id": 902,
+  "name": "  Epsilon   ETA theta ",
+  "label": "KAPPA",
+  "weight": 6.6991
+ },
+ {
+  "id": 903,
+  "name": "  Alpha  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.5314
+ },
+ {
+  "id": 904,
+  "name": "  BETA  ETA theta ",
+  "label": "KAPPA",
+  "weight": 1.1934
+ },
+ {
+  "id": 905,
+  "name": "  BETA  Alpha ",
+  "label": "ETA THETA",
+  "weight": 4.99
+ },
+ {
+  "id": 906,
+  "name": "  BETA  BETA ",
+  "label": "BETA",
+  "weight": 8.6954
+ },
+ {
+  "id": 907,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 4.5185
+ },
+ {
+  "id": 908,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 9.5055
+ },
+ {
+  "id": 909,
+  "name": "  iota  iota ",
+  "label": "ZETA",
+  "weight": 0.5657
+ },
+ {
+  "id": 910,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 1.1574
+ },
+ {
+  "id": 911,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "ALPHA",
+  "weight": 0.8304
+ },
+ {
+  "id": 912,
+  "name": "  Epsilon   iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.8186
+ },
+ {
+  "id": 913,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 1.8103
+ },
+ {
+  "id": 914,
+  "name": "  ETA theta  zeta ",
+  "label": "EPSILON ",
+  "weight": 3.8713
+ },
+ {
+  "id": 915,
+  "name": "  ETA theta  Kappa ",
+  "label": "KAPPA",
+  "weight": 8.631
+ },
+ {
+  "id": 916,
+  "name": "  Kappa  iota ",
+  "label": "IOTA",
+  "weight": 2.1718
+ },
+ {
+  "id": 917,
+  "name": "  Epsilon   BETA ",
+  "label": "KAPPA",
+  "weight": 3.7999
+ },
+ {
+  "id": 918,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 3.0335
+ },
+ {
+  "id": 919,
+  "name": "  ETA theta  iota ",
+  "label": "BETA",
+  "weight": 9.2277
+ },
+ {
+  "id": 920,
+  "name": "  ETA theta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 2.0699
+ },
+ {
+  "id": 921,
+  "name": "  Kappa  Kappa ",
+  "label": "ETA THETA",
+  "weight": 8.7159
+ },
+ {
+  "id": 922,
+  "name": "  BETA  BETA ",
+  "label": "ALPHA",
+  "weight": 7.3174
+ },
+ {
+  "id": 923,
+  "name": "  Alpha  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.9375
+ },
+ {
+  "id": 924,
+  "name": "  Alpha  Epsilon  ",
+  "label": "ZETA",
+  "weight": 2.4345
+ },
+ {
+  "id": 925,
+  "name": "  Epsilon   BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.0498
+ },
+ {
+  "id": 926,
+  "name": "  iota  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 3.2509
+ },
+ {
+  "id": 927,
+  "name": "  iota  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 0.8109
+ },
+ {
+  "id": 928,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "BETA",
+  "weight": 6.9637
+ },
+ {
+  "id": 929,
+  "name": "  zeta  Kappa ",
+  "label": "ALPHA",
+  "weight": 6.9997
+ },
+ {
+  "id": 930,
+  "name": "  Kappa  BETA ",
+  "label": "ETA THETA",
+  "weight": 0.7673
+ },
+ {
+  "id": 931,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 9.0961
+ },
+ {
+  "id": 932,
+  "name": "  Alpha  iota ",
+  "label": "ALPHA",
+  "weight": 6.8922
+ },
+ {
+  "id": 933,
+  "name": "  Epsilon   BETA ",
+  "label": "ETA THETA",
+  "weight": 5.7512
+ },
+ {
+  "id": 934,
+  "name": "  Alpha  Kappa ",
+  "label": "ALPHA",
+  "weight": 5.8724
+ },
+ {
+  "id": 935,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 0.7444
+ },
+ {
+  "id": 936,
+  "name": "  BETA  Alpha ",
+  "label": "IOTA",
+  "weight": 4.7635
+ },
+ {
+  "id": 937,
+  "name": "  Kappa  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 8.0111
+ },
+ {
+  "id": 938,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ALPHA",
+  "weight": 6.167
+ },
+ {
+  "id": 939,
+  "name": "  Epsilon   zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.9851
+ },
+ {
+  "id": 940,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 1.5416
+ },
+ {
+  "id": 941,
+  "name": "  Kappa  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.3893
+ },
+ {
+  "id": 942,
+  "name": "  zeta  zeta ",
+  "label": "BETA",
+  "weight": 2.6574
+ },
+ {
+  "id": 943,
+  "name": "  Alpha  Alpha ",
+  "label": "KAPPA",
+  "weight": 5.7296
+ },
+ {
+  "id": 944,
+  "name": "  gamma  Delta  iota ",
+  "label": "ETA THETA",
+  "weight": 0.1555
+ },
+ {
+  "id": 945,
+  "name": "  iota  BETA ",
+  "label": "IOTA",
+  "weight": 5.7745
+ },
+ {
+  "id": 946,
+  "name": "  iota  BETA ",
+  "label": "IOTA",
+  "weight": 4.989
+ },
+ {
+  "id": 947,
+  "name": "  Kappa  zeta ",
+  "label": "ETA THETA",
+  "weight": 4.2108
+ },
+ {
+  "id": 948,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 7.6319
+ },
+ {
+  "id": 949,
+  "name": "  iota  Epsilon  ",
+  "label": "IOTA",
+  "weight": 5.2161
+ },
+ {
+  "id": 950,
+  "name": "  gamma  Delta  zeta ",
+  "label": "BETA",
+  "weight": 2.2579
+ },
+ {
+  "id": 951,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 0.7631
+ },
+ {
+  "id": 952,
+  "name": "  Alpha  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 1.8429
+ },
+ {
+  "id": 953,
+  "name": "  ETA theta  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.7176
+ },
+ {
+  "id": 954,
+  "name": "  ETA theta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.0426
+ },
+ {
+  "id": 955,
+  "name": "  BETA  ETA theta ",
+  "label": "KAPPA",
+  "weight": 8.1248
+ },
+ {
+  "id": 956,
+  "name": "  Kappa  iota ",
+  "label": "EPSILON ",
+  "weight": 3.9487
+ },
+ {
+  "id": 957,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 9.2353
+ },
+ {
+  "id": 958,
+  "name": "  ETA theta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.9585
+ },
+ {
+  "id": 959,
+  "name": "  ETA theta  BETA ",
+  "label": "BETA",
+  "weight": 8.3064
+ },
+ {
+  "id": 960,
+  "name": "  Alpha  BETA ",
+  "label": "BETA",
+  "weight": 5.5206
+ },
+ {
+  "id": 961,
+  "name": "  Alpha  iota ",
+  "label": "EPSILON ",
+  "weight": 0.4675
+ },
+ {
+  "id": 962,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.8803
+ },
+ {
+  "id": 963,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 4.4761
+ },
+ {
+  "id": 964,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "IOTA",
+  "weight": 7.2334
+ },
+ {
+  "id": 965,
+  "name": "  BETA  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 1.6514
+ },
+ {
+  "id": 966,
+  "name": "  Alpha  Epsilon  ",
+  "label": "BETA",
+  "weight": 2.4584
+ },
+ {
+  "id": 967,
+  "name": "  ETA theta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.2036
+ },
+ {
+  "id": 968,
+  "name": "  Epsilon   iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.1441
+ },
+ {
+  "id": 969,
+  "name": "  zeta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.2353
+ },
+ {
+  "id": 970,
+  "name": "  Kappa  iota ",
+  "label": "EPSILON ",
+  "weight": 2.9446
+ },
+ {
+  "id": 971,
+  "name": "  Epsilon   iota ",
+  "label": "BETA",
+  "weight": 8.2179
+ },
+ {
+  "id": 972,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "IOTA",
+  "weight": 5.9761
+ },
+ {
+  "id": 973,
+  "name": "  ETA theta  zeta ",
+  "label": "BETA",
+  "weight": 9.1403
+ },
+ {
+  "id": 974,
+  "name": "  zeta  zeta ",
+  "label": "IOTA",
+  "weight": 2.5331
+ },
+ {
+  "id": 975,
+  "name": "  Kappa  Kappa ",
+  "label": "BETA",
+  "weight": 2.427
+ },
+ {
+  "id": 976,
+  "name": "  iota  Epsilon  ",
+  "label": "BETA",
+  "weight": 1.9208
+ },
+ {
+  "id": 977,
+  "name": "  iota  ETA theta ",
+  "label": "KAPPA",
+  "weight": 2.2092
+ },
+ {
+  "id": 978,
+  "name": "  Epsilon   Kappa ",
+  "label": "BETA",
+  "weight": 5.8808
+ },
+ {
+  "id": 979,
+  "name": "  zeta  Kappa ",
+  "label": "KAPPA",
+  "weight": 5.0895
+ },
+ {
+  "id": 980,
+  "name": "  Epsilon   zeta ",
+  "label": "BETA",
+  "weight": 6.7759
+ },
+ {
+  "id": 981,
+  "name": "  zeta  Epsilon  ",
+  "label": "BETA",
+  "weight": 4.1382
+ },
+ {
+  "id": 982,
+  "name": "  zeta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 7.024
+ },
+ {
+  "id": 983,
+  "name": "  Epsilon   ETA theta ",
+  "label": "EPSILON ",
+  "weight": 2.4259
+ },
+ {
+  "id": 984,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 9.3599
+ },
+ {
+  "id": 985,
+  "name": "  gamma  Delta  BETA ",
+  "label": "BETA",
+  "weight": 1.9407
+ },
+ {
+  "id": 986,
+  "name": "  Alpha  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.8558
+ },
+ {
+  "id": 987,
+  "name": "  Alpha  BETA ",
+  "label": "ETA THETA",
+  "weight": 3.8661
+ },
+ {
+  "id": 988,
+  "name": "  Alpha  Alpha ",
+  "label": "IOTA",
+  "weight": 2.4655
+ },
+ {
+  "id": 989,
+  "name": "  Kappa  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.5813
+ },
+ {
+  "id": 990,
+  "name": "  Alpha  iota ",
+  "label": "EPSILON ",
+  "weight": 5.4712
+ },
+ {
+  "id": 991,
+  "name": "  zeta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 8.2314
+ },
+ {
+  "id": 992,
+  "name": "  Kappa  zeta ",
+  "label": "ZETA",
+  "weight": 1.6227
+ },
+ {
+  "id": 993,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 9.2264
+ },
+ {
+  "id": 994,
+  "name": "  Alpha  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 2.5953
+ },
+ {
+  "id": 995,
+  "name": "  Kappa  BETA ",
+  "label": "KAPPA",
+  "weight": 7.9949
+ },
+ {
+  "id": 996,
+  "name": "  Alpha  iota ",
+  "label": "KAPPA",
+  "weight": 8.0985
+ },
+ {
+  "id": 997,
+  "name": "  ETA theta  Kappa ",
+  "label": "ALPHA",
+  "weight": 0.2321
+ },
+ {
+  "id": 998,
+  "name": "  iota  Alpha ",
+  "label": "ALPHA",
+  "weight": 9.6987
+ },
+ {
+  "id": 999,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 6.2909
+ },
+ {
+  "id": 1000,
+  "name": "  Epsilon   zeta ",
+  "label": "EPSILON ",
+  "weight": 7.0782
+ },
+ {
+  "id": 1001,
+  "name": "  zeta  Kappa ",
+  "label": "ALPHA",
+  "weight": 8.4404
+ },
+ {
+  "id": 1002,
+  "name": "  Epsilon   iota ",
+  "label": "ETA THETA",
+  "weight": 4.3701
+ },
+ {
+  "id": 1003,
+  "name": "  ETA theta  Kappa ",
+  "label": "ALPHA",
+  "weight": 7.7159
+ },
+ {
+  "id": 1004,
+  "name": "  Alpha  iota ",
+  "label": "ZETA",
+  "weight": 5.6647
+ },
+ {
+  "id": 1005,
+  "name": "  BETA  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 4.8431
+ },
+ {
+  "id": 1006,
+  "name": "  BETA  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 3.4652
+ },
+ {
+  "id": 1007,
+  "name": "  BETA  zeta ",
+  "label": "IOTA",
+  "weight": 9.152
+ },
+ {
+  "id": 1008,
+  "name": "  zeta  BETA ",
+  "label": "IOTA",
+  "weight": 1.7731
+ },
+ {
+  "id": 1009,
+  "name": "  BETA  zeta ",
+  "label": "EPSILON ",
+  "weight": 5.9468
+ },
+ {
+  "id": 1010,
+  "name": "  Epsilon   BETA ",
+  "label": "KAPPA",
+  "weight": 8.2817
+ },
+ {
+  "id": 1011,
+  "name": "  zeta  BETA ",
+  "label": "ALPHA",
+  "weight": 5.8149
+ },
+ {
+  "id": 1012,
+  "name": "  BETA  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 9.3538
+ },
+ {
+  "id": 1013,
+  "name": "  iota  zeta ",
+  "label": "KAPPA",
+  "weight": 9.821
+ },
+ {
+  "id": 1014,
+  "name": "  Kappa  Kappa ",
+  "label": "ALPHA",
+  "weight": 3.8587
+ },
+ {
+  "id": 1015,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 2.091
+ },
+ {
+  "id": 1016,
+  "name": "  Epsilon   Alpha ",
+  "label": "ZETA",
+  "weight": 4.9778
+ },
+ {
+  "id": 1017,
+  "name": "  zeta  Kappa ",
+  "label": "ALPHA",
+  "weight": 3.2572
+ },
+ {
+  "id": 1018,
+  "name": "  Alpha  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.7511
+ },
+ {
+  "id": 1019,
+  "name": "  BETA  zeta ",
+  "label": "BETA",
+  "weight": 6.8658
+ },
+ {
+  "id": 1020,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 4.9994
+ },
+ {
+  "id": 1021,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 2.1168
+ },
+ {
+  "id": 1022,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "KAPPA",
+  "weight": 8.5507
+ },
+ {
+  "id": 1023,
+  "name": "  zeta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 1.1211
+ },
+ {
+  "id": 1024,
+  "name": "  zeta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 3.882
+ },
+ {
+  "id": 1025,
+  "name": "  Alpha  zeta ",
+  "label": "ALPHA",
+  "weight": 7.1414
+ },
+ {
+  "id": 1026,
+  "name": "  Kappa  zeta ",
+  "label": "ZETA",
+  "weight": 1.8881
+ },
+ {
+  "id": 1027,
+  "name": "  iota  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 9.2516
+ },
+ {
+  "id": 1028,
+  "name": "  gamma  Delta  BETA ",
+  "label": "IOTA",
+  "weight": 8.0804
+ },
+ {
+  "id": 1029,
+  "name": "  BETA  BETA ",
+  "label": "ETA THETA",
+  "weight": 9.063
+ },
+ {
+  "id": 1030,
+  "name": "  gamma  Delta  iota ",
+  "label": "BETA",
+  "weight": 4.897
+ },
+ {
+  "id": 1031,
+  "name": "  Kappa  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 8.7703
+ },
+ {
+  "id": 1032,
+  "name": "  Alpha  iota ",
+  "label": "ETA THETA",
+  "weight": 7.6169
+ },
+ {
+  "id": 1033,
+  "name": "  BETA  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 1.5296
+ },
+ {
+  "id": 1034,
+  "name": "  Alpha  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.9924
+ },
+ {
+  "id": 1035,
+  "name": "  BETA  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 2.3314
+ },
+ {
+  "id": 1036,
+  "name": "  Alpha  Alpha ",
+  "label": "ETA THETA",
+  "weight": 0.6911
+ },
+ {
+  "id": 1037,
+  "name": "  BETA  Alpha ",
+  "label": "KAPPA",
+  "weight": 3.5876
+ },
+ {
+  "id": 1038,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 6.2859
+ },
+ {
+  "id": 1039,
+  "name": "  Epsilon   BETA ",
+  "label": "ALPHA",
+  "weight": 2.7078
+ },
+ {
+  "id": 1040,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "BETA",
+  "weight": 8.2924
+ },
+ {
+  "id": 1041,
+  "name": "  Alpha  Alpha ",
+  "label": "ETA THETA",
+  "weight": 2.4702
+ },
+ {
+  "id": 1042,
+  "name": "  ETA theta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.9136
+ },
+ {
+  "id": 1043,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 5.7837
+ },
+ {
+  "id": 1044,
+  "name": "  ETA theta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.0547
+ },
+ {
+  "id": 1045,
+  "name": "  zeta  Alpha ",
+  "label": "BETA",
+  "weight": 9.8442
+ },
+ {
+  "id": 1046,
+  "name": "  Kappa  ETA theta ",
+  "label": "KAPPA",
+  "weight": 2.3224
+ },
+ {
+  "id": 1047,
+  "name": "  Kappa  zeta ",
+  "label": "IOTA",
+  "weight": 1.3706
+ },
+ {
+  "id": 1048,
+  "name": "  ETA theta  iota ",
+  "label": "EPSILON ",
+  "weight": 5.6088
+ },
+ {
+  "id": 1049,
+  "name": "  gamma  Delta  BETA ",
+  "label": "KAPPA",
+  "weight": 6.2917
+ },
+ {
+  "id": 1050,
+  "name": "  ETA theta  iota ",
+  "label": "ZETA",
+  "weight": 0.7084
+ },
+ {
+  "id": 1051,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 9.0325
+ },
+ {
+  "id": 1052,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "BETA",
+  "weight": 0.1429
+ },
+ {
+  "id": 1053,
+  "name": "  Kappa  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 4.7846
+ },
+ {
+  "id": 1054,
+  "name": "  Kappa  Alpha ",
+  "label": "ALPHA",
+  "weight": 4.529
+ },
+ {
+  "id": 1055,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "BETA",
+  "weight": 7.6233
+ },
+ {
+  "id": 1056,
+  "name": "  BETA  gamma  Delta ",
+  "label": "BETA",
+  "weight": 0.981
+ },
+ {
+  "id": 1057,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 1.9734
+ },
+ {
+  "id": 1058,
+  "name": "  BETA  zeta ",
+  "label": "ALPHA",
+  "weight": 0.9542
+ },
+ {
+  "id": 1059,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 9.0667
+ },
+ {
+  "id": 1060,
+  "name": "  Alpha  BETA ",
+  "label": "EPSILON ",
+  "weight": 0.5345
+ },
+ {
+  "id": 1061,
+  "name": "  Kappa  zeta ",
+  "label": "ALPHA",
+  "weight": 2.2045
+ },
+ {
+  "id": 1062,
+  "name": "  gamma  Delta  iota ",
+  "label": "EPSILON ",
+  "weight": 3.6025
+ },
+ {
+  "id": 1063,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 2.4357
+ },
+ {
+  "id": 1064,
+  "name": "  gamma  Delta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.0146
+ },
+ {
+  "id": 1065,
+  "name": "  Kappa  Kappa ",
+  "label": "BETA",
+  "weight": 7.3577
+ },
+ {
+  "id": 1066,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 4.9557
+ },
+ {
+  "id": 1067,
+  "name": "  gamma  Delta  zeta ",
+  "label": "ETA THETA",
+  "weight": 2.9925
+ },
+ {
+  "id": 1068,
+  "name": "  Alpha  ETA theta ",
+  "label": "KAPPA",
+  "weight": 4.5618
+ },
+ {
+  "id": 1069,
+  "name": "  gamma  Delta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.1421
+ },
+ {
+  "id": 1070,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 8.2342
+ },
+ {
+  "id": 1071,
+  "name": "  Kappa  iota ",
+  "label": "IOTA",
+  "weight": 6.745
+ },
+ {
+  "id": 1072,
+  "name": "  zeta  BETA ",
+  "label": "KAPPA",
+  "weight": 2.5839
+ },
+ {
+  "id": 1073,
+  "name": "  BETA  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 9.6528
+ },
+ {
+  "id": 1074,
+  "name": "  zeta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 8.9586
+ },
+ {
+  "id": 1075,
+  "name": "  iota  ETA theta ",
+  "label": "ALPHA",
+  "weight": 2.91
+ },
+ {
+  "id": 1076,
+  "name": "  zeta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 7.2795
+ },
+ {
+  "id": 1077,
+  "name": "  Alpha  Kappa ",
+  "label": "ETA THETA",
+  "weight": 2.8947
+ },
+ {
+  "id": 1078,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 6.0784
+ },
+ {
+  "id": 1079,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 8.5043
+ },
+ {
+  "id": 1080,
+  "name": "  zeta  Alpha ",
+  "label": "ZETA",
+  "weight": 8.0137
+ },
+ {
+  "id": 1081,
+  "name": "  Alpha  Kappa ",
+  "label": "KAPPA",
+  "weight": 9.1696
+ },
+ {
+  "id": 1082,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 4.2216
+ },
+ {
+  "id": 1083,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 2.0475
+ },
+ {
+  "id": 1084,
+  "name": "  zeta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 8.0546
+ },
+ {
+  "id": 1085,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 9.2308
+ },
+ {
+  "id": 1086,
+  "name": "  iota  ETA theta ",
+  "label": "BETA",
+  "weight": 9.2631
+ },
+ {
+  "id": 1087,
+  "name": "  gamma  Delta  iota ",
+  "label": "ZETA",
+  "weight": 3.9597
+ },
+ {
+  "id": 1088,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 6.909
+ },
+ {
+  "id": 1089,
+  "name": "  iota  zeta ",
+  "label": "EPSILON ",
+  "weight": 6.6226
+ },
+ {
+  "id": 1090,
+  "name": "  ETA theta  iota ",
+  "label": "ZETA",
+  "weight": 1.6197
+ },
+ {
+  "id": 1091,
+  "name": "  iota  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 5.7875
+ },
+ {
+  "id": 1092,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 0.3416
+ },
+ {
+  "id": 1093,
+  "name": "  BETA  ETA theta ",
+  "label": "BETA",
+  "weight": 7.2034
+ },
+ {
+  "id": 1094,
+  "name": "  ETA theta  zeta ",
+  "label": "IOTA",
+  "weight": 2.4761
+ },
+ {
+  "id": 1095,
+  "name": "  BETA  Alpha ",
+  "label": "ETA THETA",
+  "weight": 1.1747
+ },
+ {
+  "id": 1096,
+  "name": "  Kappa  iota ",
+  "label": "ZETA",
+  "weight": 3.2005
+ },
+ {
+  "id": 1097,
+  "name": "  iota  Alpha ",
+  "label": "ZETA",
+  "weight": 4.8767
+ },
+ {
+  "id": 1098,
+  "name": "  iota  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 2.0441
+ },
+ {
+  "id": 1099,
+  "name": "  Epsilon   zeta ",
+  "label": "BETA",
+  "weight": 3.3934
+ },
+ {
+  "id": 1100,
+  "name": "  Epsilon   iota ",
+  "label": "ETA THETA",
+  "weight": 7.2141
+ },
+ {
+  "id": 1101,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 2.958
+ },
+ {
+  "id": 1102,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 9.5528
+ },
+ {
+  "id": 1103,
+  "name": "  ETA theta  iota ",
+  "label": "KAPPA",
+  "weight": 5.955
+ },
+ {
+  "id": 1104,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 5.8299
+ },
+ {
+  "id": 1105,
+  "name": "  Kappa  Epsilon  ",
+  "label": "IOTA",
+  "weight": 6.1547
+ },
+ {
+  "id": 1106,
+  "name": "  Epsilon   iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.2457
+ },
+ {
+  "id": 1107,
+  "name": "  iota  zeta ",
+  "label": "ALPHA",
+  "weight": 5.4053
+ },
+ {
+  "id": 1108,
+  "name": "  Alpha  BETA ",
+  "label": "IOTA",
+  "weight": 0.3225
+ },
+ {
+  "id": 1109,
+  "name": "  ETA theta  BETA ",
+  "label": "ZETA",
+  "weight": 5.0982
+ },
+ {
+  "id": 1110,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ZETA",
+  "weight": 7.1016
+ },
+ {
+  "id": 1111,
+  "name": "  zeta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.6435
+ },
+ {
+  "id": 1112,
+  "name": "  Alpha  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 2.5621
+ },
+ {
+  "id": 1113,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "ZETA",
+  "weight": 3.8056
+ },
+ {
+  "id": 1114,
+  "name": "  zeta  iota ",
+  "label": "IOTA",
+  "weight": 5.1516
+ },
+ {
+  "id": 1115,
+  "name": "  BETA  BETA ",
+  "label": "KAPPA",
+  "weight": 0.1276
+ },
+ {
+  "id": 1116,
+  "name": "  iota  Kappa ",
+  "label": "EPSILON ",
+  "weight": 2.9103
+ },
+ {
+  "id": 1117,
+  "name": "  Kappa  Alpha ",
+  "label": "ALPHA",
+  "weight": 1.0285
+ },
+ {
+  "id": 1118,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 4.2959
+ },
+ {
+  "id": 1119,
+  "name": "  ETA theta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.22
+ },
+ {
+  "id": 1120,
+  "name": "  ETA theta  Alpha ",
+  "label": "ALPHA",
+  "weight": 8.4224
+ },
+ {
+  "id": 1121,
+  "name": "  zeta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.2023
+ },
+ {
+  "id": 1122,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 3.8624
+ },
+ {
+  "id": 1123,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 0.7477
+ },
+ {
+  "id": 1124,
+  "name": "  gamma  Delta  iota ",
+  "label": "BETA",
+  "weight": 2.0518
+ },
+ {
+  "id": 1125,
+  "name": "  BETA  Alpha ",
+  "label": "ETA THETA",
+  "weight": 1.863
+ },
+ {
+  "id": 1126,
+  "name": "  iota  Epsilon  ",
+  "label": "BETA",
+  "weight": 7.0552
+ },
+ {
+  "id": 1127,
+  "name": "  gamma  Delta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.1543
+ },
+ {
+  "id": 1128,
+  "name": "  Kappa  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 3.7916
+ },
+ {
+  "id": 1129,
+  "name": "  gamma  Delta  zeta ",
+  "label": "BETA",
+  "weight": 0.5348
+ },
+ {
+  "id": 1130,
+  "name": "  Epsilon   BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.1296
+ },
+ {
+  "id": 1131,
+  "name": "  ETA theta  zeta ",
+  "label": "KAPPA",
+  "weight": 0.9507
+ },
+ {
+  "id": 1132,
+  "name": "  Epsilon   ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.0365
+ },
+ {
+  "id": 1133,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 6.0784
+ },
+ {
+  "id": 1134,
+  "name": "  Epsilon   zeta ",
+  "label": "ZETA",
+  "weight": 5.4541
+ },
+ {
+  "id": 1135,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 5.3464
+ },
+ {
+  "id": 1136,
+  "name": "  BETA  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.2182
+ },
+ {
+  "id": 1137,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 0.2061
+ },
+ {
+  "id": 1138,
+  "name": "  Kappa  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.0917
+ },
+ {
+  "id": 1139,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "BETA",
+  "weight": 6.1025
+ },
+ {
+  "id": 1140,
+  "name": "  Kappa  ETA theta ",
+  "label": "ZETA",
+  "weight": 5.7571
+ },
+ {
+  "id": 1141,
+  "name": "  Epsilon   Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.4436
+ },
+ {
+  "id": 1142,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "IOTA",
+  "weight": 3.7438
+ },
+ {
+  "id": 1143,
+  "name": "  Epsilon   ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.8381
+ },
+ {
+  "id": 1144,
+  "name": "  gamma  Delta  BETA ",
+  "label": "ETA THETA",
+  "weight": 5.2927
+ },
+ {
+  "id": 1145,
+  "name": "  Epsilon   iota ",
+  "label": "ALPHA",
+  "weight": 8.5847
+ },
+ {
+  "id": 1146,
+  "name": "  Kappa  BETA ",
+  "label": "KAPPA",
+  "weight": 8.2273
+ },
+ {
+  "id": 1147,
+  "name": "  iota  gamma  Delta ",
+  "label": "BETA",
+  "weight": 0.9949
+ },
+ {
+  "id": 1148,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 3.29
+ },
+ {
+  "id": 1149,
+  "name": "  zeta  Epsilon  ",
+  "label": "BETA",
+  "weight": 6.9309
+ },
+ {
+  "id": 1150,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.6727
+ },
+ {
+  "id": 1151,
+  "name": "  BETA  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.4124
+ },
+ {
+  "id": 1152,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.5462
+ },
+ {
+  "id": 1153,
+  "name": "  gamma  Delta  BETA ",
+  "label": "BETA",
+  "weight": 8.973
+ },
+ {
+  "id": 1154,
+  "name": "  zeta  Kappa ",
+  "label": "BETA",
+  "weight": 8.9907
+ },
+ {
+  "id": 1155,
+  "name": "  BETA  BETA ",
+  "label": "ZETA",
+  "weight": 8.1846
+ },
+ {
+  "id": 1156,
+  "name": "  Kappa  zeta ",
+  "label": "BETA",
+  "weight": 7.6233
+ },
+ {
+  "id": 1157,
+  "name": "  BETA  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 6.1013
+ },
+ {
+  "id": 1158,
+  "name": "  BETA  iota ",
+  "label": "ZETA",
+  "weight": 8.0049
+ },
+ {
+  "id": 1159,
+  "name": "  iota  BETA ",
+  "label": "ZETA",
+  "weight": 4.1428
+ },
+ {
+  "id": 1160,
+  "name": "  ETA theta  BETA ",
+  "label": "ZETA",
+  "weight": 5.389
+ },
+ {
+  "id": 1161,
+  "name": "  Alpha  zeta ",
+  "label": "BETA",
+  "weight": 3.8301
+ },
+ {
+  "id": 1162,
+  "name": "  BETA  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.6202
+ },
+ {
+  "id": 1163,
+  "name": "  ETA theta  Alpha ",
+  "label": "KAPPA",
+  "weight": 7.1324
+ },
+ {
+  "id": 1164,
+  "name": "  Epsilon   iota ",
+  "label": "ZETA",
+  "weight": 2.0872
+ },
+ {
+  "id": 1165,
+  "name": "  iota  Kappa ",
+  "label": "ZETA",
+  "weight": 1.1954
+ },
+ {
+  "id": 1166,
+  "name": "  iota  Alpha ",
+  "label": "KAPPA",
+  "weight": 4.6028
+ },
+ {
+  "id": 1167,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 7.567
+ },
+ {
+  "id": 1168,
+  "name": "  zeta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.6061
+ },
+ {
+  "id": 1169,
+  "name": "  zeta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 9.3217
+ },
+ {
+  "id": 1170,
+  "name": "  iota  BETA ",
+  "label": "BETA",
+  "weight": 2.1948
+ },
+ {
+  "id": 1171,
+  "name": "  iota  Alpha ",
+  "label": "ALPHA",
+  "weight": 2.2324
+ },
+ {
+  "id": 1172,
+  "name": "  BETA  zeta ",
+  "label": "ZETA",
+  "weight": 3.1572
+ },
+ {
+  "id": 1173,
+  "name": "  Epsilon   Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.4292
+ },
+ {
+  "id": 1174,
+  "name": "  zeta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 5.4781
+ },
+ {
+  "id": 1175,
+  "name": "  iota  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 0.1916
+ },
+ {
+  "id": 1176,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 8.9928
+ },
+ {
+  "id": 1177,
+  "name": "  zeta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 5.9097
+ },
+ {
+  "id": 1178,
+  "name": "  Alpha  Alpha ",
+  "label": "ZETA",
+  "weight": 3.3432
+ },
+ {
+  "id": 1179,
+  "name": "  Alpha  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.5486
+ },
+ {
+  "id": 1180,
+  "name": "  Alpha  ETA theta ",
+  "label": "ZETA",
+  "weight": 8.5674
+ },
+ {
+  "id": 1181,
+  "name": "  zeta  zeta ",
+  "label": "BETA",
+  "weight": 0.1874
+ },
+ {
+  "id": 1182,
+  "name": "  Epsilon   BETA ",
+  "label": "IOTA",
+  "weight": 5.2735
+ },
+ {
+  "id": 1183,
+  "name": "  BETA  zeta ",
+  "label": "ZETA",
+  "weight": 2.2971
+ },
+ {
+  "id": 1184,
+  "name": "  BETA  ETA theta ",
+  "label": "BETA",
+  "weight": 2.4082
+ },
+ {
+  "id": 1185,
+  "name": "  iota  zeta ",
+  "label": "ALPHA",
+  "weight": 6.2492
+ },
+ {
+  "id": 1186,
+  "name": "  iota  zeta ",
+  "label": "BETA",
+  "weight": 0.9409
+ },
+ {
+  "id": 1187,
+  "name": "  BETA  BETA ",
+  "label": "ETA THETA",
+  "weight": 4.2729
+ },
+ {
+  "id": 1188,
+  "name": "  BETA  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 3.5751
+ },
+ {
+  "id": 1189,
+  "name": "  gamma  Delta  zeta ",
+  "label": "IOTA",
+  "weight": 8.236
+ },
+ {
+  "id": 1190,
+  "name": "  Kappa  zeta ",
+  "label": "ETA THETA",
+  "weight": 8.8668
+ },
+ {
+  "id": 1191,
+  "name": "  iota  zeta ",
+  "label": "ZETA",
+  "weight": 0.1428
+ },
+ {
+  "id": 1192,
+  "name": "  iota  Kappa ",
+  "label": "ZETA",
+  "weight": 6.0922
+ },
+ {
+  "id": 1193,
+  "name": "  iota  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 2.1264
+ },
+ {
+  "id": 1194,
+  "name": "  ETA theta  zeta ",
+  "label": "BETA",
+  "weight": 0.3951
+ },
+ {
+  "id": 1195,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 0.6426
+ },
+ {
+  "id": 1196,
+  "name": "  Epsilon   BETA ",
+  "label": "BETA",
+  "weight": 8.7791
+ },
+ {
+  "id": 1197,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 4.7621
+ },
+ {
+  "id": 1198,
+  "name": "  iota  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 5.8424
+ },
+ {
+  "id": 1199,
+  "name": "  ETA theta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 2.367
+ },
+ {
+  "id": 1200,
+  "name": "  BETA  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 1.3041
+ },
+ {
+  "id": 1201,
+  "name": "  Epsilon   Kappa ",
+  "label": "EPSILON ",
+  "weight": 5.3628
+ },
+ {
+  "id": 1202,
+  "name": "  gamma  Delta  BETA ",
+  "label": "EPSILON ",
+  "weight": 6.3357
+ },
+ {
+  "id": 1203,
+  "name": "  gamma  Delta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.0917
+ },
+ {
+  "id": 1204,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 7.5398
+ },
+ {
+  "id": 1205,
+  "name": "  Kappa  iota ",
+  "label": "ZETA",
+  "weight": 2.8263
+ },
+ {
+  "id": 1206,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ALPHA",
+  "weight": 9.3701
+ },
+ {
+  "id": 1207,
+  "name": "  BETA  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.781
+ },
+ {
+  "id": 1208,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "KAPPA",
+  "weight": 9.2292
+ },
+ {
+  "id": 1209,
+  "name": "  zeta  zeta ",
+  "label": "BETA",
+  "weight": 8.335
+ },
+ {
+  "id": 1210,
+  "name": "  Kappa  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 2.3065
+ },
+ {
+  "id": 1211,
+  "name": "  ETA theta  iota ",
+  "label": "ZETA",
+  "weight": 3.6555
+ },
+ {
+  "id": 1212,
+  "name": "  Alpha  zeta ",
+  "label": "EPSILON ",
+  "weight": 1.2218
+ },
+ {
+  "id": 1213,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 5.2467
+ },
+ {
+  "id": 1214,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ALPHA",
+  "weight": 8.953
+ },
+ {
+  "id": 1215,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 7.8936
+ },
+ {
+  "id": 1216,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "IOTA",
+  "weight": 7.5982
+ },
+ {
+  "id": 1217,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 0.5405
+ },
+ {
+  "id": 1218,
+  "name": "  ETA theta  BETA ",
+  "label": "IOTA",
+  "weight": 8.8454
+ },
+ {
+  "id": 1219,
+  "name": "  Alpha  BETA ",
+  "label": "EPSILON ",
+  "weight": 3.2939
+ },
+ {
+  "id": 1220,
+  "name": "  BETA  Kappa ",
+  "label": "ALPHA",
+  "weight": 1.1406
+ },
+ {
+  "id": 1221,
+  "name": "  zeta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 2.0587
+ },
+ {
+  "id": 1222,
+  "name": "  BETA  iota ",
+  "label": "BETA",
+  "weight": 5.9914
+ },
+ {
+  "id": 1223,
+  "name": "  zeta  Kappa ",
+  "label": "IOTA",
+  "weight": 8.8498
+ },
+ {
+  "id": 1224,
+  "name": "  Kappa  Kappa ",
+  "label": "IOTA",
+  "weight": 1.8297
+ },
+ {
+  "id": 1225,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 5.5902
+ },
+ {
+  "id": 1226,
+  "name": "  BETA  zeta ",
+  "label": "ETA THETA",
+  "weight": 4.5308
+ },
+ {
+  "id": 1227,
+  "name": "  BETA  ETA theta ",
+  "label": "IOTA",
+  "weight": 1.5892
+ },
+ {
+  "id": 1228,
+  "name": "  iota  ETA theta ",
+  "label": "IOTA",
+  "weight": 4.3369
+ },
+ {
+  "id": 1229,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 8.0467
+ },
+ {
+  "id": 1230,
+  "name": "  Epsilon   Kappa ",
+  "label": "BETA",
+  "weight": 2.2081
+ },
+ {
+  "id": 1231,
+  "name": "  BETA  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 0.391
+ },
+ {
+  "id": 1232,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 5.5175
+ },
+ {
+  "id": 1233,
+  "name": "  zeta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.0495
+ },
+ {
+  "id": 1234,
+  "name": "  iota  ETA theta ",
+  "label": "BETA",
+  "weight": 8.266
+ },
+ {
+  "id": 1235,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "BETA",
+  "weight": 2.3039
+ },
+ {
+  "id": 1236,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 8.1425
+ },
+ {
+  "id": 1237,
+  "name": "  Kappa  Kappa ",
+  "label": "ETA THETA",
+  "weight": 0.5563
+ },
+ {
+  "id": 1238,
+  "name": "  Alpha  Epsilon  ",
+  "label": "IOTA",
+  "weight": 8.6953
+ },
+ {
+  "id": 1239,
+  "name": "  Kappa  Kappa ",
+  "label": "IOTA",
+  "weight": 0.9917
+ },
+ {
+  "id": 1240,
+  "name": "  Alpha  BETA ",
+  "label": "KAPPA",
+  "weight": 2.8261
+ },
+ {
+  "id": 1241,
+  "name": "  ETA theta  iota ",
+  "label": "ALPHA",
+  "weight": 1.6623
+ },
+ {
+  "id": 1242,
+  "name": "  Alpha  Kappa ",
+  "label": "ZETA",
+  "weight": 3.1376
+ },
+ {
+  "id": 1243,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 8.1705
+ },
+ {
+  "id": 1244,
+  "name": "  iota  zeta ",
+  "label": "IOTA",
+  "weight": 0.4844
+ },
+ {
+  "id": 1245,
+  "name": "  iota  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.6917
+ },
+ {
+  "id": 1246,
+  "name": "  Epsilon   Kappa ",
+  "label": "BETA",
+  "weight": 7.6967
+ },
+ {
+  "id": 1247,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 4.1946
+ },
+ {
+  "id": 1248,
+  "name": "  BETA  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 0.7198
+ },
+ {
+  "id": 1249,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "BETA",
+  "weight": 7.9991
+ },
+ {
+  "id": 1250,
+  "name": "  Kappa  BETA ",
+  "label": "ALPHA",
+  "weight": 1.1497
+ },
+ {
+  "id": 1251,
+  "name": "  iota  Epsilon  ",
+  "label": "IOTA",
+  "weight": 4.3804
+ },
+ {
+  "id": 1252,
+  "name": "  Alpha  Kappa ",
+  "label": "ETA THETA",
+  "weight": 6.465
+ },
+ {
+  "id": 1253,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 7.889
+ },
+ {
+  "id": 1254,
+  "name": "  zeta  iota ",
+  "label": "EPSILON ",
+  "weight": 7.7492
+ },
+ {
+  "id": 1255,
+  "name": "  iota  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 6.4545
+ },
+ {
+  "id": 1256,
+  "name": "  ETA theta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 3.0773
+ },
+ {
+  "id": 1257,
+  "name": "  iota  zeta ",
+  "label": "IOTA",
+  "weight": 0.19
+ },
+ {
+  "id": 1258,
+  "name": "  gamma  Delta  BETA ",
+  "label": "ETA THETA",
+  "weight": 8.1021
+ },
+ {
+  "id": 1259,
+  "name": "  iota  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.5191
+ },
+ {
+  "id": 1260,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.5045
+ },
+ {
+  "id": 1261,
+  "name": "  gamma  Delta  zeta ",
+  "label": "EPSILON ",
+  "weight": 0.4743
+ },
+ {
+  "id": 1262,
+  "name": "  ETA theta  BETA ",
+  "label": "ETA THETA",
+  "weight": 1.2435
+ },
+ {
+  "id": 1263,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 6.4029
+ },
+ {
+  "id": 1264,
+  "name": "  BETA  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 5.6877
+ },
+ {
+  "id": 1265,
+  "name": "  Alpha  BETA ",
+  "label": "ALPHA",
+  "weight": 3.1533
+ },
+ {
+  "id": 1266,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ZETA",
+  "weight": 2.0273
+ },
+ {
+  "id": 1267,
+  "name": "  gamma  Delta  iota ",
+  "label": "ETA THETA",
+  "weight": 8.1478
+ },
+ {
+  "id": 1268,
+  "name": "  Alpha  BETA ",
+  "label": "KAPPA",
+  "weight": 3.2425
+ },
+ {
+  "id": 1269,
+  "name": "  ETA theta  BETA ",
+  "label": "KAPPA",
+  "weight": 6.1212
+ },
+ {
+  "id": 1270,
+  "name": "  iota  Alpha ",
+  "label": "ZETA",
+  "weight": 3.717
+ },
+ {
+  "id": 1271,
+  "name": "  BETA  ETA theta ",
+  "label": "KAPPA",
+  "weight": 9.141
+ },
+ {
+  "id": 1272,
+  "name": "  Alpha  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.7999
+ },
+ {
+  "id": 1273,
+  "name": "  zeta  BETA ",
+  "label": "EPSILON ",
+  "weight": 4.2385
+ },
+ {
+  "id": 1274,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 2.2709
+ },
+ {
+  "id": 1275,
+  "name": "  Epsilon   BETA ",
+  "label": "KAPPA",
+  "weight": 4.0776
+ },
+ {
+  "id": 1276,
+  "name": "  zeta  Epsilon  ",
+  "label": "BETA",
+  "weight": 3.8466
+ },
+ {
+  "id": 1277,
+  "name": "  BETA  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.6824
+ },
+ {
+  "id": 1278,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "BETA",
+  "weight": 8.8916
+ },
+ {
+  "id": 1279,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.4895
+ },
+ {
+  "id": 1280,
+  "name": "  Epsilon   iota ",
+  "label": "ALPHA",
+  "weight": 2.3518
+ },
+ {
+  "id": 1281,
+  "name": "  Epsilon   Alpha ",
+  "label": "ETA THETA",
+  "weight": 7.2052
+ },
+ {
+  "id": 1282,
+  "name": "  iota  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.3639
+ },
+ {
+  "id": 1283,
+  "name": "  BETA  Epsilon  ",
+  "label": "BETA",
+  "weight": 1.202
+ },
+ {
+  "id": 1284,
+  "name": "  iota  ETA theta ",
+  "label": "ZETA",
+  "weight": 7.9543
+ },
+ {
+  "id": 1285,
+  "name": "  zeta  Kappa ",
+  "label": "BETA",
+  "weight": 1.8472
+ },
+ {
+  "id": 1286,
+  "name": "  ETA theta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.9686
+ },
+ {
+  "id": 1287,
+  "name": "  iota  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 0.6141
+ },
+ {
+  "id": 1288,
+  "name": "  zeta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 7.2167
+ },
+ {
+  "id": 1289,
+  "name": "  Alpha  zeta ",
+  "label": "IOTA",
+  "weight": 4.7661
+ },
+ {
+  "id": 1290,
+  "name": "  Alpha  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 1.9555
+ },
+ {
+  "id": 1291,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ETA THETA",
+  "weight": 9.2957
+ },
+ {
+  "id": 1292,
+  "name": "  ETA theta  BETA ",
+  "label": "BETA",
+  "weight": 9.3854
+ },
+ {
+  "id": 1293,
+  "name": "  Epsilon   Kappa ",
+  "label": "ETA THETA",
+  "weight": 1.9335
+ },
+ {
+  "id": 1294,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 3.2664
+ },
+ {
+  "id": 1295,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 0.9784
+ },
+ {
+  "id": 1296,
+  "name": "  ETA theta  BETA ",
+  "label": "ALPHA",
+  "weight": 6.1065
+ },
+ {
+  "id": 1297,
+  "name": "  zeta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 1.4889
+ },
+ {
+  "id": 1298,
+  "name": "  Epsilon   BETA ",
+  "label": "ETA THETA",
+  "weight": 6.8198
+ },
+ {
+  "id": 1299,
+  "name": "  zeta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.6086
+ },
+ {
+  "id": 1300,
+  "name": "  BETA  Epsilon  ",
+  "label": "BETA",
+  "weight": 2.2659
+ },
+ {
+  "id": 1301,
+  "name": "  Alpha  zeta ",
+  "label": "BETA",
+  "weight": 7.1157
+ },
+ {
+  "id": 1302,
+  "name": "  Kappa  Kappa ",
+  "label": "IOTA",
+  "weight": 6.4106
+ },
+ {
+  "id": 1303,
+  "name": "  iota  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 3.8222
+ },
+ {
+  "id": 1304,
+  "name": "  Epsilon   Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.5721
+ },
+ {
+  "id": 1305,
+  "name": "  BETA  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.1364
+ },
+ {
+  "id": 1306,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 2.4634
+ },
+ {
+  "id": 1307,
+  "name": "  BETA  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.7777
+ },
+ {
+  "id": 1308,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 8.4846
+ },
+ {
+  "id": 1309,
+  "name": "  Epsilon   zeta ",
+  "label": "IOTA",
+  "weight": 6.868
+ },
+ {
+  "id": 1310,
+  "name": "  Epsilon   ETA theta ",
+  "label": "BETA",
+  "weight": 2.5921
+ },
+ {
+  "id": 1311,
+  "name": "  Kappa  Kappa ",
+  "label": "ZETA",
+  "weight": 9.8069
+ },
+ {
+  "id": 1312,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 0.7152
+ },
+ {
+  "id": 1313,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 7.1914
+ },
+ {
+  "id": 1314,
+  "name": "  BETA  gamma  Delta ",
+  "label": "BETA",
+  "weight": 6.6256
+ },
+ {
+  "id": 1315,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 5.4016
+ },
+ {
+  "id": 1316,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 3.5242
+ },
+ {
+  "id": 1317,
+  "name": "  ETA theta  iota ",
+  "label": "KAPPA",
+  "weight": 4.211
+ },
+ {
+  "id": 1318,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 2.1735
+ },
+ {
+  "id": 1319,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 4.5557
+ },
+ {
+  "id": 1320,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "IOTA",
+  "weight": 1.0577
+ },
+ {
+  "id": 1321,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 9.024
+ },
+ {
+  "id": 1322,
+  "name": "  zeta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 3.5356
+ },
+ {
+  "id": 1323,
+  "name": "  iota  ETA theta ",
+  "label": "BETA",
+  "weight": 7.3772
+ },
+ {
+  "id": 1324,
+  "name": "  Kappa  Epsilon  ",
+  "label": "IOTA",
+  "weight": 1.3554
+ },
+ {
+  "id": 1325,
+  "name": "  iota  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 2.9962
+ },
+ {
+  "id": 1326,
+  "name": "  zeta  zeta ",
+  "label": "EPSILON ",
+  "weight": 4.7373
+ },
+ {
+  "id": 1327,
+  "name": "  BETA  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.4042
+ },
+ {
+  "id": 1328,
+  "name": "  Kappa  Kappa ",
+  "label": "ETA THETA",
+  "weight": 8.4781
+ },
+ {
+  "id": 1329,
+  "name": "  Kappa  zeta ",
+  "label": "ALPHA",
+  "weight": 1.2695
+ },
+ {
+  "id": 1330,
+  "name": "  zeta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 3.5914
+ },
+ {
+  "id": 1331,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 1.184
+ },
+ {
+  "id": 1332,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 1.7093
+ },
+ {
+  "id": 1333,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 1.9119
+ },
+ {
+  "id": 1334,
+  "name": "  iota  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 2.3533
+ },
+ {
+  "id": 1335,
+  "name": "  Alpha  BETA ",
+  "label": "IOTA",
+  "weight": 4.1652
+ },
+ {
+  "id": 1336,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "IOTA",
+  "weight": 2.8224
+ },
+ {
+  "id": 1337,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.5178
+ },
+ {
+  "id": 1338,
+  "name": "  zeta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 7.5332
+ },
+ {
+  "id": 1339,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "BETA",
+  "weight": 2.9516
+ },
+ {
+  "id": 1340,
+  "name": "  ETA theta  Kappa ",
+  "label": "BETA",
+  "weight": 6.447
+ },
+ {
+  "id": 1341,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "IOTA",
+  "weight": 9.0973
+ },
+ {
+  "id": 1342,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "BETA",
+  "weight": 9.3256
+ },
+ {
+  "id": 1343,
+  "name": "  ETA theta  iota ",
+  "label": "KAPPA",
+  "weight": 2.9639
+ },
+ {
+  "id": 1344,
+  "name": "  gamma  Delta  zeta ",
+  "label": "BETA",
+  "weight": 4.5645
+ },
+ {
+  "id": 1345,
+  "name": "  Epsilon   Alpha ",
+  "label": "ZETA",
+  "weight": 2.2806
+ },
+ {
+  "id": 1346,
+  "name": "  iota  Alpha ",
+  "label": "ALPHA",
+  "weight": 6.855
+ },
+ {
+  "id": 1347,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 8.7249
+ },
+ {
+  "id": 1348,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 8.4081
+ },
+ {
+  "id": 1349,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.8751
+ },
+ {
+  "id": 1350,
+  "name": "  zeta  Kappa ",
+  "label": "BETA",
+  "weight": 6.0241
+ },
+ {
+  "id": 1351,
+  "name": "  zeta  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 7.533
+ },
+ {
+  "id": 1352,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 0.8955
+ },
+ {
+  "id": 1353,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 4.134
+ },
+ {
+  "id": 1354,
+  "name": "  Epsilon   ETA theta ",
+  "label": "IOTA",
+  "weight": 3.7242
+ },
+ {
+  "id": 1355,
+  "name": "  iota  Epsilon  ",
+  "label": "IOTA",
+  "weight": 6.0438
+ },
+ {
+  "id": 1356,
+  "name": "  Kappa  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.2797
+ },
+ {
+  "id": 1357,
+  "name": "  iota  Kappa ",
+  "label": "KAPPA",
+  "weight": 9.867
+ },
+ {
+  "id": 1358,
+  "name": "  zeta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 4.9061
+ },
+ {
+  "id": 1359,
+  "name": "  ETA theta  ETA theta ",
+  "label": "IOTA",
+  "weight": 4.2626
+ },
+ {
+  "id": 1360,
+  "name": "  Epsilon   iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.1473
+ },
+ {
+  "id": 1361,
+  "name": "  ETA theta  BETA ",
+  "label": "EPSILON ",
+  "weight": 1.5728
+ },
+ {
+  "id": 1362,
+  "name": "  BETA  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.9856
+ },
+ {
+  "id": 1363,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 2.2174
+ },
+ {
+  "id": 1364,
+  "name": "  iota  iota ",
+  "label": "KAPPA",
+  "weight": 1.7891
+ },
+ {
+  "id": 1365,
+  "name": "  Epsilon   zeta ",
+  "label": "EPSILON ",
+  "weight": 8.9532
+ },
+ {
+  "id": 1366,
+  "name": "  gamma  Delta  zeta ",
+  "label": "IOTA",
+  "weight": 0.9156
+ },
+ {
+  "id": 1367,
+  "name": "  Kappa  iota ",
+  "label": "EPSILON ",
+  "weight": 9.0936
+ },
+ {
+  "id": 1368,
+  "name": "  Epsilon   zeta ",
+  "label": "KAPPA",
+  "weight": 1.4397
+ },
+ {
+  "id": 1369,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 0.6111
+ },
+ {
+  "id": 1370,
+  "name": "  Epsilon   zeta ",
+  "label": "IOTA",
+  "weight": 6.6439
+ },
+ {
+  "id": 1371,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.0054
+ },
+ {
+  "id": 1372,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 7.9364
+ },
+ {
+  "id": 1373,
+  "name": "  Kappa  Kappa ",
+  "label": "ALPHA",
+  "weight": 1.6529
+ },
+ {
+  "id": 1374,
+  "name": "  Alpha  iota ",
+  "label": "IOTA",
+  "weight": 3.8537
+ },
+ {
+  "id": 1375,
+  "name": "  BETA  ETA theta ",
+  "label": "IOTA",
+  "weight": 3.5285
+ },
+ {
+  "id": 1376,
+  "name": "  ETA theta  BETA ",
+  "label": "ZETA",
+  "weight": 9.0129
+ },
+ {
+  "id": 1377,
+  "name": "  zeta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.944
+ },
+ {
+  "id": 1378,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 5.9258
+ },
+ {
+  "id": 1379,
+  "name": "  BETA  Kappa ",
+  "label": "BETA",
+  "weight": 7.0947
+ },
+ {
+  "id": 1380,
+  "name": "  zeta  Kappa ",
+  "label": "IOTA",
+  "weight": 5.9732
+ },
+ {
+  "id": 1381,
+  "name": "  BETA  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 2.9298
+ },
+ {
+  "id": 1382,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 0.3729
+ },
+ {
+  "id": 1383,
+  "name": "  ETA theta  Kappa ",
+  "label": "ALPHA",
+  "weight": 5.5687
+ },
+ {
+  "id": 1384,
+  "name": "  zeta  zeta ",
+  "label": "KAPPA",
+  "weight": 9.6949
+ },
+ {
+  "id": 1385,
+  "name": "  ETA theta  Kappa ",
+  "label": "BETA",
+  "weight": 7.884
+ },
+ {
+  "id": 1386,
+  "name": "  ETA theta  iota ",
+  "label": "ZETA",
+  "weight": 6.2701
+ },
+ {
+  "id": 1387,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.6432
+ },
+ {
+  "id": 1388,
+  "name": "  BETA  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.5205
+ },
+ {
+  "id": 1389,
+  "name": "  iota  BETA ",
+  "label": "BETA",
+  "weight": 2.6086
+ },
+ {
+  "id": 1390,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 9.7439
+ },
+ {
+  "id": 1391,
+  "name": "  gamma  Delta  zeta ",
+  "label": "ALPHA",
+  "weight": 0.8605
+ },
+ {
+  "id": 1392,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.5992
+ },
+ {
+  "id": 1393,
+  "name": "  gamma  Delta  iota ",
+  "label": "KAPPA",
+  "weight": 2.3639
+ },
+ {
+  "id": 1394,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 4.2619
+ },
+ {
+  "id": 1395,
+  "name": "  ETA theta  iota ",
+  "label": "BETA",
+  "weight": 9.5655
+ },
+ {
+  "id": 1396,
+  "name": "  iota  iota ",
+  "label": "EPSILON ",
+  "weight": 9.2881
+ },
+ {
+  "id": 1397,
+  "name": "  zeta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 7.4008
+ },
+ {
+  "id": 1398,
+  "name": "  Kappa  Alpha ",
+  "label": "EPSILON ",
+  "weight": 0.7552
+ },
+ {
+  "id": 1399,
+  "name": "  zeta  zeta ",
+  "label": "IOTA",
+  "weight": 9.0924
+ },
+ {
+  "id": 1400,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 5.4103
+ },
+ {
+  "id": 1401,
+  "name": "  BETA  ETA theta ",
+  "label": "KAPPA",
+  "weight": 7.0538
+ },
+ {
+  "id": 1402,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 3.4297
+ },
+ {
+  "id": 1403,
+  "name": "  Epsilon   zeta ",
+  "label": "EPSILON ",
+  "weight": 3.0271
+ },
+ {
+  "id": 1404,
+  "name": "  Kappa  zeta ",
+  "label": "IOTA",
+  "weight": 4.2256
+ },
+ {
+  "id": 1405,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 9.6991
+ },
+ {
+  "id": 1406,
+  "name": "  Kappa  BETA ",
+  "label": "ZETA",
+  "weight": 6.702
+ },
+ {
+  "id": 1407,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 2.2972
+ },
+ {
+  "id": 1408,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "BETA",
+  "weight": 2.6732
+ },
+ {
+  "id": 1409,
+  "name": "  Alpha  BETA ",
+  "label": "ETA THETA",
+  "weight": 4.0061
+ },
+ {
+  "id": 1410,
+  "name": "  BETA  iota ",
+  "label": "EPSILON ",
+  "weight": 1.1548
+ },
+ {
+  "id": 1411,
+  "name": "  Kappa  BETA ",
+  "label": "IOTA",
+  "weight": 4.6072
+ },
+ {
+  "id": 1412,
+  "name": "  ETA theta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 5.703
+ },
+ {
+  "id": 1413,
+  "name": "  iota  Kappa ",
+  "label": "EPSILON ",
+  "weight": 0.7465
+ },
+ {
+  "id": 1414,
+  "name": "  ETA theta  iota ",
+  "label": "BETA",
+  "weight": 9.0517
+ },
+ {
+  "id": 1415,
+  "name": "  zeta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 4.2554
+ },
+ {
+  "id": 1416,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 6.8435
+ },
+ {
+  "id": 1417,
+  "name": "  zeta  zeta ",
+  "label": "ETA THETA",
+  "weight": 0.4506
+ },
+ {
+  "id": 1418,
+  "name": "  Alpha  BETA ",
+  "label": "EPSILON ",
+  "weight": 9.604
+ },
+ {
+  "id": 1419,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 1.357
+ },
+ {
+  "id": 1420,
+  "name": "  ETA theta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.0753
+ },
+ {
+  "id": 1421,
+  "name": "  Alpha  iota ",
+  "label": "KAPPA",
+  "weight": 9.6715
+ },
+ {
+  "id": 1422,
+  "name": "  BETA  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 0.4906
+ },
+ {
+  "id": 1423,
+  "name": "  iota  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.3989
+ },
+ {
+  "id": 1424,
+  "name": "  Kappa  iota ",
+  "label": "BETA",
+  "weight": 2.8596
+ },
+ {
+  "id": 1425,
+  "name": "  BETA  Alpha ",
+  "label": "KAPPA",
+  "weight": 5.0274
+ },
+ {
+  "id": 1426,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "ZETA",
+  "weight": 3.8238
+ },
+ {
+  "id": 1427,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "IOTA",
+  "weight": 0.4898
+ },
+ {
+  "id": 1428,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 0.9376
+ },
+ {
+  "id": 1429,
+  "name": "  zeta  iota ",
+  "label": "EPSILON ",
+  "weight": 5.7058
+ },
+ {
+  "id": 1430,
+  "name": "  BETA  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.3685
+ },
+ {
+  "id": 1431,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 5.3995
+ },
+ {
+  "id": 1432,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.3687
+ },
+ {
+  "id": 1433,
+  "name": "  Alpha  Alpha ",
+  "label": "BETA",
+  "weight": 8.5156
+ },
+ {
+  "id": 1434,
+  "name": "  ETA theta  iota ",
+  "label": "IOTA",
+  "weight": 1.5572
+ },
+ {
+  "id": 1435,
+  "name": "  gamma  Delta  iota ",
+  "label": "IOTA",
+  "weight": 9.8994
+ },
+ {
+  "id": 1436,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 7.8013
+ },
+ {
+  "id": 1437,
+  "name": "  ETA theta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 1.4955
+ },
+ {
+  "id": 1438,
+  "name": "  Epsilon   zeta ",
+  "label": "EPSILON ",
+  "weight": 9.4116
+ },
+ {
+  "id": 1439,
+  "name": "  Epsilon   Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.8665
+ },
+ {
+  "id": 1440,
+  "name": "  ETA theta  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.4054
+ },
+ {
+  "id": 1441,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ETA THETA",
+  "weight": 7.9819
+ },
+ {
+  "id": 1442,
+  "name": "  BETA  zeta ",
+  "label": "ALPHA",
+  "weight": 2.6164
+ },
+ {
+  "id": 1443,
+  "name": "  BETA  iota ",
+  "label": "ETA THETA",
+  "weight": 4.7516
+ },
+ {
+  "id": 1444,
+  "name": "  Alpha  BETA ",
+  "label": "ETA THETA",
+  "weight": 6.5542
+ },
+ {
+  "id": 1445,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 2.489
+ },
+ {
+  "id": 1446,
+  "name": "  BETA  zeta ",
+  "label": "IOTA",
+  "weight": 0.3778
+ },
+ {
+  "id": 1447,
+  "name": "  Alpha  Alpha ",
+  "label": "ALPHA",
+  "weight": 3.7608
+ },
+ {
+  "id": 1448,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 8.923
+ },
+ {
+  "id": 1449,
+  "name": "  Kappa  zeta ",
+  "label": "ALPHA",
+  "weight": 2.1903
+ },
+ {
+  "id": 1450,
+  "name": "  ETA theta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 3.5151
+ },
+ {
+  "id": 1451,
+  "name": "  ETA theta  Kappa ",
+  "label": "KAPPA",
+  "weight": 0.5322
+ },
+ {
+  "id": 1452,
+  "name": "  BETA  iota ",
+  "label": "ETA THETA",
+  "weight": 3.9148
+ },
+ {
+  "id": 1453,
+  "name": "  BETA  zeta ",
+  "label": "EPSILON ",
+  "weight": 1.2195
+ },
+ {
+  "id": 1454,
+  "name": "  zeta  iota ",
+  "label": "ZETA",
+  "weight": 7.2515
+ },
+ {
+  "id": 1455,
+  "name": "  zeta  ETA theta ",
+  "label": "IOTA",
+  "weight": 1.0598
+ },
+ {
+  "id": 1456,
+  "name": "  iota  BETA ",
+  "label": "IOTA",
+  "weight": 0.9835
+ },
+ {
+  "id": 1457,
+  "name": "  BETA  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 4.7617
+ },
+ {
+  "id": 1458,
+  "name": "  zeta  Alpha ",
+  "label": "BETA",
+  "weight": 7.0224
+ },
+ {
+  "id": 1459,
+  "name": "  Epsilon   ETA theta ",
+  "label": "KAPPA",
+  "weight": 9.309
+ },
+ {
+  "id": 1460,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 5.7053
+ },
+ {
+  "id": 1461,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 5.9438
+ },
+ {
+  "id": 1462,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.4776
+ },
+ {
+  "id": 1463,
+  "name": "  Epsilon   BETA ",
+  "label": "ETA THETA",
+  "weight": 5.5769
+ },
+ {
+  "id": 1464,
+  "name": "  Epsilon   Alpha ",
+  "label": "ETA THETA",
+  "weight": 5.1019
+ },
+ {
+  "id": 1465,
+  "name": "  Epsilon   BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.5013
+ },
+ {
+  "id": 1466,
+  "name": "  iota  Kappa ",
+  "label": "KAPPA",
+  "weight": 3.4579
+ },
+ {
+  "id": 1467,
+  "name": "  iota  Alpha ",
+  "label": "ALPHA",
+  "weight": 8.7651
+ },
+ {
+  "id": 1468,
+  "name": "  iota  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 2.3062
+ },
+ {
+  "id": 1469,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "IOTA",
+  "weight": 3.7666
+ },
+ {
+  "id": 1470,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ETA THETA",
+  "weight": 2.0025
+ },
+ {
+  "id": 1471,
+  "name": "  iota  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 7.1882
+ },
+ {
+  "id": 1472,
+  "name": "  Kappa  zeta ",
+  "label": "BETA",
+  "weight": 1.2712
+ },
+ {
+  "id": 1473,
+  "name": "  ETA theta  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.4262
+ },
+ {
+  "id": 1474,
+  "name": "  Kappa  BETA ",
+  "label": "EPSILON ",
+  "weight": 8.4727
+ },
+ {
+  "id": 1475,
+  "name": "  iota  Kappa ",
+  "label": "ZETA",
+  "weight": 6.5801
+ },
+ {
+  "id": 1476,
+  "name": "  iota  BETA ",
+  "label": "ETA THETA",
+  "weight": 4.3821
+ },
+ {
+  "id": 1477,
+  "name": "  iota  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 2.5882
+ },
+ {
+  "id": 1478,
+  "name": "  zeta  Epsilon  ",
+  "label": "BETA",
+  "weight": 1.755
+ },
+ {
+  "id": 1479,
+  "name": "  iota  zeta ",
+  "label": "EPSILON ",
+  "weight": 5.8336
+ },
+ {
+  "id": 1480,
+  "name": "  zeta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.5419
+ },
+ {
+  "id": 1481,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 1.5051
+ },
+ {
+  "id": 1482,
+  "name": "  Alpha  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.6449
+ },
+ {
+  "id": 1483,
+  "name": "  Epsilon   Kappa ",
+  "label": "KAPPA",
+  "weight": 0.82
+ },
+ {
+  "id": 1484,
+  "name": "  zeta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 4.8767
+ },
+ {
+  "id": 1485,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 2.2731
+ },
+ {
+  "id": 1486,
+  "name": "  iota  Epsilon  ",
+  "label": "ZETA",
+  "weight": 5.1892
+ },
+ {
+  "id": 1487,
+  "name": "  iota  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.378
+ },
+ {
+  "id": 1488,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 9.766
+ },
+ {
+  "id": 1489,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 3.7851
+ },
+ {
+  "id": 1490,
+  "name": "  zeta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.4697
+ },
+ {
+  "id": 1491,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.9353
+ },
+ {
+  "id": 1492,
+  "name": "  Alpha  Kappa ",
+  "label": "ETA THETA",
+  "weight": 5.0705
+ },
+ {
+  "id": 1493,
+  "name": "  iota  iota ",
+  "label": "KAPPA",
+  "weight": 0.8795
+ },
+ {
+  "id": 1494,
+  "name": "  ETA theta  iota ",
+  "label": "BETA",
+  "weight": 4.3868
+ },
+ {
+  "id": 1495,
+  "name": "  zeta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 9.6717
+ },
+ {
+  "id": 1496,
+  "name": "  zeta  Epsilon  ",
+  "label": "BETA",
+  "weight": 5.0424
+ },
+ {
+  "id": 1497,
+  "name": "  Alpha  iota ",
+  "label": "ETA THETA",
+  "weight": 6.5912
+ },
+ {
+  "id": 1498,
+  "name": "  ETA theta  Alpha ",
+  "label": "ALPHA",
+  "weight": 7.7036
+ },
+ {
+  "id": 1499,
+  "name": "  iota  Kappa ",
+  "label": "ALPHA",
+  "weight": 3.6095
+ },
+ {
+  "id": 1500,
+  "name": "  Kappa  zeta ",
+  "label": "BETA",
+  "weight": 2.7354
+ },
+ {
+  "id": 1501,
+  "name": "  ETA theta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 0.371
+ },
+ {
+  "id": 1502,
+  "name": "  BETA  iota ",
+  "label": "IOTA",
+  "weight": 8.7172
+ },
+ {
+  "id": 1503,
+  "name": "  BETA  zeta ",
+  "label": "ZETA",
+  "weight": 6.6889
+ },
+ {
+  "id": 1504,
+  "name": "  ETA theta  Kappa ",
+  "label": "ALPHA",
+  "weight": 5.3692
+ },
+ {
+  "id": 1505,
+  "name": "  Kappa  Kappa ",
+  "label": "ETA THETA",
+  "weight": 5.1402
+ },
+ {
+  "id": 1506,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 9.7678
+ },
+ {
+  "id": 1507,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "ZETA",
+  "weight": 4.035
+ },
+ {
+  "id": 1508,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 5.8784
+ },
+ {
+  "id": 1509,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 1.9195
+ },
+ {
+  "id": 1510,
+  "name": "  BETA  Kappa ",
+  "label": "ZETA",
+  "weight": 7.6583
+ },
+ {
+  "id": 1511,
+  "name": "  zeta  zeta ",
+  "label": "EPSILON ",
+  "weight": 7.4047
+ },
+ {
+  "id": 1512,
+  "name": "  Alpha  Alpha ",
+  "label": "ZETA",
+  "weight": 5.5701
+ },
+ {
+  "id": 1513,
+  "name": "  Kappa  ETA theta ",
+  "label": "BETA",
+  "weight": 9.1211
+ },
+ {
+  "id": 1514,
+  "name": "  Kappa  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.3818
+ },
+ {
+  "id": 1515,
+  "name": "  BETA  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 0.3171
+ },
+ {
+  "id": 1516,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 1.0008
+ },
+ {
+  "id": 1517,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 2.2144
+ },
+ {
+  "id": 1518,
+  "name": "  Alpha  zeta ",
+  "label": "KAPPA",
+  "weight": 7.1209
+ },
+ {
+  "id": 1519,
+  "name": "  zeta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 4.0706
+ },
+ {
+  "id": 1520,
+  "name": "  zeta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 9.0532
+ },
+ {
+  "id": 1521,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.659
+ },
+ {
+  "id": 1522,
+  "name": "  iota  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.7901
+ },
+ {
+  "id": 1523,
+  "name": "  Kappa  zeta ",
+  "label": "IOTA",
+  "weight": 6.0595
+ },
+ {
+  "id": 1524,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "IOTA",
+  "weight": 7.4386
+ },
+ {
+  "id": 1525,
+  "name": "  Kappa  Kappa ",
+  "label": "KAPPA",
+  "weight": 4.2427
+ },
+ {
+  "id": 1526,
+  "name": "  BETA  iota ",
+  "label": "IOTA",
+  "weight": 8.8068
+ },
+ {
+  "id": 1527,
+  "name": "  BETA  zeta ",
+  "label": "BETA",
+  "weight": 2.1536
+ },
+ {
+  "id": 1528,
+  "name": "  BETA  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 5.9101
+ },
+ {
+  "id": 1529,
+  "name": "  BETA  ETA theta ",
+  "label": "IOTA",
+  "weight": 7.5418
+ },
+ {
+  "id": 1530,
+  "name": "  Alpha  Kappa ",
+  "label": "EPSILON ",
+  "weight": 1.3338
+ },
+ {
+  "id": 1531,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 9.1687
+ },
+ {
+  "id": 1532,
+  "name": "  Alpha  zeta ",
+  "label": "EPSILON ",
+  "weight": 3.5428
+ },
+ {
+  "id": 1533,
+  "name": "  Kappa  Alpha ",
+  "label": "IOTA",
+  "weight": 4.0011
+ },
+ {
+  "id": 1534,
+  "name": "  ETA theta  Kappa ",
+  "label": "ALPHA",
+  "weight": 6.7747
+ },
+ {
+  "id": 1535,
+  "name": "  Epsilon   Kappa ",
+  "label": "IOTA",
+  "weight": 9.5008
+ },
+ {
+  "id": 1536,
+  "name": "  Alpha  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.9959
+ },
+ {
+  "id": 1537,
+  "name": "  ETA theta  Alpha ",
+  "label": "ZETA",
+  "weight": 5.9884
+ },
+ {
+  "id": 1538,
+  "name": "  Epsilon   zeta ",
+  "label": "BETA",
+  "weight": 3.9269
+ },
+ {
+  "id": 1539,
+  "name": "  iota  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 8.2108
+ },
+ {
+  "id": 1540,
+  "name": "  Epsilon   zeta ",
+  "label": "BETA",
+  "weight": 6.3523
+ },
+ {
+  "id": 1541,
+  "name": "  ETA theta  BETA ",
+  "label": "ALPHA",
+  "weight": 3.2349
+ },
+ {
+  "id": 1542,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 4.4145
+ },
+ {
+  "id": 1543,
+  "name": "  Epsilon   Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.9309
+ },
+ {
+  "id": 1544,
+  "name": "  Epsilon   ETA theta ",
+  "label": "BETA",
+  "weight": 1.0212
+ },
+ {
+  "id": 1545,
+  "name": "  ETA theta  zeta ",
+  "label": "ZETA",
+  "weight": 2.8539
+ },
+ {
+  "id": 1546,
+  "name": "  ETA theta  ETA theta ",
+  "label": "ZETA",
+  "weight": 7.7466
+ },
+ {
+  "id": 1547,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 0.5663
+ },
+ {
+  "id": 1548,
+  "name": "  zeta  Epsilon  ",
+  "label": "BETA",
+  "weight": 1.4981
+ },
+ {
+  "id": 1549,
+  "name": "  Alpha  BETA ",
+  "label": "ALPHA",
+  "weight": 2.7477
+ },
+ {
+  "id": 1550,
+  "name": "  BETA  zeta ",
+  "label": "EPSILON ",
+  "weight": 4.535
+ },
+ {
+  "id": 1551,
+  "name": "  iota  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 6.3288
+ },
+ {
+  "id": 1552,
+  "name": "  Epsilon   Alpha ",
+  "label": "ALPHA",
+  "weight": 8.9185
+ },
+ {
+  "id": 1553,
+  "name": "  ETA theta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 0.5759
+ },
+ {
+  "id": 1554,
+  "name": "  ETA theta  Alpha ",
+  "label": "BETA",
+  "weight": 3.1942
+ },
+ {
+  "id": 1555,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 8.0618
+ },
+ {
+  "id": 1556,
+  "name": "  gamma  Delta  zeta ",
+  "label": "ZETA",
+  "weight": 2.1103
+ },
+ {
+  "id": 1557,
+  "name": "  Alpha  BETA ",
+  "label": "KAPPA",
+  "weight": 9.8163
+ },
+ {
+  "id": 1558,
+  "name": "  BETA  gamma  Delta ",
+  "label": "BETA",
+  "weight": 5.4983
+ },
+ {
+  "id": 1559,
+  "name": "  Kappa  zeta ",
+  "label": "KAPPA",
+  "weight": 6.2841
+ },
+ {
+  "id": 1560,
+  "name": "  BETA  zeta ",
+  "label": "IOTA",
+  "weight": 8.3448
+ },
+ {
+  "id": 1561,
+  "name": "  Alpha  iota ",
+  "label": "ALPHA",
+  "weight": 1.7496
+ },
+ {
+  "id": 1562,
+  "name": "  ETA theta  Alpha ",
+  "label": "BETA",
+  "weight": 0.329
+ },
+ {
+  "id": 1563,
+  "name": "  Alpha  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.3307
+ },
+ {
+  "id": 1564,
+  "name": "  iota  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.027
+ },
+ {
+  "id": 1565,
+  "name": "  ETA theta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 5.141
+ },
+ {
+  "id": 1566,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "BETA",
+  "weight": 0.4016
+ },
+ {
+  "id": 1567,
+  "name": "  Epsilon   BETA ",
+  "label": "ETA THETA",
+  "weight": 0.3848
+ },
+ {
+  "id": 1568,
+  "name": "  iota  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 8.6294
+ },
+ {
+  "id": 1569,
+  "name": "  gamma  Delta  zeta ",
+  "label": "KAPPA",
+  "weight": 2.0761
+ },
+ {
+  "id": 1570,
+  "name": "  BETA  iota ",
+  "label": "ZETA",
+  "weight": 3.4416
+ },
+ {
+  "id": 1571,
+  "name": "  Kappa  Alpha ",
+  "label": "BETA",
+  "weight": 0.4268
+ },
+ {
+  "id": 1572,
+  "name": "  Alpha  zeta ",
+  "label": "ZETA",
+  "weight": 0.1238
+ },
+ {
+  "id": 1573,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 4.3367
+ },
+ {
+  "id": 1574,
+  "name": "  BETA  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 1.5315
+ },
+ {
+  "id": 1575,
+  "name": "  Alpha  Kappa ",
+  "label": "KAPPA",
+  "weight": 4.1496
+ },
+ {
+  "id": 1576,
+  "name": "  iota  Alpha ",
+  "label": "ALPHA",
+  "weight": 6.1741
+ },
+ {
+  "id": 1577,
+  "name": "  Epsilon   Kappa ",
+  "label": "BETA",
+  "weight": 7.0029
+ },
+ {
+  "id": 1578,
+  "name": "  Kappa  iota ",
+  "label": "BETA",
+  "weight": 3.8943
+ },
+ {
+  "id": 1579,
+  "name": "  ETA theta  BETA ",
+  "label": "IOTA",
+  "weight": 1.1177
+ },
+ {
+  "id": 1580,
+  "name": "  iota  Kappa ",
+  "label": "IOTA",
+  "weight": 3.1771
+ },
+ {
+  "id": 1581,
+  "name": "  Alpha  BETA ",
+  "label": "EPSILON ",
+  "weight": 9.5165
+ },
+ {
+  "id": 1582,
+  "name": "  Alpha  BETA ",
+  "label": "ETA THETA",
+  "weight": 0.937
+ },
+ {
+  "id": 1583,
+  "name": "  iota  Kappa ",
+  "label": "ZETA",
+  "weight": 4.6749
+ },
+ {
+  "id": 1584,
+  "name": "  Epsilon   zeta ",
+  "label": "ZETA",
+  "weight": 3.8239
+ },
+ {
+  "id": 1585,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "BETA",
+  "weight": 2.4981
+ },
+ {
+  "id": 1586,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 8.7443
+ },
+ {
+  "id": 1587,
+  "name": "  BETA  BETA ",
+  "label": "BETA",
+  "weight": 6.3948
+ },
+ {
+  "id": 1588,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 3.6038
+ },
+ {
+  "id": 1589,
+  "name": "  Alpha  zeta ",
+  "label": "KAPPA",
+  "weight": 5.5658
+ },
+ {
+  "id": 1590,
+  "name": "  Kappa  Alpha ",
+  "label": "IOTA",
+  "weight": 2.5929
+ },
+ {
+  "id": 1591,
+  "name": "  zeta  Alpha ",
+  "label": "BETA",
+  "weight": 4.3009
+ },
+ {
+  "id": 1592,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ALPHA",
+  "weight": 7.5839
+ },
+ {
+  "id": 1593,
+  "name": "  gamma  Delta  zeta ",
+  "label": "ALPHA",
+  "weight": 4.9265
+ },
+ {
+  "id": 1594,
+  "name": "  Alpha  Alpha ",
+  "label": "ZETA",
+  "weight": 8.6881
+ },
+ {
+  "id": 1595,
+  "name": "  BETA  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 5.4312
+ },
+ {
+  "id": 1596,
+  "name": "  gamma  Delta  BETA ",
+  "label": "ZETA",
+  "weight": 8.5252
+ },
+ {
+  "id": 1597,
+  "name": "  iota  ETA theta ",
+  "label": "ALPHA",
+  "weight": 9.7499
+ },
+ {
+  "id": 1598,
+  "name": "  Kappa  Kappa ",
+  "label": "ALPHA",
+  "weight": 9.6956
+ },
+ {
+  "id": 1599,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 3.1882
+ },
+ {
+  "id": 1600,
+  "name": "  Epsilon   Alpha ",
+  "label": "ZETA",
+  "weight": 8.3953
+ },
+ {
+  "id": 1601,
+  "name": "  iota  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 5.5882
+ },
+ {
+  "id": 1602,
+  "name": "  Epsilon   Alpha ",
+  "label": "ETA THETA",
+  "weight": 1.9805
+ },
+ {
+  "id": 1603,
+  "name": "  Alpha  zeta ",
+  "label": "ETA THETA",
+  "weight": 4.5799
+ },
+ {
+  "id": 1604,
+  "name": "  Epsilon   BETA ",
+  "label": "ETA THETA",
+  "weight": 2.21
+ },
+ {
+  "id": 1605,
+  "name": "  ETA theta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 2.2371
+ },
+ {
+  "id": 1606,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 1.6594
+ },
+ {
+  "id": 1607,
+  "name": "  gamma  Delta  iota ",
+  "label": "ETA THETA",
+  "weight": 5.4178
+ },
+ {
+  "id": 1608,
+  "name": "  zeta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 1.4546
+ },
+ {
+  "id": 1609,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 0.7152
+ },
+ {
+  "id": 1610,
+  "name": "  Alpha  BETA ",
+  "label": "BETA",
+  "weight": 8.3215
+ },
+ {
+  "id": 1611,
+  "name": "  Epsilon   Alpha ",
+  "label": "KAPPA",
+  "weight": 2.9568
+ },
+ {
+  "id": 1612,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 9.4377
+ },
+ {
+  "id": 1613,
+  "name": "  Alpha  BETA ",
+  "label": "IOTA",
+  "weight": 8.3645
+ },
+ {
+  "id": 1614,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 3.1295
+ },
+ {
+  "id": 1615,
+  "name": "  BETA  ETA theta ",
+  "label": "ZETA",
+  "weight": 8.7527
+ },
+ {
+  "id": 1616,
+  "name": "  iota  iota ",
+  "label": "ETA THETA",
+  "weight": 4.3134
+ },
+ {
+  "id": 1617,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ZETA",
+  "weight": 1.5894
+ },
+ {
+  "id": 1618,
+  "name": "  gamma  Delta  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.6183
+ },
+ {
+  "id": 1619,
+  "name": "  iota  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 3.6595
+ },
+ {
+  "id": 1620,
+  "name": "  BETA  Kappa ",
+  "label": "BETA",
+  "weight": 5.3863
+ },
+ {
+  "id": 1621,
+  "name": "  zeta  ETA theta ",
+  "label": "IOTA",
+  "weight": 1.638
+ },
+ {
+  "id": 1622,
+  "name": "  iota  zeta ",
+  "label": "BETA",
+  "weight": 9.2997
+ },
+ {
+  "id": 1623,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 9.0551
+ },
+ {
+  "id": 1624,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "IOTA",
+  "weight": 3.2925
+ },
+ {
+  "id": 1625,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 1.1097
+ },
+ {
+  "id": 1626,
+  "name": "  Epsilon   Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.7219
+ },
+ {
+  "id": 1627,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.278
+ },
+ {
+  "id": 1628,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 2.0198
+ },
+ {
+  "id": 1629,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 4.5279
+ },
+ {
+  "id": 1630,
+  "name": "  Epsilon   Kappa ",
+  "label": "ZETA",
+  "weight": 7.9234
+ },
+ {
+  "id": 1631,
+  "name": "  Kappa  ETA theta ",
+  "label": "IOTA",
+  "weight": 1.7045
+ },
+ {
+  "id": 1632,
+  "name": "  BETA  Epsilon  ",
+  "label": "IOTA",
+  "weight": 2.9226
+ },
+ {
+  "id": 1633,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 6.9238
+ },
+ {
+  "id": 1634,
+  "name": "  gamma  Delta  BETA ",
+  "label": "BETA",
+  "weight": 7.9828
+ },
+ {
+  "id": 1635,
+  "name": "  zeta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 0.678
+ },
+ {
+  "id": 1636,
+  "name": "  gamma  Delta  BETA ",
+  "label": "ETA THETA",
+  "weight": 5.6752
+ },
+ {
+  "id": 1637,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 9.8637
+ },
+ {
+  "id": 1638,
+  "name": "  BETA  Kappa ",
+  "label": "ETA THETA",
+  "weight": 7.7665
+ },
+ {
+  "id": 1639,
+  "name": "  iota  zeta ",
+  "label": "KAPPA",
+  "weight": 8.6806
+ },
+ {
+  "id": 1640,
+  "name": "  iota  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.2359
+ },
+ {
+  "id": 1641,
+  "name": "  ETA theta  BETA ",
+  "label": "KAPPA",
+  "weight": 2.1812
+ },
+ {
+  "id": 1642,
+  "name": "  Epsilon   BETA ",
+  "label": "ALPHA",
+  "weight": 0.445
+ },
+ {
+  "id": 1643,
+  "name": "  gamma  Delta  iota ",
+  "label": "IOTA",
+  "weight": 2.7314
+ },
+ {
+  "id": 1644,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 9.1625
+ },
+ {
+  "id": 1645,
+  "name": "  ETA theta  zeta ",
+  "label": "KAPPA",
+  "weight": 3.6586
+ },
+ {
+  "id": 1646,
+  "name": "  gamma  Delta  zeta ",
+  "label": "BETA",
+  "weight": 4.0639
+ },
+ {
+  "id": 1647,
+  "name": "  Alpha  ETA theta ",
+  "label": "ALPHA",
+  "weight": 6.0763
+ },
+ {
+  "id": 1648,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ZETA",
+  "weight": 6.9285
+ },
+ {
+  "id": 1649,
+  "name": "  Kappa  Kappa ",
+  "label": "KAPPA",
+  "weight": 7.646
+ },
+ {
+  "id": 1650,
+  "name": "  Epsilon   BETA ",
+  "label": "ALPHA",
+  "weight": 7.3146
+ },
+ {
+  "id": 1651,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 1.2016
+ },
+ {
+  "id": 1652,
+  "name": "  zeta  zeta ",
+  "label": "ETA THETA",
+  "weight": 2.088
+ },
+ {
+  "id": 1653,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 5.8905
+ },
+ {
+  "id": 1654,
+  "name": "  iota  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 7.8039
+ },
+ {
+  "id": 1655,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ZETA",
+  "weight": 2.8631
+ },
+ {
+  "id": 1656,
+  "name": "  BETA  Epsilon  ",
+  "label": "ZETA",
+  "weight": 5.4934
+ },
+ {
+  "id": 1657,
+  "name": "  BETA  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.8458
+ },
+ {
+  "id": 1658,
+  "name": "  Epsilon   Alpha ",
+  "label": "BETA",
+  "weight": 2.3057
+ },
+ {
+  "id": 1659,
+  "name": "  iota  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.2252
+ },
+ {
+  "id": 1660,
+  "name": "  Epsilon   Alpha ",
+  "label": "ALPHA",
+  "weight": 1.8616
+ },
+ {
+  "id": 1661,
+  "name": "  Alpha  BETA ",
+  "label": "EPSILON ",
+  "weight": 0.7769
+ },
+ {
+  "id": 1662,
+  "name": "  BETA  Epsilon  ",
+  "label": "BETA",
+  "weight": 3.3584
+ },
+ {
+  "id": 1663,
+  "name": "  Kappa  zeta ",
+  "label": "IOTA",
+  "weight": 7.2403
+ },
+ {
+  "id": 1664,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 2.9103
+ },
+ {
+  "id": 1665,
+  "name": "  iota  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 2.1786
+ },
+ {
+  "id": 1666,
+  "name": "  zeta  zeta ",
+  "label": "EPSILON ",
+  "weight": 7.8399
+ },
+ {
+  "id": 1667,
+  "name": "  Alpha  Epsilon  ",
+  "label": "IOTA",
+  "weight": 6.5635
+ },
+ {
+  "id": 1668,
+  "name": "  Alpha  zeta ",
+  "label": "IOTA",
+  "weight": 2.4799
+ },
+ {
+  "id": 1669,
+  "name": "  Kappa  BETA ",
+  "label": "ZETA",
+  "weight": 4.8875
+ },
+ {
+  "id": 1670,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "BETA",
+  "weight": 0.3557
+ },
+ {
+  "id": 1671,
+  "name": "  zeta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.1513
+ },
+ {
+  "id": 1672,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 3.4922
+ },
+ {
+  "id": 1673,
+  "name": "  iota  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 0.7297
+ },
+ {
+  "id": 1674,
+  "name": "  Kappa  Alpha ",
+  "label": "BETA",
+  "weight": 4.5578
+ },
+ {
+  "id": 1675,
+  "name": "  Kappa  Alpha ",
+  "label": "KAPPA",
+  "weight": 1.2156
+ },
+ {
+  "id": 1676,
+  "name": "  Kappa  Alpha ",
+  "label": "EPSILON ",
+  "weight": 4.8433
+ },
+ {
+  "id": 1677,
+  "name": "  ETA theta  BETA ",
+  "label": "EPSILON ",
+  "weight": 7.6531
+ },
+ {
+  "id": 1678,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 2.8914
+ },
+ {
+  "id": 1679,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.8969
+ },
+ {
+  "id": 1680,
+  "name": "  Alpha  Epsilon  ",
+  "label": "ZETA",
+  "weight": 2.0753
+ },
+ {
+  "id": 1681,
+  "name": "  Epsilon   BETA ",
+  "label": "ALPHA",
+  "weight": 4.7363
+ },
+ {
+  "id": 1682,
+  "name": "  gamma  Delta  BETA ",
+  "label": "EPSILON ",
+  "weight": 1.9412
+ },
+ {
+  "id": 1683,
+  "name": "  iota  Epsilon  ",
+  "label": "BETA",
+  "weight": 8.2529
+ },
+ {
+  "id": 1684,
+  "name": "  Epsilon   Kappa ",
+  "label": "ALPHA",
+  "weight": 6.1336
+ },
+ {
+  "id": 1685,
+  "name": "  Epsilon   zeta ",
+  "label": "ETA THETA",
+  "weight": 3.9104
+ },
+ {
+  "id": 1686,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "BETA",
+  "weight": 9.7869
+ },
+ {
+  "id": 1687,
+  "name": "  Kappa  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.0781
+ },
+ {
+  "id": 1688,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 5.0754
+ },
+ {
+  "id": 1689,
+  "name": "  Kappa  BETA ",
+  "label": "ETA THETA",
+  "weight": 5.5214
+ },
+ {
+  "id": 1690,
+  "name": "  BETA  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.8262
+ },
+ {
+  "id": 1691,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ZETA",
+  "weight": 1.9474
+ },
+ {
+  "id": 1692,
+  "name": "  BETA  iota ",
+  "label": "ALPHA",
+  "weight": 6.9614
+ },
+ {
+  "id": 1693,
+  "name": "  Kappa  BETA ",
+  "label": "KAPPA",
+  "weight": 2.4214
+ },
+ {
+  "id": 1694,
+  "name": "  Alpha  ETA theta ",
+  "label": "IOTA",
+  "weight": 1.576
+ },
+ {
+  "id": 1695,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.5997
+ },
+ {
+  "id": 1696,
+  "name": "  Kappa  Kappa ",
+  "label": "EPSILON ",
+  "weight": 5.5413
+ },
+ {
+  "id": 1697,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 1.6433
+ },
+ {
+  "id": 1698,
+  "name": "  ETA theta  iota ",
+  "label": "ZETA",
+  "weight": 3.1762
+ },
+ {
+  "id": 1699,
+  "name": "  Epsilon   iota ",
+  "label": "IOTA",
+  "weight": 5.0735
+ },
+ {
+  "id": 1700,
+  "name": "  iota  zeta ",
+  "label": "IOTA",
+  "weight": 2.1949
+ },
+ {
+  "id": 1701,
+  "name": "  zeta  zeta ",
+  "label": "KAPPA",
+  "weight": 6.4873
+ },
+ {
+  "id": 1702,
+  "name": "  Alpha  Kappa ",
+  "label": "EPSILON ",
+  "weight": 6.2237
+ },
+ {
+  "id": 1703,
+  "name": "  iota  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.0772
+ },
+ {
+  "id": 1704,
+  "name": "  BETA  Alpha ",
+  "label": "ALPHA",
+  "weight": 3.8741
+ },
+ {
+  "id": 1705,
+  "name": "  BETA  iota ",
+  "label": "KAPPA",
+  "weight": 4.2582
+ },
+ {
+  "id": 1706,
+  "name": "  zeta  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.3508
+ },
+ {
+  "id": 1707,
+  "name": "  ETA theta  Kappa ",
+  "label": "ALPHA",
+  "weight": 8.2585
+ },
+ {
+  "id": 1708,
+  "name": "  iota  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 5.1109
+ },
+ {
+  "id": 1709,
+  "name": "  Alpha  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.1548
+ },
+ {
+  "id": 1710,
+  "name": "  gamma  Delta  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.2432
+ },
+ {
+  "id": 1711,
+  "name": "  BETA  Epsilon  ",
+  "label": "BETA",
+  "weight": 0.2172
+ },
+ {
+  "id": 1712,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "IOTA",
+  "weight": 0.5812
+ },
+ {
+  "id": 1713,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 3.3625
+ },
+ {
+  "id": 1714,
+  "name": "  BETA  Alpha ",
+  "label": "KAPPA",
+  "weight": 6.9946
+ },
+ {
+  "id": 1715,
+  "name": "  gamma  Delta  zeta ",
+  "label": "IOTA",
+  "weight": 5.2252
+ },
+ {
+  "id": 1716,
+  "name": "  Epsilon   iota ",
+  "label": "KAPPA",
+  "weight": 7.3618
+ },
+ {
+  "id": 1717,
+  "name": "  iota  Kappa ",
+  "label": "IOTA",
+  "weight": 2.9514
+ },
+ {
+  "id": 1718,
+  "name": "  Kappa  Epsilon  ",
+  "label": "ZETA",
+  "weight": 5.1775
+ },
+ {
+  "id": 1719,
+  "name": "  Kappa  iota ",
+  "label": "ZETA",
+  "weight": 6.0249
+ },
+ {
+  "id": 1720,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 4.6582
+ },
+ {
+  "id": 1721,
+  "name": "  iota  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 5.602
+ },
+ {
+  "id": 1722,
+  "name": "  BETA  Alpha ",
+  "label": "EPSILON ",
+  "weight": 1.9976
+ },
+ {
+  "id": 1723,
+  "name": "  ETA theta  zeta ",
+  "label": "ZETA",
+  "weight": 9.1539
+ },
+ {
+  "id": 1724,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 0.7391
+ },
+ {
+  "id": 1725,
+  "name": "  Epsilon   zeta ",
+  "label": "ZETA",
+  "weight": 7.6182
+ },
+ {
+  "id": 1726,
+  "name": "  BETA  Kappa ",
+  "label": "BETA",
+  "weight": 5.8644
+ },
+ {
+  "id": 1727,
+  "name": "  zeta  iota ",
+  "label": "IOTA",
+  "weight": 4.9527
+ },
+ {
+  "id": 1728,
+  "name": "  zeta  iota ",
+  "label": "ALPHA",
+  "weight": 0.931
+ },
+ {
+  "id": 1729,
+  "name": "  ETA theta  Kappa ",
+  "label": "ZETA",
+  "weight": 0.5286
+ },
+ {
+  "id": 1730,
+  "name": "  zeta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 4.727
+ },
+ {
+  "id": 1731,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ZETA",
+  "weight": 5.7178
+ },
+ {
+  "id": 1732,
+  "name": "  Alpha  iota ",
+  "label": "IOTA",
+  "weight": 3.9141
+ },
+ {
+  "id": 1733,
+  "name": "  iota  Kappa ",
+  "label": "ALPHA",
+  "weight": 8.8531
+ },
+ {
+  "id": 1734,
+  "name": "  iota  Epsilon  ",
+  "label": "IOTA",
+  "weight": 9.1162
+ },
+ {
+  "id": 1735,
+  "name": "  gamma  Delta  zeta ",
+  "label": "EPSILON ",
+  "weight": 4.1614
+ },
+ {
+  "id": 1736,
+  "name": "  BETA  zeta ",
+  "label": "KAPPA",
+  "weight": 9.2343
+ },
+ {
+  "id": 1737,
+  "name": "  iota  Kappa ",
+  "label": "ZETA",
+  "weight": 7.4124
+ },
+ {
+  "id": 1738,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 2.359
+ },
+ {
+  "id": 1739,
+  "name": "  iota  iota ",
+  "label": "ETA THETA",
+  "weight": 9.3549
+ },
+ {
+  "id": 1740,
+  "name": "  Alpha  zeta ",
+  "label": "BETA",
+  "weight": 2.299
+ },
+ {
+  "id": 1741,
+  "name": "  ETA theta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 2.3172
+ },
+ {
+  "id": 1742,
+  "name": "  Kappa  Alpha ",
+  "label": "ZETA",
+  "weight": 5.7571
+ },
+ {
+  "id": 1743,
+  "name": "  Alpha  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.4394
+ },
+ {
+  "id": 1744,
+  "name": "  ETA theta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 8.2253
+ },
+ {
+  "id": 1745,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "KAPPA",
+  "weight": 4.5854
+ },
+ {
+  "id": 1746,
+  "name": "  BETA  zeta ",
+  "label": "EPSILON ",
+  "weight": 0.241
+ },
+ {
+  "id": 1747,
+  "name": "  zeta  BETA ",
+  "label": "ETA THETA",
+  "weight": 9.0571
+ },
+ {
+  "id": 1748,
+  "name": "  Kappa  Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 7.4196
+ },
+ {
+  "id": 1749,
+  "name": "  BETA  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 6.1654
+ },
+ {
+  "id": 1750,
+  "name": "  BETA  Kappa ",
+  "label": "ALPHA",
+  "weight": 4.5946
+ },
+ {
+  "id": 1751,
+  "name": "  Alpha  Kappa ",
+  "label": "ETA THETA",
+  "weight": 7.2572
+ },
+ {
+  "id": 1752,
+  "name": "  ETA theta  zeta ",
+  "label": "ETA THETA",
+  "weight": 2.4815
+ },
+ {
+  "id": 1753,
+  "name": "  Epsilon   iota ",
+  "label": "ALPHA",
+  "weight": 1.0898
+ },
+ {
+  "id": 1754,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 5.2792
+ },
+ {
+  "id": 1755,
+  "name": "  ETA theta  iota ",
+  "label": "EPSILON ",
+  "weight": 9.8554
+ },
+ {
+  "id": 1756,
+  "name": "  BETA  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.7271
+ },
+ {
+  "id": 1757,
+  "name": "  gamma  Delta  iota ",
+  "label": "ZETA",
+  "weight": 3.1088
+ },
+ {
+  "id": 1758,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 3.2193
+ },
+ {
+  "id": 1759,
+  "name": "  zeta  BETA ",
+  "label": "BETA",
+  "weight": 8.1371
+ },
+ {
+  "id": 1760,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 9.687
+ },
+ {
+  "id": 1761,
+  "name": "  BETA  zeta ",
+  "label": "IOTA",
+  "weight": 3.1911
+ },
+ {
+  "id": 1762,
+  "name": "  iota  ETA theta ",
+  "label": "KAPPA",
+  "weight": 5.6012
+ },
+ {
+  "id": 1763,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.6961
+ },
+ {
+  "id": 1764,
+  "name": "  iota  BETA ",
+  "label": "ZETA",
+  "weight": 5.2561
+ },
+ {
+  "id": 1765,
+  "name": "  Alpha  zeta ",
+  "label": "ZETA",
+  "weight": 4.4276
+ },
+ {
+  "id": 1766,
+  "name": "  BETA  Alpha ",
+  "label": "ALPHA",
+  "weight": 3.7736
+ },
+ {
+  "id": 1767,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 9.7349
+ },
+ {
+  "id": 1768,
+  "name": "  ETA theta  iota ",
+  "label": "IOTA",
+  "weight": 2.0269
+ },
+ {
+  "id": 1769,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.1829
+ },
+ {
+  "id": 1770,
+  "name": "  zeta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 6.8355
+ },
+ {
+  "id": 1771,
+  "name": "  BETA  Alpha ",
+  "label": "KAPPA",
+  "weight": 7.0554
+ },
+ {
+  "id": 1772,
+  "name": "  Alpha  Alpha ",
+  "label": "BETA",
+  "weight": 0.1543
+ },
+ {
+  "id": 1773,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 9.2478
+ },
+ {
+  "id": 1774,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 6.2843
+ },
+ {
+  "id": 1775,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 3.3521
+ },
+ {
+  "id": 1776,
+  "name": "  Kappa  zeta ",
+  "label": "EPSILON ",
+  "weight": 8.9972
+ },
+ {
+  "id": 1777,
+  "name": "  ETA theta  Kappa ",
+  "label": "IOTA",
+  "weight": 9.7582
+ },
+ {
+  "id": 1778,
+  "name": "  BETA  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.6647
+ },
+ {
+  "id": 1779,
+  "name": "  zeta  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 7.3194
+ },
+ {
+  "id": 1780,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 0.4584
+ },
+ {
+  "id": 1781,
+  "name": "  Alpha  zeta ",
+  "label": "ETA THETA",
+  "weight": 8.4922
+ },
+ {
+  "id": 1782,
+  "name": "  iota  BETA ",
+  "label": "EPSILON ",
+  "weight": 8.6659
+ },
+ {
+  "id": 1783,
+  "name": "  Alpha  Epsilon  ",
+  "label": "IOTA",
+  "weight": 6.473
+ },
+ {
+  "id": 1784,
+  "name": "  Kappa  zeta ",
+  "label": "IOTA",
+  "weight": 0.3294
+ },
+ {
+  "id": 1785,
+  "name": "  BETA  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.039
+ },
+ {
+  "id": 1786,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "ALPHA",
+  "weight": 6.5644
+ },
+ {
+  "id": 1787,
+  "name": "  Epsilon   BETA ",
+  "label": "EPSILON ",
+  "weight": 7.0753
+ },
+ {
+  "id": 1788,
+  "name": "  zeta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.6033
+ },
+ {
+  "id": 1789,
+  "name": "  zeta  BETA ",
+  "label": "IOTA",
+  "weight": 3.3887
+ },
+ {
+  "id": 1790,
+  "name": "  iota  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 8.4222
+ },
+ {
+  "id": 1791,
+  "name": "  Alpha  zeta ",
+  "label": "KAPPA",
+  "weight": 5.252
+ },
+ {
+  "id": 1792,
+  "name": "  BETA  Epsilon  ",
+  "label": "IOTA",
+  "weight": 9.024
+ },
+ {
+  "id": 1793,
+  "name": "  Alpha  zeta ",
+  "label": "BETA",
+  "weight": 7.6455
+ },
+ {
+  "id": 1794,
+  "name": "  iota  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.2377
+ },
+ {
+  "id": 1795,
+  "name": "  BETA  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 0.3176
+ },
+ {
+  "id": 1796,
+  "name": "  BETA  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.4742
+ },
+ {
+  "id": 1797,
+  "name": "  iota  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.5796
+ },
+ {
+  "id": 1798,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 6.0821
+ },
+ {
+  "id": 1799,
+  "name": "  Alpha  BETA ",
+  "label": "ALPHA",
+  "weight": 4.3862
+ },
+ {
+  "id": 1800,
+  "name": "  Kappa  ETA theta ",
+  "label": "ALPHA",
+  "weight": 1.0422
+ },
+ {
+  "id": 1801,
+  "name": "  gamma  Delta  iota ",
+  "label": "KAPPA",
+  "weight": 8.7288
+ },
+ {
+  "id": 1802,
+  "name": "  ETA theta  zeta ",
+  "label": "EPSILON ",
+  "weight": 3.4412
+ },
+ {
+  "id": 1803,
+  "name": "  Alpha  iota ",
+  "label": "BETA",
+  "weight": 4.8562
+ },
+ {
+  "id": 1804,
+  "name": "  zeta  ETA theta ",
+  "label": "ALPHA",
+  "weight": 7.3903
+ },
+ {
+  "id": 1805,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "BETA",
+  "weight": 5.0784
+ },
+ {
+  "id": 1806,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 4.6099
+ },
+ {
+  "id": 1807,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 9.5653
+ },
+ {
+  "id": 1808,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 6.1117
+ },
+ {
+  "id": 1809,
+  "name": "  ETA theta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 6.1663
+ },
+ {
+  "id": 1810,
+  "name": "  zeta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 7.102
+ },
+ {
+  "id": 1811,
+  "name": "  BETA  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.9509
+ },
+ {
+  "id": 1812,
+  "name": "  ETA theta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 3.5655
+ },
+ {
+  "id": 1813,
+  "name": "  zeta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 3.0658
+ },
+ {
+  "id": 1814,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.1521
+ },
+ {
+  "id": 1815,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 3.0829
+ },
+ {
+  "id": 1816,
+  "name": "  Epsilon   Kappa ",
+  "label": "EPSILON ",
+  "weight": 8.961
+ },
+ {
+  "id": 1817,
+  "name": "  zeta  Kappa ",
+  "label": "ALPHA",
+  "weight": 6.5816
+ },
+ {
+  "id": 1818,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.7212
+ },
+ {
+  "id": 1819,
+  "name": "  iota  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 5.2514
+ },
+ {
+  "id": 1820,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 4.3224
+ },
+ {
+  "id": 1821,
+  "name": "  Epsilon   ETA theta ",
+  "label": "KAPPA",
+  "weight": 6.8229
+ },
+ {
+  "id": 1822,
+  "name": "  ETA theta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 5.1842
+ },
+ {
+  "id": 1823,
+  "name": "  ETA theta  Alpha ",
+  "label": "ZETA",
+  "weight": 8.7583
+ },
+ {
+  "id": 1824,
+  "name": "  Kappa  Alpha ",
+  "label": "KAPPA",
+  "weight": 8.757
+ },
+ {
+  "id": 1825,
+  "name": "  Kappa  Kappa ",
+  "label": "BETA",
+  "weight": 5.3964
+ },
+ {
+  "id": 1826,
+  "name": "  iota  BETA ",
+  "label": "EPSILON ",
+  "weight": 0.2967
+ },
+ {
+  "id": 1827,
+  "name": "  Alpha  Kappa ",
+  "label": "ETA THETA",
+  "weight": 5.1787
+ },
+ {
+  "id": 1828,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "EPSILON ",
+  "weight": 0.6811
+ },
+ {
+  "id": 1829,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 7.7258
+ },
+ {
+  "id": 1830,
+  "name": "  ETA theta  iota ",
+  "label": "ZETA",
+  "weight": 3.621
+ },
+ {
+  "id": 1831,
+  "name": "  Kappa  ETA theta ",
+  "label": "BETA",
+  "weight": 0.4431
+ },
+ {
+  "id": 1832,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 6.8032
+ },
+ {
+  "id": 1833,
+  "name": "  Alpha  Epsilon  ",
+  "label": "IOTA",
+  "weight": 8.8659
+ },
+ {
+  "id": 1834,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 0.5939
+ },
+ {
+  "id": 1835,
+  "name": "  Alpha  ETA theta ",
+  "label": "ALPHA",
+  "weight": 8.0216
+ },
+ {
+  "id": 1836,
+  "name": "  Kappa  zeta ",
+  "label": "EPSILON ",
+  "weight": 0.7688
+ },
+ {
+  "id": 1837,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 6.9558
+ },
+ {
+  "id": 1838,
+  "name": "  zeta  Kappa ",
+  "label": "ZETA",
+  "weight": 2.0761
+ },
+ {
+  "id": 1839,
+  "name": "  ETA theta  Kappa ",
+  "label": "ZETA",
+  "weight": 4.9444
+ },
+ {
+  "id": 1840,
+  "name": "  zeta  Kappa ",
+  "label": "IOTA",
+  "weight": 5.0199
+ },
+ {
+  "id": 1841,
+  "name": "  zeta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 1.5595
+ },
+ {
+  "id": 1842,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ALPHA",
+  "weight": 3.3979
+ },
+ {
+  "id": 1843,
+  "name": "  ETA theta  iota ",
+  "label": "EPSILON ",
+  "weight": 3.5234
+ },
+ {
+  "id": 1844,
+  "name": "  Kappa  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 7.1829
+ },
+ {
+  "id": 1845,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 7.4265
+ },
+ {
+  "id": 1846,
+  "name": "  iota  iota ",
+  "label": "BETA",
+  "weight": 4.1215
+ },
+ {
+  "id": 1847,
+  "name": "  BETA  zeta ",
+  "label": "IOTA",
+  "weight": 5.9211
+ },
+ {
+  "id": 1848,
+  "name": "  Kappa  Alpha ",
+  "label": "IOTA",
+  "weight": 9.4912
+ },
+ {
+  "id": 1849,
+  "name": "  iota  zeta ",
+  "label": "ZETA",
+  "weight": 8.4298
+ },
+ {
+  "id": 1850,
+  "name": "  zeta  Epsilon  ",
+  "label": "IOTA",
+  "weight": 6.6759
+ },
+ {
+  "id": 1851,
+  "name": "  ETA theta  iota ",
+  "label": "ETA THETA",
+  "weight": 7.324
+ },
+ {
+  "id": 1852,
+  "name": "  Kappa  iota ",
+  "label": "KAPPA",
+  "weight": 2.4918
+ },
+ {
+  "id": 1853,
+  "name": "  BETA  ETA theta ",
+  "label": "ZETA",
+  "weight": 6.7605
+ },
+ {
+  "id": 1854,
+  "name": "  BETA  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 2.6533
+ },
+ {
+  "id": 1855,
+  "name": "  zeta  Alpha ",
+  "label": "IOTA",
+  "weight": 6.8833
+ },
+ {
+  "id": 1856,
+  "name": "  iota  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 1.7036
+ },
+ {
+  "id": 1857,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.2981
+ },
+ {
+  "id": 1858,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "IOTA",
+  "weight": 8.0115
+ },
+ {
+  "id": 1859,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 2.0555
+ },
+ {
+  "id": 1860,
+  "name": "  zeta  zeta ",
+  "label": "ZETA",
+  "weight": 1.2106
+ },
+ {
+  "id": 1861,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "BETA",
+  "weight": 3.8024
+ },
+ {
+  "id": 1862,
+  "name": "  zeta  zeta ",
+  "label": "IOTA",
+  "weight": 3.3045
+ },
+ {
+  "id": 1863,
+  "name": "  iota  BETA ",
+  "label": "ZETA",
+  "weight": 9.3055
+ },
+ {
+  "id": 1864,
+  "name": "  gamma  Delta  zeta ",
+  "label": "ALPHA",
+  "weight": 0.2799
+ },
+ {
+  "id": 1865,
+  "name": "  iota  BETA ",
+  "label": "EPSILON ",
+  "weight": 4.5189
+ },
+ {
+  "id": 1866,
+  "name": "  BETA  BETA ",
+  "label": "ETA THETA",
+  "weight": 4.3477
+ },
+ {
+  "id": 1867,
+  "name": "  ETA theta  ETA theta ",
+  "label": "BETA",
+  "weight": 6.2048
+ },
+ {
+  "id": 1868,
+  "name": "  Alpha  Epsilon  ",
+  "label": "BETA",
+  "weight": 9.3785
+ },
+ {
+  "id": 1869,
+  "name": "  Kappa  BETA ",
+  "label": "EPSILON ",
+  "weight": 2.933
+ },
+ {
+  "id": 1870,
+  "name": "  ETA theta  BETA ",
+  "label": "ZETA",
+  "weight": 0.4969
+ },
+ {
+  "id": 1871,
+  "name": "  iota  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 4.8539
+ },
+ {
+  "id": 1872,
+  "name": "  ETA theta  iota ",
+  "label": "ETA THETA",
+  "weight": 0.5323
+ },
+ {
+  "id": 1873,
+  "name": "  zeta  BETA ",
+  "label": "ETA THETA",
+  "weight": 6.3997
+ },
+ {
+  "id": 1874,
+  "name": "  ETA theta  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 3.8877
+ },
+ {
+  "id": 1875,
+  "name": "  Alpha  Alpha ",
+  "label": "ALPHA",
+  "weight": 9.0529
+ },
+ {
+  "id": 1876,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 4.252
+ },
+ {
+  "id": 1877,
+  "name": "  Kappa  zeta ",
+  "label": "EPSILON ",
+  "weight": 2.7541
+ },
+ {
+  "id": 1878,
+  "name": "  Alpha  ETA theta ",
+  "label": "BETA",
+  "weight": 0.4088
+ },
+ {
+  "id": 1879,
+  "name": "  Kappa  BETA ",
+  "label": "KAPPA",
+  "weight": 2.6657
+ },
+ {
+  "id": 1880,
+  "name": "  ETA theta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 7.7605
+ },
+ {
+  "id": 1881,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "IOTA",
+  "weight": 2.0927
+ },
+ {
+  "id": 1882,
+  "name": "  zeta  Alpha ",
+  "label": "BETA",
+  "weight": 4.8522
+ },
+ {
+  "id": 1883,
+  "name": "  zeta  iota ",
+  "label": "GAMMA  DELTA",
+  "weight": 2.3714
+ },
+ {
+  "id": 1884,
+  "name": "  BETA  ETA theta ",
+  "label": "BETA",
+  "weight": 0.7183
+ },
+ {
+  "id": 1885,
+  "name": "  Alpha  iota ",
+  "label": "BETA",
+  "weight": 9.4274
+ },
+ {
+  "id": 1886,
+  "name": "  zeta  Alpha ",
+  "label": "KAPPA",
+  "weight": 6.4698
+ },
+ {
+  "id": 1887,
+  "name": "  ETA theta  iota ",
+  "label": "ALPHA",
+  "weight": 3.3038
+ },
+ {
+  "id": 1888,
+  "name": "  Alpha  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.3374
+ },
+ {
+  "id": 1889,
+  "name": "  zeta  iota ",
+  "label": "ALPHA",
+  "weight": 7.9774
+ },
+ {
+  "id": 1890,
+  "name": "  Epsilon   iota ",
+  "label": "IOTA",
+  "weight": 4.6558
+ },
+ {
+  "id": 1891,
+  "name": "  gamma  Delta  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 5.4602
+ },
+ {
+  "id": 1892,
+  "name": "  ETA theta  iota ",
+  "label": "BETA",
+  "weight": 9.0724
+ },
+ {
+  "id": 1893,
+  "name": "  Kappa  ETA theta ",
+  "label": "ALPHA",
+  "weight": 9.3826
+ },
+ {
+  "id": 1894,
+  "name": "  Kappa  iota ",
+  "label": "ZETA",
+  "weight": 0.1782
+ },
+ {
+  "id": 1895,
+  "name": "  ETA theta  Epsilon  ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.8643
+ },
+ {
+  "id": 1896,
+  "name": "  Alpha  ETA theta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.1818
+ },
+ {
+  "id": 1897,
+  "name": "  ETA theta  Alpha ",
+  "label": "ALPHA",
+  "weight": 2.3595
+ },
+ {
+  "id": 1898,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "BETA",
+  "weight": 7.4979
+ },
+ {
+  "id": 1899,
+  "name": "  iota  iota ",
+  "label": "IOTA",
+  "weight": 3.6842
+ },
+ {
+  "id": 1900,
+  "name": "  Alpha  Kappa ",
+  "label": "ETA THETA",
+  "weight": 9.1477
+ },
+ {
+  "id": 1901,
+  "name": "  Epsilon   zeta ",
+  "label": "BETA",
+  "weight": 4.8885
+ },
+ {
+  "id": 1902,
+  "name": "  ETA theta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.971
+ },
+ {
+  "id": 1903,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "EPSILON ",
+  "weight": 2.5967
+ },
+ {
+  "id": 1904,
+  "name": "  BETA  Epsilon  ",
+  "label": "ZETA",
+  "weight": 8.0699
+ },
+ {
+  "id": 1905,
+  "name": "  Alpha  ETA theta ",
+  "label": "KAPPA",
+  "weight": 3.4882
+ },
+ {
+  "id": 1906,
+  "name": "  BETA  BETA ",
+  "label": "ETA THETA",
+  "weight": 4.5856
+ },
+ {
+  "id": 1907,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 5.5675
+ },
+ {
+  "id": 1908,
+  "name": "  ETA theta  iota ",
+  "label": "IOTA",
+  "weight": 7.2691
+ },
+ {
+  "id": 1909,
+  "name": "  Alpha  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.5612
+ },
+ {
+  "id": 1910,
+  "name": "  iota  Alpha ",
+  "label": "IOTA",
+  "weight": 6.3621
+ },
+ {
+  "id": 1911,
+  "name": "  Kappa  BETA ",
+  "label": "BETA",
+  "weight": 5.4551
+ },
+ {
+  "id": 1912,
+  "name": "  ETA theta  zeta ",
+  "label": "ALPHA",
+  "weight": 0.483
+ },
+ {
+  "id": 1913,
+  "name": "  Epsilon   Epsilon  ",
+  "label": "ALPHA",
+  "weight": 1.4071
+ },
+ {
+  "id": 1914,
+  "name": "  Epsilon   Alpha ",
+  "label": "IOTA",
+  "weight": 5.4574
+ },
+ {
+  "id": 1915,
+  "name": "  Epsilon   Kappa ",
+  "label": "ALPHA",
+  "weight": 2.1265
+ },
+ {
+  "id": 1916,
+  "name": "  iota  gamma  Delta ",
+  "label": "IOTA",
+  "weight": 9.6161
+ },
+ {
+  "id": 1917,
+  "name": "  Alpha  Alpha ",
+  "label": "KAPPA",
+  "weight": 1.3989
+ },
+ {
+  "id": 1918,
+  "name": "  Alpha  Kappa ",
+  "label": "ALPHA",
+  "weight": 3.7513
+ },
+ {
+  "id": 1919,
+  "name": "  Epsilon   iota ",
+  "label": "KAPPA",
+  "weight": 3.7397
+ },
+ {
+  "id": 1920,
+  "name": "  iota  gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 9.3526
+ },
+ {
+  "id": 1921,
+  "name": "  Kappa  Epsilon  ",
+  "label": "BETA",
+  "weight": 1.7572
+ },
+ {
+  "id": 1922,
+  "name": "  iota  iota ",
+  "label": "IOTA",
+  "weight": 6.129
+ },
+ {
+  "id": 1923,
+  "name": "  BETA  Epsilon  ",
+  "label": "ETA THETA",
+  "weight": 9.2393
+ },
+ {
+  "id": 1924,
+  "name": "  ETA theta  ETA theta ",
+  "label": "ETA THETA",
+  "weight": 5.1654
+ },
+ {
+  "id": 1925,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "KAPPA",
+  "weight": 2.4677
+ },
+ {
+  "id": 1926,
+  "name": "  zeta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 1.488
+ },
+ {
+  "id": 1927,
+  "name": "  Epsilon   BETA ",
+  "label": "ZETA",
+  "weight": 4.9439
+ },
+ {
+  "id": 1928,
+  "name": "  zeta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 2.9131
+ },
+ {
+  "id": 1929,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "BETA",
+  "weight": 2.9127
+ },
+ {
+  "id": 1930,
+  "name": "  Kappa  iota ",
+  "label": "ALPHA",
+  "weight": 0.5074
+ },
+ {
+  "id": 1931,
+  "name": "  ETA theta  Alpha ",
+  "label": "ZETA",
+  "weight": 2.0124
+ },
+ {
+  "id": 1932,
+  "name": "  ETA theta  iota ",
+  "label": "IOTA",
+  "weight": 0.228
+ },
+ {
+  "id": 1933,
+  "name": "  Alpha  BETA ",
+  "label": "KAPPA",
+  "weight": 3.8668
+ },
+ {
+  "id": 1934,
+  "name": "  Kappa  gamma  Delta ",
+  "label": "BETA",
+  "weight": 0.756
+ },
+ {
+  "id": 1935,
+  "name": "  ETA theta  BETA ",
+  "label": "KAPPA",
+  "weight": 5.9138
+ },
+ {
+  "id": 1936,
+  "name": "  Kappa  Alpha ",
+  "label": "ETA THETA",
+  "weight": 3.8863
+ },
+ {
+  "id": 1937,
+  "name": "  zeta  BETA ",
+  "label": "ZETA",
+  "weight": 9.4987
+ },
+ {
+  "id": 1938,
+  "name": "  iota  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.7959
+ },
+ {
+  "id": 1939,
+  "name": "  Kappa  zeta ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.1341
+ },
+ {
+  "id": 1940,
+  "name": "  iota  gamma  Delta ",
+  "label": "ALPHA",
+  "weight": 2.5639
+ },
+ {
+  "id": 1941,
+  "name": "  Alpha  Kappa ",
+  "label": "IOTA",
+  "weight": 8.1591
+ },
+ {
+  "id": 1942,
+  "name": "  Alpha  gamma  Delta ",
+  "label": "GAMMA  DELTA",
+  "weight": 0.8271
+ },
+ {
+  "id": 1943,
+  "name": "  zeta  BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 9.0417
+ },
+ {
+  "id": 1944,
+  "name": "  zeta  zeta ",
+  "label": "ZETA",
+  "weight": 0.5046
+ },
+ {
+  "id": 1945,
+  "name": "  Alpha  Kappa ",
+  "label": "BETA",
+  "weight": 7.1453
+ },
+ {
+  "id": 1946,
+  "name": "  iota  Epsilon  ",
+  "label": "BETA",
+  "weight": 9.5748
+ },
+ {
+  "id": 1947,
+  "name": "  Alpha  Kappa ",
+  "label": "EPSILON ",
+  "weight": 5.8835
+ },
+ {
+  "id": 1948,
+  "name": "  Epsilon   ETA theta ",
+  "label": "ZETA",
+  "weight": 0.7969
+ },
+ {
+  "id": 1949,
+  "name": "  BETA  Epsilon  ",
+  "label": "ALPHA",
+  "weight": 0.2306
+ },
+ {
+  "id": 1950,
+  "name": "  zeta  Kappa ",
+  "label": "BETA",
+  "weight": 4.1014
+ },
+ {
+  "id": 1951,
+  "name": "  Alpha  zeta ",
+  "label": "ZETA",
+  "weight": 8.4454
+ },
+ {
+  "id": 1952,
+  "name": "  gamma  Delta  Kappa ",
+  "label": "IOTA",
+  "weight": 9.1765
+ },
+ {
+  "id": 1953,
+  "name": "  zeta  Alpha ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.07
+ },
+ {
+  "id": 1954,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "KAPPA",
+  "weight": 5.3547
+ },
+ {
+  "id": 1955,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 9.5217
+ },
+ {
+  "id": 1956,
+  "name": "  BETA  Kappa ",
+  "label": "BETA",
+  "weight": 0.5872
+ },
+ {
+  "id": 1957,
+  "name": "  iota  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 6.59
+ },
+ {
+  "id": 1958,
+  "name": "  Kappa  zeta ",
+  "label": "BETA",
+  "weight": 2.3661
+ },
+ {
+  "id": 1959,
+  "name": "  BETA  gamma  Delta ",
+  "label": "BETA",
+  "weight": 4.372
+ },
+ {
+  "id": 1960,
+  "name": "  ETA theta  iota ",
+  "label": "KAPPA",
+  "weight": 5.449
+ },
+ {
+  "id": 1961,
+  "name": "  Epsilon   BETA ",
+  "label": "GAMMA  DELTA",
+  "weight": 8.0029
+ },
+ {
+  "id": 1962,
+  "name": "  gamma  Delta  zeta ",
+  "label": "IOTA",
+  "weight": 4.6377
+ },
+ {
+  "id": 1963,
+  "name": "  iota  ETA theta ",
+  "label": "ALPHA",
+  "weight": 1.2405
+ },
+ {
+  "id": 1964,
+  "name": "  gamma  Delta  Alpha ",
+  "label": "IOTA",
+  "weight": 9.0125
+ },
+ {
+  "id": 1965,
+  "name": "  BETA  Alpha ",
+  "label": "ZETA",
+  "weight": 5.2363
+ },
+ {
+  "id": 1966,
+  "name": "  ETA theta  gamma  Delta ",
+  "label": "ETA THETA",
+  "weight": 5.1069
+ },
+ {
+  "id": 1967,
+  "name": "  Epsilon   iota ",
+  "label": "ZETA",
+  "weight": 6.8823
+ },
+ {
+  "id": 1968,
+  "name": "  zeta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 0.57
+ },
+ {
+  "id": 1969,
+  "name": "  iota  Alpha ",
+  "label": "ZETA",
+  "weight": 7.2488
+ },
+ {
+  "id": 1970,
+  "name": "  ETA theta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 5.0627
+ },
+ {
+  "id": 1971,
+  "name": "  Kappa  Kappa ",
+  "label": "KAPPA",
+  "weight": 9.1234
+ },
+ {
+  "id": 1972,
+  "name": "  Epsilon   Kappa ",
+  "label": "GAMMA  DELTA",
+  "weight": 6.0986
+ },
+ {
+  "id": 1973,
+  "name": "  zeta  Kappa ",
+  "label": "EPSILON ",
+  "weight": 7.5086
+ },
+ {
+  "id": 1974,
+  "name": "  Alpha  zeta ",
+  "label": "KAPPA",
+  "weight": 8.2343
+ },
+ {
+  "id": 1975,
+  "name": "  gamma  Delta  ETA theta ",
+  "label": "IOTA",
+  "weight": 8.8241
+ },
+ {
+  "id": 1976,
+  "name": "  Kappa  BETA ",
+  "label": "IOTA",
+  "weight": 5.0665
+ },
+ {
+  "id": 1977,
+  "name": "  ETA theta  Alpha ",
+  "label": "ETA THETA",
+  "weight": 9.1924
+ },
+ {
+  "id": 1978,
+  "name": "  zeta  BETA ",
+  "label": "EPSILON ",
+  "weight": 1.9835
+ },
+ {
+  "id": 1979,
+  "name": "  iota  Kappa ",
+  "label": "ZETA",
+  "weight": 3.1255
+ },
+ {
+  "id": 1980,
+  "name": "  gamma  Delta  gamma  Delta ",
+  "label": "ZETA",
+  "weight": 4.0499
+ },
+ {
+  "id": 1981,
+  "name": "  BETA  zeta ",
+  "label": "BETA",
+  "weight": 6.6992
+ },
+ {
+  "id": 1982,
+  "name": "  BETA  BETA ",
+  "label": "ZETA",
+  "weight": 2.1932
+ },
+ {
+  "id": 1983,
+  "name": "  gamma  Delta  zeta ",
+  "label": "IOTA",
+  "weight": 7.7648
+ },
+ {
+  "id": 1984,
+  "name": "  Kappa  Alpha ",
+  "label": "ETA THETA",
+  "weight": 3.3505
+ },
+ {
+  "id": 1985,
+  "name": "  iota  BETA ",
+  "label": "ETA THETA",
+  "weight": 5.8124
+ },
+ {
+  "id": 1986,
+  "name": "  Kappa  Epsilon  ",
+  "label": "KAPPA",
+  "weight": 7.4084
+ },
+ {
+  "id": 1987,
+  "name": "  Epsilon   ETA theta ",
+  "label": "IOTA",
+  "weight": 5.3758
+ },
+ {
+  "id": 1988,
+  "name": "  zeta  Alpha ",
+  "label": "EPSILON ",
+  "weight": 0.7106
+ },
+ {
+  "id": 1989,
+  "name": "  zeta  Kappa ",
+  "label": "ETA THETA",
+  "weight": 4.8816
+ },
+ {
+  "id": 1990,
+  "name": "  Epsilon   Kappa ",
+  "label": "IOTA",
+  "weight": 4.1492
+ },
+ {
+  "id": 1991,
+  "name": "  Epsilon   gamma  Delta ",
+  "label": "EPSILON ",
+  "weight": 1.363
+ },
+ {
+  "id": 1992,
+  "name": "  ETA theta  iota ",
+  "label": "EPSILON ",
+  "weight": 3.2201
+ },
+ {
+  "id": 1993,
+  "name": "  BETA  BETA ",
+  "label": "KAPPA",
+  "weight": 5.5343
+ },
+ {
+  "id": 1994,
+  "name": "  Alpha  BETA ",
+  "label": "ALPHA",
+  "weight": 9.5977
+ },
+ {
+  "id": 1995,
+  "name": "  Kappa  Alpha ",
+  "label": "EPSILON ",
+  "weight": 5.5304
+ },
+ {
+  "id": 1996,
+  "name": "  Epsilon   Alpha ",
+  "label": "ALPHA",
+  "weight": 2.7877
+ },
+ {
+  "id": 1997,
+  "name": "  Alpha  BETA ",
+  "label": "ETA THETA",
+  "weight": 5.4246
+ },
+ {
+  "id": 1998,
+  "name": "  zeta  Epsilon  ",
+  "label": "BETA",
+  "weight": 0.4804
+ },
+ {
+  "id": 1999,
+  "name": "  zeta  BETA ",
+  "label": "ALPHA",
+  "weight": 2.7498
+ }
+]

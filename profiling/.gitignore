@@ -1,0 +1,9 @@
+output/
+.state/
+
+# Byte-compiled Python from the harness itself and from example workloads.
+__pycache__/
+*.pyc
+
+# The example package builds its virtualenv here.
+packages/*/.venv/
