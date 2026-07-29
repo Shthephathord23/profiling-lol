@@ -90,6 +90,7 @@ def write_meta(
         "started_at": result.started_at,
         "finished_at": result.finished_at,
         "argv": result.argv,
+        "command": result.command,
         "kind": package.kind,
         "workdir": str(package.workdir),
         "forced": result.forced,

@@ -13,7 +13,7 @@ profiling/
   run_profiling.sh     entry point (a shim around lib/cli.py)
   install.sh           discovery-driven dependency installer
   config.env           global paths and defaults
-  lib/                 the Python core + common.sh for bash hooks
+  lib/                 the Python core, common.sh, and helper scripts
   packages/<name>/     .env + package.sh   -- a workload
   profilers/<name>/    .env + profiler.sh  -- a way to measure it
   output/              run artifacts (gitignored)
@@ -90,14 +90,14 @@ nothing and creates nothing.
     kind    : python-module
     workdir : .../packages/my-tool
     workload: .../python -m my_tool.cli --input data/sample.json --iterations 5
-    command : py-spy record --rate 100 --format flamegraph --subprocesses \
-              --output .../profile.svg --pid <workload-pid>
+    command : .../lib/pyspy-attach.sh --rate 100 --format flamegraph \
+              --output .../profile.svg --capture-exit-code 1 --subprocesses \
+              -- .../python -m my_tool.cli --input data/sample.json --iterations 5
 ```
 
-The `command` line comes from the profiler's optional `profiler_dry_run` hook.
-All four shipped profilers implement it by sharing one argv builder with
-`profiler_wrap`, so what is printed cannot drift from what runs. A third-party
-profiler without the hook falls back to naming the wrapper.
+The `command` line is produced by the very same `profiler_command` builder the
+real run uses — one harness, one builder, resolved once. It is not a rendering
+of what would run; it is what runs.
 
 On `--remove-output`: lists what would be deleted, deletes nothing.
 
@@ -317,26 +317,26 @@ PERF_FREQ=999
 Implement it in `profilers/perf/profiler.sh`:
 
 ```bash
-_perf_build_cmd() {
+profiler_command() {           # REQUIRED -- declare the command, run nothing
     cmd=(perf record -F "${PERF_FREQ:-999}" -g
          -o "$(run_artifact perf.data)" -- "${TARGET_ARGV[@]}")
 }
 
-profiler_wrap() {              # REQUIRED
-    require_bin perf
-    local cmd; _perf_build_cmd
-    "${cmd[@]}"                # its exit status IS the workload's
-}
-
-profiler_post() {              # OPTIONAL, only after a successful wrap
+profiler_post() {              # OPTIONAL, only after the command succeeded
     perf report -i "$(run_artifact perf.data)" > "$(run_artifact report.txt)"
 }
-
-profiler_dry_run() {           # OPTIONAL, for exact --dry-run output
-    local cmd; _perf_build_cmd
-    profiling_show_command "${cmd[@]}"
-}
 ```
+
+A profiler declares a **command**; the harness runs it. The same
+`profiler_command` builder serves `--dry-run` and the real run, so what
+`--dry-run` prints is by construction what executes — there is only one of
+them, so they cannot drift.
+
+The command is one argv. If a profiler needs two processes, a wait, or any
+sequencing, that goes in a small script under `lib/` which the command invokes
+— see `lib/pyspy-attach.sh`. Reaching for `bash -c '...'` technically fits in
+one argv but hides a shell script inside a string and makes `--dry-run`
+unreadable.
 
 `install.sh` and `install.sh --check` now cover it, and it appears in
 `--list-profilers`. No core change is needed — which is the whole point of the
@@ -365,7 +365,6 @@ From `lib/common.sh`, sourced before every hook:
 | `require_bin <bin>…` | abort with a clear message if a tool is missing |
 | `require_python_target` | abort unless the target is a Python program |
 | `profiling_flamegraphs_enabled` | honour the global flamegraph kill switch |
-| `profiling_show_command <argv>` | emit an argv for `--dry-run` |
 | `profiling_warn` / `profiling_error` / `profiling_die` | logging |
 
 ---
@@ -609,7 +608,7 @@ LINE_PROFILER_TARGETS="my_tool.core"   # comma-separated modules/functions
 The harness warns — it does not fail — when a package selects line-profiler
 without setting it.
 
-**py-spy starts the workload and attaches to it.** py-spy's exit status
+**py-spy runs through `lib/pyspy-attach.sh`.** py-spy's exit status
 describes *py-spy*, not the program it ran, and the two are uncorrelated.
 Running one command repeatedly, `py-spy record -- <cmd>` returns 0 for a
 workload that exited 3, and 1 for a workload that exited 0 — the latter
@@ -621,11 +620,12 @@ child exits 0 -> py-spy exits  0 1 1 1 1 0 1 1 1 1
 child exits 3 -> py-spy exits  1 0 1 1 1 1 1 0 0 1
 ```
 
-Since `profiler_wrap`'s status *is* the workload's status, trusting py-spy's
+Since the run's status *is* the workload's status, trusting py-spy's
 would report broken workloads as successful and healthy ones as broken, at
-random. So the profiler starts the workload itself and attaches py-spy to the
-resulting pid; the shell then owns the process and `wait` yields its exact
-exit code. The cost is that sampling begins a few milliseconds late, so the
+random. So `lib/pyspy-attach.sh` starts the workload itself and attaches py-spy to the
+resulting pid; the shell then owns the process and `wait` yields its exact exit
+code. It lives in its own file because a profiler declares a *command*, and
+anything needing two processes and a wait is a program, not a command. The cost is that sampling begins a few milliseconds late, so the
 very start of interpreter startup can be missed.
 
 A non-zero py-spy status is still used, but only to tell its failure modes

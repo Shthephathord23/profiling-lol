@@ -56,19 +56,6 @@ run_artifact() {
     printf '%s/%s\n' "${RUN_DIR:?RUN_DIR is not set}" "$1"
 }
 
-# ------------------------------------------------------------- --dry-run ---
-
-# Emit an argv for --dry-run, NUL-separated so no quoting can be lost.
-# Use it from the optional `profiler_dry_run` hook:
-#
-#   profiler_dry_run() { mytool_build_cmd; profiling_show_command "${cmd[@]}"; }
-#
-# Share one argv builder between profiler_wrap and profiler_dry_run and the
-# printed command is guaranteed to be the one that would really run.
-profiling_show_command() {
-    printf '%s\0' "$@"
-}
-
 # Fail early with a clear message when a tool the hook needs is not installed.
 require_bin() {
     local bin

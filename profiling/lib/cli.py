@@ -507,34 +507,41 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
     records: List[Dict] = []
     exit_code = EXIT_OK
 
-    for package_name in package_names:
-        package_entry = package_entries[package_name]
-        # Loaded without a profiler beneath it, purely to read PACKAGE_PROFILERS:
-        # which profilers apply cannot be known until the package has been read.
-        base_package = discovery.load_package(CONFIG_ENV, package_entry)
+    try:
+        for package_name in package_names:
+            package_entry = package_entries[package_name]
+            # Loaded without a profiler beneath it, purely to read
+            # PACKAGE_PROFILERS: which profilers apply cannot be known until
+            # the package has been read.
+            base_package = discovery.load_package(CONFIG_ENV, package_entry)
 
-        selected, forced = _select_profilers_for_package(
-            args,
-            base_package,
-            requested_profilers,
-            explicit,
-            all_profilers,
-            default_profilers,
-        )
-
-        for profiler_name in selected:
-            record, category = _run_pair(
-                ctx, package_entry, base_package, profiler_name, forced
+            selected, forced = _select_profilers_for_package(
+                args,
+                base_package,
+                requested_profilers,
+                explicit,
+                all_profilers,
+                default_profilers,
             )
-            records.append(record)
-            exit_code = max(exit_code, category)
 
-    if not args.dry_run:
-        summary = report.write_summary(
-            ctx.output_dir, sys.argv[1:], records, exit_code
-        )
-        print(f"\nSummary: {summary}")
-    _print_totals(records)
+            for profiler_name in selected:
+                record, category = _run_pair(
+                    ctx, package_entry, base_package, profiler_name, forced
+                )
+                records.append(record)
+                exit_code = max(exit_code, category)
+    finally:
+        # Written even when a later package aborts the invocation.  Runs that
+        # already completed have their artifacts on disk, so discarding the
+        # summary that indexes them would lose real results to an unrelated
+        # mistake in a package further down the list.
+        if not args.dry_run and records:
+            summary = report.write_summary(
+                ctx.output_dir, sys.argv[1:], records, exit_code
+            )
+            print(f"\nSummary: {summary}")
+        _print_totals(records)
+
     return exit_code
 
 
@@ -606,7 +613,7 @@ def _print_dry_run(
     """Resolve and print, without creating the run directory or any process."""
     with tempfile.TemporaryDirectory(prefix="profiling-dryrun-") as scratch:
         try:
-            argv, command = runner.resolve_dry_run(
+            argv, command = runner.resolve(
                 package.env,
                 package,
                 profiler,
@@ -626,13 +633,7 @@ def _print_dry_run(
     if forced:
         print("    forced  : yes (not in PACKAGE_PROFILERS)")
     print("    workload: " + " ".join(shlex.quote(a) for a in argv))
-    if command:
-        print("    command : " + " ".join(shlex.quote(a) for a in command))
-    else:
-        print(
-            f"    command : (profilers/{profiler.name}/profiler.sh :: profiler_wrap "
-            "-- define profiler_dry_run to show the exact command)"
-        )
+    print("    command : " + " ".join(shlex.quote(a) for a in command))
 
 
 def _print_totals(records: Sequence[Dict]) -> None:

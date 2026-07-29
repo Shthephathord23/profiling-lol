@@ -1,16 +1,18 @@
 # Template for a new profiler's hooks.
 #
+# A profiler declares a *command*.  The harness resolves that command once and
+# uses the same one for --dry-run and for the real run, so what --dry-run
+# prints is by construction what executes -- they cannot drift.
+#
 # Sourced with lib/common.sh already loaded, so these helpers are available:
 #   run_artifact <name>          -> absolute path inside RUN_DIR
-#   require_bin <bin>...         -> abort with a clear message if missing
 #   require_python_target        -> abort unless the target is a Python program
 #   profiling_flamegraphs_enabled-> honour the global flamegraph kill switch
 #   profiling_warn / profiling_error / profiling_die
-#   profiling_show_command <argv>-> emit an argv for --dry-run
 #
 # The target contract (see README.md "The target contract"):
 #   TARGET_ARGV[]        the complete plain command, interpreter included.
-#                        Use this for *prefix wrappers* (time, py-spy).
+#                        Use this for *prefix wrappers* (time).
 #   TARGET_PYTHON_ARGV[] the same minus the interpreter: `-m module args...`.
 #                        Use this for *interpreter replacements* (viztracer,
 #                        kernprof).  Unset when PACKAGE_KIND=exec, so call
@@ -21,9 +23,14 @@
 # Also exported: RUN_DIR RUN_ID PACKAGE_NAME PROFILER_NAME PROFILING_ROOT
 #                REPO_ROOT PACKAGE_WORKDIR
 
-# Build the command once and share it between wrap and dry-run, so --dry-run
-# can never print something different from what actually runs.
-_template_build_cmd() {
+# REQUIRED.  Populate `cmd` with the command to run.  Do not run anything here.
+#
+# The command is one argv.  If your profiler needs two processes, a wait, or
+# any sequencing, put that in a small script under lib/ and make the command
+# invoke it -- see lib/pyspy-attach.sh.  Do not reach for `bash -c '...'`:
+# it technically fits in one argv, but it hides a shell script inside a string
+# and makes --dry-run unreadable.
+profiler_command() {
     cmd=(
         mytool
         --output "$(run_artifact "${MYTOOL_OUTPUT:-profile.out}")"
@@ -33,17 +40,8 @@ _template_build_cmd() {
     )
 }
 
-# REQUIRED.  Runs the workload under the profiler.  Receives TARGET_ARGV as
-# positional arguments as well.  Its exit status *is* the workload's exit
-# status -- do not swallow it.
-profiler_wrap() {
-    require_bin mytool
-    local cmd
-    _template_build_cmd
-    "${cmd[@]}"
-}
-
-# OPTIONAL.  Post-processing, run only when profiler_wrap succeeded.
+# OPTIONAL.  Post-processing, run only when the command succeeded.  This is the
+# place for a second command -- rendering a report, converting a format.
 # Prefer warning over failing here: a missing report should not turn a good
 # profiling run into a red build.
 #profiler_post() {
@@ -51,10 +49,3 @@ profiler_wrap() {
 #        "$(run_artifact "${MYTOOL_OUTPUT:-profile.out}")" \
 #        > "$(run_artifact report.txt)"
 #}
-
-# OPTIONAL but recommended.  Print the exact command --dry-run should show.
-profiler_dry_run() {
-    local cmd
-    _template_build_cmd
-    profiling_show_command "${cmd[@]}"
-}

@@ -2,7 +2,9 @@
 # the Python launcher, so it takes TARGET_PYTHON_ARGV (`-m module args...`),
 # never TARGET_ARGV -- `viztracer python -m tool` would trace the wrong thing.
 
-_viztracer_build_cmd() {
+profiler_command() {
+    require_python_target
+    # VIZTRACER_FLAGS is intentionally unquoted: it is a flag list.
     # shellcheck disable=SC2206
     cmd=(
         viztracer
@@ -12,19 +14,4 @@ _viztracer_build_cmd() {
         ${VIZTRACER_FLAGS}
         "${TARGET_PYTHON_ARGV[@]}"
     )
-}
-
-profiler_wrap() {
-    require_python_target
-    require_bin viztracer
-    local cmd
-    _viztracer_build_cmd
-    "${cmd[@]}"
-}
-
-profiler_dry_run() {
-    require_python_target
-    local cmd
-    _viztracer_build_cmd
-    profiling_show_command "${cmd[@]}"
 }

@@ -2,7 +2,8 @@
 # It accepts Python's own trailing shape, so TARGET_PYTHON_ARGV drops straight
 # in after the flags.
 
-_kernprof_build_cmd() {
+profiler_command() {
+    require_python_target
     cmd=(kernprof --line-by-line)
     if [ -n "${LINE_PROFILER_TARGETS}" ]; then
         cmd+=(--prof-mod "$LINE_PROFILER_TARGETS")
@@ -14,15 +15,9 @@ _kernprof_build_cmd() {
     )
 }
 
-profiler_wrap() {
-    require_python_target
-    require_bin kernprof
-    local cmd
-    _kernprof_build_cmd
-    "${cmd[@]}"
-}
-
-# Turn the binary .lprof into the human-readable line table.
+# Turn the binary .lprof into the human-readable line table.  This is why
+# profiler_post survives as a hook: rendering a report is a second command, and
+# folding it into the first would mean hiding a shell script inside an argv.
 profiler_post() {
     local lprof report
     lprof="$(run_artifact "${LINE_PROFILER_OUTPUT:-out.lprof}")"
@@ -45,11 +40,4 @@ profiler_post() {
             "line-profiler produced an empty report. Set LINE_PROFILER_TARGETS in" \
             "packages/$PACKAGE_NAME/.env, or decorate functions with @profile."
     fi
-}
-
-profiler_dry_run() {
-    require_python_target
-    local cmd
-    _kernprof_build_cmd
-    profiling_show_command "${cmd[@]}"
 }

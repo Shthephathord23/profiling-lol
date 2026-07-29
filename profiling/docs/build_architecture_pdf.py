@@ -156,7 +156,7 @@ def cover(canvas, doc):
     canvas.setFont("Courier", 8.6)
     canvas.setFillColor(colors.HexColor("#7f8ea3"))
     canvas.drawString(21 * mm, h - 72 * mm,
-                      "2349 lines  /  7 Python modules  /  4 profilers  /  111 checks")
+                      "2336 lines  /  7 Python modules  /  4 profilers  /  111 checks")
     canvas.setStrokeColor(RULE)
     canvas.setLineWidth(0.5)
     canvas.line(21 * mm, 15 * mm, w - 21 * mm, 15 * mm)
@@ -244,7 +244,8 @@ A(code("""
          |          +--> bash: common.sh + target.sh + package.sh + profiler.sh
          |                        |
          |                        +--> package_pre_run
-         |                        +--> profiler_wrap  <-- the workload runs here
+         |                        +--> profiler_command   <-- builds the command
+  |                        +--> "${cmd[@]}"       <-- the workload runs here
          |                        +--> profiler_post
          |                        +--> package_post_run   (EXIT trap)
          |
@@ -309,7 +310,7 @@ profiling/
 
   profilers/<name>/       a way to measure
     .env                  declares it
-    profiler.sh           required profiler_wrap, optional post/dry_run
+    profiler.sh           required profiler_command, optional profiler_post
 
   output/                 run artifacts        (gitignored)
   .state/                 package init stamps  (gitignored)
@@ -842,7 +843,11 @@ A(code("""
 declare -F package_command  && package_command      # escape hatch may override
 printf '%s\\0' "${TARGET_ARGV[@]}" > "$PROFILING_ARGV_FILE"   # report the truth
 
-declare -F profiler_wrap || { profiling_error "no profiler_wrap"; exit 78; }
+declare -F profiler_command || { profiling_error "no profiler_command"; exit 78; }
+
+cmd=(); profiler_command                # build it
+printf '%s\\0' "${cmd[@]}" > "$COMMAND_FILE"
+[ "$PROFILING_RESOLVE_ONLY" = 1 ] && exit 0   # <-- --dry-run stops here
 
 __profiling_post_run() { declare -F package_post_run && package_post_run; }
 trap __profiling_post_run EXIT          # <-- fires even on failure or kill
@@ -851,7 +856,7 @@ cd "$PACKAGE_WORKDIR" || exit 77
 
 declare -F package_pre_run && package_pre_run || exit $?
 
-profiler_wrap "${TARGET_ARGV[@]}"       # <-- THE WORKLOAD RUNS HERE
+"${cmd[@]}"                             # <-- THE WORKLOAD RUNS HERE
 __profiling_status=$?
 
 [ $__profiling_status -eq 0 ] && declare -F profiler_post && profiler_post
@@ -866,7 +871,7 @@ A(table(
       "It is an EXIT trap, not a line after the call. Verified for a failing workload, "
       "a failing pre_run, and a timeout kill"],
      ["The workload's exit status survives untouched",
-      "<font face='Courier' size='8'>profiler_wrap</font>'s status is captured "
+      "the resolved command's status is captured "
       "immediately and is what the script exits with. A pre_run that returns 42 "
       "produces <font face='Courier' size='8'>exit_code: 42</font> in meta.json"],
      ["<font face='Courier' size='8'>profiler_post</font> only runs on success",
@@ -893,10 +898,10 @@ A(p("\"Print the exact command each profiler would execute\" is not achievable f
     "exists once the hook has expanded its variables. Rather than approximate it, the "
     "contract adds an optional hook:", Body))
 A(code("""
-_pyspy_build_cmd()  { cmd=(py-spy record --rate "$PYSPY_RATE" ...); }
+profiler_command() { cmd=(py-spy record --rate "$PYSPY_RATE" ...); }
 
-profiler_wrap()     { local cmd; _pyspy_build_cmd; "${cmd[@]}"; }
-profiler_dry_run()  { local cmd; _pyspy_build_cmd; profiling_show_command "${cmd[@]}"; }
+# --dry-run prints "${cmd[@]}".  The real run executes "${cmd[@]}".
+# One builder, one harness, resolved once -- they cannot drift.
 """))
 A(p("Both paths share one argv builder, so the printed command provably cannot drift "
     "from the executed one. All four shipped profilers implement it. A third-party "
@@ -1145,7 +1150,7 @@ child exits 3  ->  py-spy exits  1 0 1 1 1 1 1 0 0 1
 A(p("The 1s on a <i>succeeding</i> child come from the flamegraph renderer reporting "
     "\"No stack counts found\" - a function of how long the workload ran, not of "
     "whether it worked. Since "
-    "<font face='Courier' size='8.6'>profiler_wrap</font>'s status <i>is</i> the "
+    "the run's status <i>is</i> the "
     "workload's status, trusting py-spy's number would report broken workloads as "
     "successful and healthy ones as broken, at random.", Body))
 A(p("So the profiler starts the workload itself and attaches py-spy to the resulting "
@@ -1204,14 +1209,14 @@ A(p("SECTION 15", Kick))
 A(p("Is this too much code?", H1))
 A(p("An honest accounting", Cap))
 
-A(p("2349 lines total, 1854 excluding comments and blanks. That is a fair thing to "
+A(p("2336 lines total, 1839 excluding comments and blanks. That is a fair thing to "
     "challenge. Here is where it actually goes.", Body))
 
 A(table(
     ["Module", "Lines", "What it owns"],
     [["cli.py", "720", "Parser (70), three terminal commands (116), _run_pair (113), "
       "cmd_run (71), dry-run printing, helpers, signals"],
-     ["runner.py", "583", "Two bash harnesses as string constants (~70), execute (96), "
+     ["runner.py", "583", "One bash harness as a string constant (~55), execute (96), "
       "target building (70), dry-run resolution (57), process-group control (60)"],
      ["discovery.py", "236", "Scanning (40), typed accessors (110), selection (35)"],
      ["report.py", "228", "meta.json (60), listings (40), table renderer (25), summary (40)"],

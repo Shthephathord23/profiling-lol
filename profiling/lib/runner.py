@@ -40,7 +40,7 @@ __all__ = [
     "render_target_sh",
     "execute",
     "reset_run_dir",
-    "resolve_dry_run",
+    "resolve",
 ]
 
 RUN_ID_RE = re.compile(r"^\d{8}-\d{6}-[0-9a-f]{4}$")
@@ -91,6 +91,7 @@ class RunResult:
     reason: str = ""
     forced: bool = False
     argv: List[str] = field(default_factory=list)
+    command: List[str] = field(default_factory=list)
     started_at: str = ""
     finished_at: str = ""
 
@@ -120,7 +121,7 @@ def build_target(package: Package) -> Target:
     """Derive the target contract from the package's `.env` declarations.
 
     A ``package_command`` hook may override this wholesale; see
-    ``resolve_dry_run``, which asks bash for the final arrays.
+    ``resolve``, which asks bash for the final arrays.
     """
     kind = package.kind
     entry = package.entry_point
@@ -191,47 +192,40 @@ def render_target_sh(target: Target, package: Package, profiler: Profiler) -> st
 
 # ------------------------------------------------------------- harnesses ---
 
-# Everything --dry-run needs, without running anything: sources the same files
-# the real harness does, lets a package_command hook have the last word on the
-# argv, then asks the profiler for the exact command it would execute.
+# One harness serves --dry-run and the real run alike.
 #
-# The argv is written before profiler_dry_run runs, so a profiler whose hook
-# fails still yields a usable workload line.  Profilers that do not implement
-# the hook simply produce no second file, and --dry-run names the wrapper
-# instead of guessing.
-_DRYRUN_HARNESS = r"""
-set -e
+# It sources the same files either way and calls the same profiler_command
+# builder, so the command --dry-run prints is by construction the command that
+# executes -- they cannot drift, because there is only one of them.
+#
+# With PROFILING_RESOLVE_ONLY=1 it stops right after writing what it resolved.
+# Otherwise it goes on to run the workload, all in this one bash process so
+# that the hooks share shell state and package_post_run can be an EXIT trap
+# that fires even when the run fails or is killed.
+_HARNESS = r"""
+set -o pipefail
 . "$PROFILING_ROOT/lib/common.sh"
 . "$PROFILING_TARGET_FILE"
 if [ -f "$PROFILING_PACKAGE_SH" ]; then . "$PROFILING_PACKAGE_SH"; fi
 if [ -f "$PROFILING_PROFILER_SH" ]; then . "$PROFILING_PROFILER_SH"; fi
-if declare -F package_command >/dev/null; then
-  package_command
-fi
-printf '%s\0' "${TARGET_ARGV[@]}" > "$PROFILING_ARGV_FILE"
-if declare -F profiler_dry_run >/dev/null; then
-  profiler_dry_run > "$PROFILING_DRYRUN_FILE"
-fi
-"""
 
-# The real run.  Everything happens in one bash process so that the hooks share
-# state, and package_post_run is installed as an EXIT trap so it also runs when
-# the workload fails or the process is killed on timeout.
-_RUN_HARNESS = r"""
-set -o pipefail
-. "$PROFILING_ROOT/lib/common.sh"
-. "$RUN_DIR/target.sh"
-if [ -f "$PROFILING_PACKAGE_SH" ]; then . "$PROFILING_PACKAGE_SH"; fi
-if [ -f "$PROFILING_PROFILER_SH" ]; then . "$PROFILING_PROFILER_SH"; fi
-
+# The package may rewrite the workload entirely.
 if declare -F package_command >/dev/null; then
   package_command
 fi
 printf '%s\0' "${TARGET_ARGV[@]}" > "$PROFILING_ARGV_FILE"
 
-if ! declare -F profiler_wrap >/dev/null; then
-  profiling_error "profiler '$PROFILER_NAME' defines no profiler_wrap function"
+if ! declare -F profiler_command >/dev/null; then
+  profiling_error "profiler '$PROFILER_NAME' defines no profiler_command function"
   exit 78
+fi
+
+cmd=()
+profiler_command
+printf '%s\0' "${cmd[@]}" > "$PROFILING_COMMAND_FILE"
+
+if [ "${PROFILING_RESOLVE_ONLY:-0}" = "1" ]; then
+  exit 0
 fi
 
 __profiling_post_run() {
@@ -254,7 +248,7 @@ if declare -F package_pre_run >/dev/null; then
   }
 fi
 
-profiler_wrap "${TARGET_ARGV[@]}"
+"${cmd[@]}"
 __profiling_status=$?
 
 if [ "$__profiling_status" -eq 0 ] && declare -F profiler_post >/dev/null; then
@@ -274,8 +268,9 @@ def _hook_env(
     profiler: Profiler,
     run_dir: Path,
     run_id: str,
+    target_file: Path,
     argv_file: Path,
-    target_file: Optional[Path] = None,
+    command_file: Path,
 ) -> Dict[str, str]:
     """The environment every hook sees (§6)."""
     out = dict(env)
@@ -288,23 +283,22 @@ def _hook_env(
             "PACKAGE_WORKDIR": str(package.workdir),
             "PROFILING_PACKAGE_SH": str(package.entry.script_file),
             "PROFILING_PROFILER_SH": str(profiler.entry.script_file),
+            "PROFILING_TARGET_FILE": str(target_file),
             "PROFILING_ARGV_FILE": str(argv_file),
+            "PROFILING_COMMAND_FILE": str(command_file),
         }
     )
-    if target_file is not None:
-        out["PROFILING_TARGET_FILE"] = str(target_file)
     return out
 
 
-def _read_argv(argv_file: Path) -> Optional[List[str]]:
-    if not argv_file.is_file():
+def _read_nul(path: Path) -> Optional[List[str]]:
+    if not path.is_file():
         return None
-    raw = argv_file.read_bytes()
-    parts = [p.decode("utf-8", "replace") for p in raw.split(b"\0") if p]
+    parts = [p.decode("utf-8", "replace") for p in path.read_bytes().split(b"\0") if p]
     return parts or None
 
 
-def resolve_dry_run(
+def resolve(
     env: Mapping[str, str],
     package: Package,
     profiler: Profiler,
@@ -312,55 +306,38 @@ def resolve_dry_run(
     scratch_dir: Path,
     run_dir: Path,
     run_id: str,
-) -> "tuple[List[str], Optional[List[str]]]":
-    """Resolve what --dry-run should print, without creating or running anything.
+) -> "tuple[List[str], List[str]]":
+    """Resolve (workload argv, profiler command) without running anything.
 
-    Returns (workload argv, profiler command).  The argv honours a
-    ``package_command`` override, so the printed workload is the one that would
-    really run.  The command comes from the optional ``profiler_dry_run`` hook
-    and is ``None`` for a profiler that does not implement it -- exactness for
-    an arbitrary bash function needs that function's cooperation, so the
-    alternative would be a plausible guess, which is worse than saying nothing.
-
-    One bash process answers both questions: the second needs everything the
-    first sources anyway.
+    Used by --dry-run.  ``run_dir`` is where the run *would* go, so the printed
+    command names the real artifact paths; nothing is created there.
     """
     scratch_dir.mkdir(parents=True, exist_ok=True)
     target_file = scratch_dir / "target.sh"
     argv_file = scratch_dir / "argv"
-    command_file = scratch_dir / "dryrun-argv"
+    command_file = scratch_dir / "command"
     target_file.write_text(render_target_sh(target, package, profiler), "utf-8")
 
     hook_env = _hook_env(
-        env, package, profiler, run_dir, run_id, argv_file, target_file=target_file
+        env, package, profiler, run_dir, run_id, target_file, argv_file, command_file
     )
-    hook_env["PROFILING_DRYRUN_FILE"] = str(command_file)
+    hook_env["PROFILING_RESOLVE_ONLY"] = "1"
 
     proc = subprocess.run(
-        ["bash", "-c", _DRYRUN_HARNESS],
+        ["bash", "-c", _HARNESS],
         env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-
-    argv = _read_argv(argv_file)
     if proc.returncode != 0:
         detail = proc.stderr.decode("utf-8", "replace").strip()
-        if argv is None:
-            # The failure happened before the argv was written, so there is
-            # nothing to show: report it rather than printing a half-truth.
-            raise RunError(
-                f"could not resolve the command for {package.name}/{profiler.name}"
-                + (f":\n{detail}" if detail else "")
-            )
-        if detail:
-            print(detail, file=sys.stderr)
+        raise RunError(
+            f"could not resolve the command for {package.name}/{profiler.name}"
+            + (f":\n{detail}" if detail else "")
+        )
 
-    return argv or list(target.argv), _read_argv(command_file)
-
-
-# ------------------------------------------------------------- execution ---
+    return _read_nul(argv_file) or list(target.argv), _read_nul(command_file) or []
 
 
 def reset_run_dir(run_dir: Path, output_root: Path) -> bool:
@@ -406,18 +383,20 @@ def execute(
     """Run the workload under the profiler, tee'ing output and enforcing the
     package timeout by killing the whole process group."""
     run_dir.mkdir(parents=True, exist_ok=True)
-    (run_dir / "target.sh").write_text(
-        render_target_sh(target, package, profiler), "utf-8"
-    )
+    target_file = run_dir / "target.sh"
+    target_file.write_text(render_target_sh(target, package, profiler), "utf-8")
 
     argv_file = run_dir / ".argv"
-    hook_env = _hook_env(env, package, profiler, run_dir, run_id, argv_file)
+    command_file = run_dir / ".command"
+    hook_env = _hook_env(
+        env, package, profiler, run_dir, run_id, target_file, argv_file, command_file
+    )
 
     started_at = _stamp()
     started = time.time()
 
     proc = subprocess.Popen(
-        ["bash", "-c", _RUN_HARNESS],
+        ["bash", "-c", _HARNESS],
         env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
         stdout=subprocess.PIPE,
@@ -465,8 +444,13 @@ def execute(
     duration = time.time() - started
     finished_at = _stamp()
 
-    argv = _read_argv(argv_file) or list(target.argv)
+    # What the harness actually resolved, which is what belongs in meta.json:
+    # a package_command hook may have rewritten the workload, and the profiler
+    # command is only known once its builder has run.
+    argv = _read_nul(argv_file) or list(target.argv)
+    command = _read_nul(command_file) or []
     argv_file.unlink(missing_ok=True)
+    command_file.unlink(missing_ok=True)
 
     if timed_out:
         status, reason = "timeout", f"exceeded PACKAGE_TIMEOUT of {timeout:g}s"
@@ -486,6 +470,7 @@ def execute(
         reason=reason,
         forced=forced,
         argv=argv,
+        command=command,
         started_at=started_at,
         finished_at=finished_at,
     )
