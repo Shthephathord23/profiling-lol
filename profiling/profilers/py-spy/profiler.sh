@@ -1,6 +1,6 @@
 # py-spy: a sampling profiler that reads another process's memory.
 #
-# The command is lib/pyspy-attach.sh rather than py-spy itself, because py-spy's
+# The command is this profiler's own attach.sh rather than py-spy itself, because py-spy's
 # exit status says nothing about the workload it ran and recovering the real one
 # takes two processes and a wait -- which is a program, not a command. That
 # script carries the full reasoning and the measurements behind it.
@@ -18,7 +18,7 @@ profiler_command() {
     fi
 
     cmd=(
-        "$PROFILING_ROOT/lib/pyspy-attach.sh"
+        "$PROFILER_DIR/attach.sh"
         --rate "${PYSPY_RATE:-100}"
         --format "$format"
         --output "$(run_artifact "profile.$ext")"

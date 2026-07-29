@@ -12,7 +12,7 @@ import re
 import shlex
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Mapping, Optional
 
 from envfile import load_layers
 
@@ -182,25 +182,35 @@ def discover_profilers(profiling_root: Path) -> Dict[str, Entry]:
     return _scan(profiling_root / "profilers", "profiler", "profiler.sh")
 
 
-def load_profiler(config_env: Path, entry: Entry) -> Profiler:
+def load_profiler(
+    config_env: Path,
+    entry: Entry,
+    overrides: Optional[Mapping[str, str]] = None,
+) -> Profiler:
     """Load a profiler with only config.env beneath it (listing / metadata)."""
-    return Profiler(entry=entry, env=load_layers(config_env, entry.env_file))
+    return Profiler(
+        entry=entry, env=load_layers(config_env, entry.env_file, overrides=overrides)
+    )
 
 
 def load_package(
     config_env: Path,
     entry: Entry,
     profiler_env_file: Optional[Path] = None,
+    overrides: Optional[Mapping[str, str]] = None,
 ) -> Package:
     """Load a package.
 
     When ``profiler_env_file`` is given the layering is the full run stack --
-    config.env, then the profiler, then the package (§5) -- which is what lets
-    a package tune a profiler for itself.
+    config.env, then the profiler, then the package, then ``overrides`` from the
+    ``--env-*`` flags (§5) -- which is what lets a package tune a profiler for
+    itself and the command line tune either one.
     """
     layers = [profiler_env_file] if profiler_env_file else []
     layers.append(entry.env_file)
-    return Package(entry=entry, env=load_layers(config_env, *layers))
+    return Package(
+        entry=entry, env=load_layers(config_env, *layers, overrides=overrides)
+    )
 
 
 def resolve_selection(

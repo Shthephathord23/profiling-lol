@@ -3,6 +3,8 @@
 The harness deliberately delegates `.env` evaluation to bash rather than
 parsing it in Python: `$VAR` interpolation, command substitution and
 `PATH="...:$PATH"` all then behave exactly as an author would expect.
+
+See ``load_layers`` for the precedence rule.
 """
 
 from __future__ import annotations
@@ -13,13 +15,7 @@ import sys
 from pathlib import Path
 from typing import Dict, Iterable, Mapping, Optional
 
-__all__ = [
-    "EnvFileError",
-    "load_layers",
-    "base_environment",
-    "source_files",
-    "apply_real_env",
-]
+__all__ = ["EnvFileError", "load_layers", "base_environment", "source_files"]
 
 
 class EnvFileError(RuntimeError):
@@ -32,22 +28,6 @@ _VOLATILE = frozenset({"_", "PWD", "OLDPWD", "SHLVL", "BASH_ENV"})
 
 # Internal names used by the sourcing snippet below.
 _INTERNAL_PREFIX = "__profiling_"
-
-# Variables that a `.env` layer is expected to *extend* rather than replace.
-# For these, a layer that changed the inherited value keeps its change even
-# though the real process environment normally has the last word; without this
-# exception `PATH="$MY_BIN:$PATH"` inside a `.env` could never take effect.
-PATHLIKE = frozenset(
-    {
-        "PATH",
-        "PYTHONPATH",
-        "LD_LIBRARY_PATH",
-        "LD_PRELOAD",
-        "MANPATH",
-        "PKG_CONFIG_PATH",
-        "CPATH",
-    }
-)
 
 # Sourced in a fresh bash process.  "$@" is the list of files, in order.
 # The EXIT trap names the offending file even when a syntax error kills the
@@ -74,24 +54,34 @@ env -0
 
 def load_layers(
     *paths: Path,
+    overrides: Optional[Mapping[str, str]] = None,
     real_env: Optional[Mapping[str, str]] = None,
 ) -> Dict[str, str]:
-    """Source `paths` in order, then apply the real environment on top.
+    """Build a run's environment: ambient, then each `.env`, then `overrides`.
 
-    This is the whole operation this module exists to perform, and the only
-    one callers should need.  Sourcing and the precedence overlay are never
-    useful apart -- an overlay without a source has nothing to overlay, and a
-    source without the overlay silently drops layer 4 of the precedence rule.
+        1. the ambient environment       the subshell's starting point
+        2. each path in order            config.env, profiler, package
+        3. overrides                     --env-profiler / --env-package
 
-    Computing the base environment once and handing it to both halves also
-    means they cannot disagree about what they inherited, which is what makes
-    the PATHLIKE comparison in ``apply_real_env`` meaningful.
+    The ambient environment is the *base*, not the winner.  A `.env` assigns
+    unconditionally, so it beats whatever was exported into the shell -- which
+    means a stray ``PACKAGE_ARGS`` left over in someone's session cannot
+    silently redirect a run.  It also means a package can write
+    ``PYTHONPATH="$MY_SRC:$PYTHONPATH"`` and have it stick, so the PATHLIKE
+    exception this module used to carry is gone.
+
+    Harness variables still respond to the ambient environment, because
+    config.env declares them with ``: "${VAR:=default}"`` -- it defers to
+    anything already set.  So ``PROFILING_OUT_PATH=... run_profiling.sh`` and
+    ``docker run -e`` keep working, while package and profiler knobs do not
+    answer to the shell.
 
     Raises ``EnvFileError`` naming the offending file if any layer fails.
     """
-    base = base_environment(real_env)
-    sourced = source_files(paths, base=base)
-    return apply_real_env(sourced, real_env=real_env, base=base)
+    env = source_files(paths, base=base_environment(real_env))
+    if overrides:
+        env.update(overrides)
+    return env
 
 
 def base_environment(real_env: Optional[Mapping[str, str]] = None) -> Dict[str, str]:
@@ -173,28 +163,3 @@ def _parse(proc: "subprocess.CompletedProcess[bytes]", paths) -> Dict[str, str]:
             continue
         out[key] = value.decode("utf-8", "replace")
     return out
-
-
-def apply_real_env(
-    sourced: Mapping[str, str],
-    real_env: Optional[Mapping[str, str]] = None,
-    base: Optional[Mapping[str, str]] = None,
-) -> Dict[str, str]:
-    """Overlay the real process environment -- the highest-priority layer.
-
-    Anything exported by the caller wins over the `.env` files.  The one
-    exception is the PATH-like variables in ``PATHLIKE``: if a layer changed
-    one relative to the base it inherited, that change is kept, because those
-    variables are conventionally extended rather than assigned.
-    """
-    real = os.environ if real_env is None else real_env
-    base = base_environment(real) if base is None else base
-
-    merged = dict(sourced)
-    for key, value in real.items():
-        if key in _VOLATILE or key.startswith(_INTERNAL_PREFIX):
-            continue
-        if key in PATHLIKE and merged.get(key, base.get(key)) != base.get(key):
-            continue  # a layer deliberately extended it
-        merged[key] = value
-    return merged

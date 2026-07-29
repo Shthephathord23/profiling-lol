@@ -59,6 +59,7 @@ them. One test needs `/usr/bin/time` and skips without it.
 
 ```
 run_profiling.sh --package <sel> --profiler <sel> [--dry-run]
+                 [--env-package KEY=VALUE] [--env-profiler KEY=VALUE]
 run_profiling.sh --init [--package <sel>]
 run_profiling.sh --list-packages  [--json]
 run_profiling.sh --list-profilers [--json]
@@ -104,7 +105,7 @@ nothing and creates nothing.
     kind    : python-module
     workdir : .../packages/my-tool
     workload: .../python -m my_tool.cli --input data/sample.json --iterations 5
-    command : .../lib/pyspy-attach.sh --rate 100 --format flamegraph \
+    command : .../profilers/py-spy/attach.sh --rate 100 --format flamegraph \
               --output .../profile.svg --capture-exit-code 1 --subprocesses \
               -- .../python -m my_tool.cli --input data/sample.json --iterations 5
 ```
@@ -157,15 +158,15 @@ Skips are a normal outcome, not a failure.
 
 ## Environment precedence
 
-For each (package, profiler) run the environment is built by sourcing, in
-order:
+For each (package, profiler) run the environment is built in this order:
 
-1. `config.env`
-2. `profilers/<profiler>/.env`
-3. `packages/<package>/.env`
-4. the real process environment (highest priority)
+1. the ambient process environment — the *base*, not the winner
+2. `config.env`
+3. `profilers/<profiler>/.env`
+4. `packages/<package>/.env`
+5. `--env-profiler` / `--env-package` (highest priority)
 
-Later layers win. **Layer 3 above layer 2 is the point**: it is how a package
+Later layers win. **Layer 4 above layer 3 is the point**: it is how a package
 tunes a profiler for itself.
 
 ```bash
@@ -175,24 +176,47 @@ PYSPY_NATIVE=1                         # this workload has C extensions
 VIZTRACER_MAX_DEPTH=32                 # its call graph is deep
 ```
 
-Layer 4 means anything you export overrides the files, which is how CI tweaks
-a run without editing anything:
-
-```bash
-PACKAGE_ARGS="--input data/big.json --iterations 50" \
-  ./run_profiling.sh --package my-tool --profiler py-spy
-```
-
 `.env` files are sourced by **bash**, not parsed, so `$VAR` interpolation,
-command substitution and `PATH="$MY_BIN:$PATH"` all behave as written. A
+command substitution and `PATH="$MY_BIN:$PATH"` all behave as written — a
+package can write `PYTHONPATH="$MY_SRC:$PYTHONPATH"` and have it stick. A
 non-zero exit from the sourcing subshell is a hard error naming the file.
 
-> **One exception to layer 4.** PATH-like variables (`PATH`, `PYTHONPATH`,
-> `LD_LIBRARY_PATH`, …) are conventionally *extended* rather than assigned. If
-> a `.env` layer changed one relative to what it inherited, that change is
-> kept — otherwise `PYTHONPATH="$MY_SRC:$PYTHONPATH"` in a package `.env`
-> could never take effect. Every other variable follows the rule above
-> exactly.
+### The ambient environment is the floor, not the ceiling
+
+A `.env` assigns unconditionally, so it beats whatever happened to be exported
+into your shell. `PACKAGE_ARGS=… ./run_profiling.sh` does **not** redirect a
+run: a stray variable left over in a session — or inherited from a CI job that
+knows nothing about this harness — cannot silently change what gets profiled.
+
+Harness configuration still answers to the environment, because `config.env`
+declares every one of its variables with `: "${VAR:=default}"`, which defers to
+anything already set:
+
+```bash
+PROFILING_OUT_PATH=/var/lib/profiling ./run_profiling.sh --package all --profiler all
+docker run -e PROFILING_FLAMEGRAPHS=0 …
+```
+
+So `docker run -e` and CI variables keep working for the knobs in `config.env`,
+while package and profiler knobs are owned by their `.env` files.
+
+### Overriding a knob for one invocation
+
+To change a package or profiler knob without editing a file, say so on the
+command line. Both flags are repeatable and take `KEY=VALUE`:
+
+```bash
+./run_profiling.sh --package my-tool --profiler py-spy \
+  --env-package PACKAGE_ARGS="--input data/big.json --iterations 50" \
+  --env-profiler PYSPY_RATE=500
+```
+
+Both land on the same, topmost layer — the command line always wins. They are
+kept apart for **provenance**: `meta.json` records each set separately under
+`env_overrides`, so a run says what was forced and at which level, and
+`--dry-run` prints them. On a collision `--env-package` wins, matching the
+`.env` layering above it. A value that is not `KEY=VALUE` is a usage error
+(exit 2), whichever command you asked for.
 
 ---
 
@@ -231,7 +255,9 @@ an `exec` package produces a readable error rather than an empty array
 expanding into a baffling complaint from the tool's own CLI parser.
 
 Also exported into every hook: `RUN_DIR`, `RUN_ID`, `PACKAGE_NAME`,
-`PROFILER_NAME`, `PROFILING_ROOT`, `REPO_ROOT`, `PACKAGE_WORKDIR`.
+`PROFILER_NAME`, `PROFILING_ROOT`, `REPO_ROOT`, `PACKAGE_WORKDIR`, plus
+`PACKAGE_DIR` and `PROFILER_DIR` — each hook's own directory, which is how a
+profiler invokes a helper script that lives beside it.
 
 ---
 
@@ -349,10 +375,13 @@ A profiler declares a **command**; the harness runs it. The same
 them, so they cannot drift.
 
 The command is one argv. If a profiler needs two processes, a wait, or any
-sequencing, that goes in a small script under `lib/` which the command invokes
-— see `lib/pyspy-attach.sh`. Reaching for `bash -c '...'` technically fits in
-one argv but hides a shell script inside a string and makes `--dry-run`
-unreadable.
+sequencing, that goes in a small script **inside the profiler's own directory**,
+which the command invokes as `"$PROFILER_DIR/<script>"` — see
+`profilers/py-spy/attach.sh`. It belongs there and not in `lib/`: it is one
+profiler's implementation, not shared machinery, and keeping it beside its
+`.env` and `profiler.sh` means deleting the profiler deletes all of it.
+Reaching for `bash -c '...'` technically fits in one argv but hides a shell
+script inside a string and makes `--dry-run` unreadable.
 
 `install.sh` and `install.sh --check` now cover it, and it appears in
 `--list-profilers`. No core change is needed — which is the whole point of the
@@ -423,7 +452,9 @@ for it.
 The flag decides whether a *profiling run* builds the package on its own.
 Asking for `--init` is already saying you want it now, so it does not also
 require editing the `.env` — and then remembering to edit it back. Set
-`PACKAGE_INIT=0` once and build when you choose to.
+`PACKAGE_INIT=0` once and build when you choose to. The reverse one-off works
+too: `--env-package PACKAGE_INIT=0` skips the build for a single invocation
+without touching the file.
 
 A package with no `package_init` hook is skipped by `--init`, not an error, so
 you can point it at anything. The reverse — `PACKAGE_INIT=1` with no hook — *is*
@@ -464,11 +495,14 @@ Console output is **tee'd**: you see the workload live and it is captured to
   "argv": ["…"], "kind": "python-module", "workdir": "…",
   "forced": false, "flamegraph": "profile.svg",
   "artifacts": ["profile.svg", "stdout.log", "stderr.log"],
-  "host": "…", "git_sha": "…"
+  "host": "…", "git_sha": "…",
+  "env_overrides": {"package": {"PACKAGE_ARGS": "…"}}
 }
 ```
 
-`status` is `ok`, `failed`, `timeout` or `skipped`. `git_sha` is best-effort
+`status` is `ok`, `failed`, `timeout` or `skipped`. `env_overrides` records the
+`--env-package` / `--env-profiler` values this run was given, and is absent
+when there were none. `git_sha` is best-effort
 and simply absent when git is unavailable. `flamegraph` is null unless the
 profiler declares `PROFILER_FLAMEGRAPH=1` *and* the file exists.
 
@@ -652,7 +686,7 @@ LINE_PROFILER_TARGETS="my_tool.core"   # comma-separated modules/functions
 The harness warns — it does not fail — when a package selects line-profiler
 without setting it.
 
-**py-spy runs through `lib/pyspy-attach.sh`.** py-spy's exit status
+**py-spy runs through `profilers/py-spy/attach.sh`.** py-spy's exit status
 describes *py-spy*, not the program it ran, and the two are uncorrelated.
 Running one command repeatedly, `py-spy record -- <cmd>` returns 0 for a
 workload that exited 3, and 1 for a workload that exited 0 — the latter
@@ -666,11 +700,13 @@ child exits 3 -> py-spy exits  1 0 1 1 1 1 1 0 0 1
 
 Since the run's status *is* the workload's status, trusting py-spy's
 would report broken workloads as successful and healthy ones as broken, at
-random. So `lib/pyspy-attach.sh` starts the workload itself and attaches py-spy to the
+random. So `attach.sh` starts the workload itself and attaches py-spy to the
 resulting pid; the shell then owns the process and `wait` yields its exact exit
 code. It lives in its own file because a profiler declares a *command*, and
-anything needing two processes and a wait is a program, not a command. The cost is that sampling begins a few milliseconds late, so the
-very start of interpreter startup can be missed.
+anything needing two processes and a wait is a program, not a command — and in
+py-spy's own directory because it is py-spy's code. The cost is that sampling
+begins a few milliseconds late, so the very start of interpreter startup can be
+missed.
 
 A non-zero py-spy status is still used, but only to tell its failure modes
 apart, and never by trusting the number itself:
@@ -709,4 +745,6 @@ py-spy falls back to `speedscope` JSON.
 | `PROFILING_KEEP_DEFAULT` | `1` | default `--keep` for `--remove-output` |
 | `PROFILING_FLAMEGRAPHS` | `1` | global flamegraph kill switch |
 
-Every one is overridable from the real environment.
+Every one is overridable from the environment: each is declared with
+`: "${VAR:=default}"`, so an exported value wins. This is the one place where
+the ambient environment beats a `.env` file — see "Environment precedence".

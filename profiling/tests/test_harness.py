@@ -114,10 +114,31 @@ class TestEnvFile(unittest.TestCase):
         self.assertEqual(env["FOO"], "second")
         self.assertEqual(env["ONLY_A"], "yes")
 
-    def test_real_env_beats_plain_assignment(self):
+    def test_plain_assignment_beats_the_ambient_environment(self):
+        """The ambient environment is the base, not the winner: a stray variable
+        in someone's shell must not silently redirect a run."""
         a = write(self.tmp / "a.env", 'PACKAGE_ARGS="--from-file"\n')
-        env = envfile.load_layers(a, real_env={"PACKAGE_ARGS": "--from-cli"})
-        self.assertEqual(env["PACKAGE_ARGS"], "--from-cli")
+        env = envfile.load_layers(a, real_env={"PACKAGE_ARGS": "--stray-leftover"})
+        self.assertEqual(env["PACKAGE_ARGS"], "--from-file")
+
+    def test_ambient_environment_is_visible_as_the_base(self):
+        a = write(self.tmp / "a.env", 'DERIVED="$AMBIENT/sub"\n')
+        env = envfile.load_layers(a, real_env={"AMBIENT": "/base"})
+        self.assertEqual(env["DERIVED"], "/base/sub")
+        self.assertEqual(env["AMBIENT"], "/base")
+
+    def test_overrides_are_the_top_layer(self):
+        a = write(self.tmp / "a.env", 'KNOB=from-file\n')
+        env = envfile.load_layers(a, overrides={"KNOB": "from-cli"}, real_env={})
+        self.assertEqual(env["KNOB"], "from-cli")
+
+    def test_overrides_are_visible_to_nothing_beneath_them(self):
+        """An override is applied after sourcing, so a `.env` cannot interpolate
+        it -- worth pinning so the layering stays honest."""
+        a = write(self.tmp / "a.env", 'DERIVED="[$KNOB]"\n')
+        env = envfile.load_layers(a, overrides={"KNOB": "late"}, real_env={})
+        self.assertEqual(env["KNOB"], "late")
+        self.assertEqual(env["DERIVED"], "[]")
 
     def test_default_idiom_lets_real_env_win(self):
         a = write(self.tmp / "a.env", ': "${KNOB:=fallback}"\n')
@@ -484,6 +505,36 @@ class TestCliUsage(TreeFixture):
         self.assertEqual(r.returncode, 2)
         self.assertIn("implies --keep 0", r.stderr)
 
+    def test_malformed_override_is_a_usage_error(self):
+        self.add_package("p")
+        self.add_profiler("noop")
+        for bad in ("NOEQUALS", "1BAD=x", "has-dash=x", "=novalue"):
+            r = self.run_cli(
+                "--package", "p", "--profiler", "noop", "--env-package", bad
+            )
+            self.assertEqual(r.returncode, 2, f"{bad!r} was accepted")
+            self.assertIn("expects KEY=VALUE", r.stderr)
+
+    def test_malformed_override_is_rejected_before_any_dispatch(self):
+        """Parsing happens before dispatch, so the error does not depend on which
+        command was asked for."""
+        self.add_package("p")
+        self.add_profiler("noop")
+        r = self.run_cli("--list-packages", "--env-package", "NOEQUALS")
+        self.assertEqual(r.returncode, 2)
+
+    def test_empty_override_value_is_allowed(self):
+        self.add_package("p")
+        self.add_profiler("noop")
+        r = self.run_cli("--list-packages", "--env-package", "KNOB=")
+        self.assertEqual(r.returncode, 0, r.stderr)
+
+    def test_override_value_may_contain_equals_signs(self):
+        self.add_package("p")
+        self.add_profiler("noop")
+        r = self.run_cli("--list-packages", "--env-package", "ARGS=--opt=1 --other=2")
+        self.assertEqual(r.returncode, 0, r.stderr)
+
     def test_list_json_is_machine_readable(self):
         self.add_package("p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="noop"\n')
         self.add_profiler("noop")
@@ -786,15 +837,76 @@ class TestCliRun(TreeFixture):
         self.assertTrue((self.out / "summary.json").exists())
         self.assertEqual(self._summary()["runs"][0]["package"], "good")
 
-    def test_real_env_overrides_package_args(self):
+    def test_ambient_env_does_not_redirect_a_run(self):
         self._basic_tree()
         self.run_cli(
             "--package", "p", "--profiler", "noop",
-            env_extra={"PACKAGE_ARGS": "from-the-environment"},
+            env_extra={"PACKAGE_ARGS": "stray-leftover"},
         )
         run_id = self._summary()["runs"][0]["run_id"]
         log = (self.out / "p" / "noop" / run_id / "stdout.log").read_text()
-        self.assertIn("from-the-environment", log)
+        self.assertIn("hello", log)
+        self.assertNotIn("stray-leftover", log)
+
+    def test_env_package_overrides_a_package_knob(self):
+        self._basic_tree()
+        self.run_cli(
+            "--package", "p", "--profiler", "noop",
+            "--env-package", "PACKAGE_ARGS=from-the-command-line",
+        )
+        run_id = self._summary()["runs"][0]["run_id"]
+        log = (self.out / "p" / "noop" / run_id / "stdout.log").read_text()
+        self.assertIn("from-the-command-line", log)
+
+    def test_env_package_beats_env_profiler_on_a_collision(self):
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="noop"\n'
+        )
+        self.add_profiler(
+            "noop", script='profiler_command() { cmd=(/bin/echo "knob=$KNOB"); }\n'
+        )
+        self.run_cli(
+            "--package", "p", "--profiler", "noop",
+            "--env-profiler", "KNOB=from-profiler-flag",
+            "--env-package", "KNOB=from-package-flag",
+        )
+        run_id = self._summary()["runs"][0]["run_id"]
+        log = (self.out / "p" / "noop" / run_id / "stdout.log").read_text()
+        self.assertIn("knob=from-package-flag", log)
+
+    def test_overrides_are_recorded_in_meta(self):
+        self._basic_tree()
+        self.run_cli(
+            "--package", "p", "--profiler", "noop",
+            "--env-package", "PACKAGE_ARGS=x", "--env-profiler", "RATE=9",
+        )
+        run_id = self._summary()["runs"][0]["run_id"]
+        meta = json.loads((self.out / "p" / "noop" / run_id / "meta.json").read_text())
+        self.assertEqual(
+            meta["env_overrides"],
+            {"profiler": {"RATE": "9"}, "package": {"PACKAGE_ARGS": "x"}},
+        )
+
+    def test_overrides_appear_in_dry_run(self):
+        self._basic_tree()
+        r = self.run_cli(
+            "--package", "p", "--profiler", "noop", "--dry-run",
+            "--env-package", "PACKAGE_ARGS=shown-in-dry-run",
+        )
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("shown-in-dry-run", r.stdout)
+
+    def test_repeated_override_of_one_key_takes_the_last(self):
+        self._basic_tree()
+        self.run_cli(
+            "--package", "p", "--profiler", "noop",
+            "--env-package", "PACKAGE_ARGS=first",
+            "--env-package", "PACKAGE_ARGS=second",
+        )
+        run_id = self._summary()["runs"][0]["run_id"]
+        log = (self.out / "p" / "noop" / run_id / "stdout.log").read_text()
+        self.assertIn("second", log)
+        self.assertNotIn("first", log)
 
     def test_remove_output_prunes_and_reports(self):
         self._basic_tree()

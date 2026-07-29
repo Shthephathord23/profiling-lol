@@ -30,7 +30,7 @@ profiling_has_python_target() {
 }
 
 # Guard for profilers that *replace* the interpreter (viztracer, kernprof)
-# rather than prefixing the command.  Call it first in profiler_wrap: without
+# rather than prefixing the command.  Call it first in profiler_command: without
 # it an unset TARGET_PYTHON_ARGV expands to nothing and the tool reports a
 # baffling error about its own arguments instead of the real problem.
 require_python_target() {

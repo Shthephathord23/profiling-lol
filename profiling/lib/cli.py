@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shlex
 import shutil
 import signal
@@ -64,6 +65,8 @@ def build_parser() -> argparse.ArgumentParser:
             "  run_profiling.sh --list-packages\n"
             "  run_profiling.sh --package my-tool --profiler all\n"
             "  run_profiling.sh --package all --profiler time,py-spy\n"
+            "  run_profiling.sh --package my-tool --profiler time \\\n"
+            "      --env-package PACKAGE_ARGS='--iterations 1'\n"
             "  run_profiling.sh --remove-output --keep 3\n"
         ),
     )
@@ -80,6 +83,21 @@ def build_parser() -> argparse.ArgumentParser:
         default=[],
         metavar="SEL",
         help="profiler(s) to run: name, comma-separated list, repeated, or 'all'",
+    )
+    parser.add_argument(
+        "--env-profiler",
+        action="append",
+        default=[],
+        metavar="KEY=VALUE",
+        help="override a profiler knob for this invocation (repeatable)",
+    )
+    parser.add_argument(
+        "--env-package",
+        action="append",
+        default=[],
+        metavar="KEY=VALUE",
+        help="override a package knob for this invocation (repeatable); "
+        "wins over --env-profiler on the same key",
     )
     parser.add_argument(
         "--dry-run",
@@ -124,6 +142,58 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+_ENV_KEY_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def parse_overrides(values: Sequence[str], flag: str) -> Dict[str, str]:
+    """Parse ``KEY=VALUE`` strings from one ``--env-*`` flag.
+
+    A later occurrence of the same key wins, matching how a shell assignment
+    behaves and how the `.env` layers themselves resolve collisions.
+    """
+    out: Dict[str, str] = {}
+    for raw in values:
+        key, sep, value = raw.partition("=")
+        if not sep or not _ENV_KEY_RE.match(key):
+            raise UsageError(f"{flag} expects KEY=VALUE, got {raw!r}")
+        out[key] = value
+    return out
+
+
+@dataclass
+class Overrides:
+    """The ``--env-*`` layer: the topmost one, above every `.env` file.
+
+    Both flags land on the same layer -- the command line always wins -- and are
+    kept apart only for provenance: ``meta.json`` records each set separately,
+    so a run says what was overridden and at which level.  On a collision
+    ``--env-package`` wins, because a package sits above a profiler everywhere
+    else in the layering too.
+    """
+
+    profiler: Dict[str, str]
+    package: Dict[str, str]
+
+    @classmethod
+    def from_args(cls, args: argparse.Namespace) -> "Overrides":
+        return cls(
+            profiler=parse_overrides(args.env_profiler, "--env-profiler"),
+            package=parse_overrides(args.env_package, "--env-package"),
+        )
+
+    @property
+    def merged(self) -> Dict[str, str]:
+        return {**self.profiler, **self.package}
+
+    def as_meta(self) -> Dict[str, Dict[str, str]]:
+        out = {}
+        if self.profiler:
+            out["profiler"] = dict(self.profiler)
+        if self.package:
+            out["package"] = dict(self.package)
+        return out
+
+
 # ----------------------------------------------------------- global setup ---
 
 
@@ -140,11 +210,13 @@ def _int_env(env: Dict[str, str], key: str, default: int) -> int:
 # --------------------------------------------------------------- listings ---
 
 
-def cmd_list_packages(env: Dict[str, str], as_json: bool) -> int:
+def cmd_list_packages(
+    env: Dict[str, str], as_json: bool, overrides: Dict[str, str]
+) -> int:
     entries = discovery.discover_packages(PROFILING_ROOT)
     profiler_entries = discovery.discover_profilers(PROFILING_ROOT)
     packages = {
-        name: discovery.load_package(CONFIG_ENV, entry)
+        name: discovery.load_package(CONFIG_ENV, entry, overrides=overrides)
         for name, entry in entries.items()
     }
     rows = report.packages_listing(
@@ -169,10 +241,12 @@ def cmd_list_packages(env: Dict[str, str], as_json: bool) -> int:
     return EXIT_OK
 
 
-def cmd_list_profilers(env: Dict[str, str], as_json: bool) -> int:
+def cmd_list_profilers(
+    env: Dict[str, str], as_json: bool, overrides: Dict[str, str]
+) -> int:
     entries = discovery.discover_profilers(PROFILING_ROOT)
     profilers = {
-        name: discovery.load_profiler(CONFIG_ENV, entry)
+        name: discovery.load_profiler(CONFIG_ENV, entry, overrides)
         for name, entry in entries.items()
     }
     rows = report.profilers_listing(profilers)
@@ -193,7 +267,9 @@ def cmd_list_profilers(env: Dict[str, str], as_json: bool) -> int:
     return EXIT_OK
 
 
-def cmd_init(args: argparse.Namespace, env: Dict[str, str]) -> int:
+def cmd_init(
+    args: argparse.Namespace, env: Dict[str, str], overrides: Dict[str, str]
+) -> int:
     """Run package_init for the selected packages (default: all) and exit.
 
     This is the manual trigger, and it deliberately **ignores PACKAGE_INIT**.
@@ -212,7 +288,7 @@ def cmd_init(args: argparse.Namespace, env: Dict[str, str]) -> int:
 
     exit_code = EXIT_OK
     for name in names:
-        package = discovery.load_package(CONFIG_ENV, entries[name])
+        package = discovery.load_package(CONFIG_ENV, entries[name], overrides=overrides)
         print(f"--> init {name}")
         code = runner.run_package_init(package.env, package)
         if code == runner.NO_INIT_HOOK:
@@ -341,6 +417,7 @@ class RunContext:
     """Everything a single run needs that does not vary between runs."""
 
     args: argparse.Namespace
+    overrides: Overrides
     profiler_entries: Dict[str, discovery.Entry]
     all_profilers: List[str]
     output_dir: Path
@@ -369,12 +446,14 @@ def _run_pair(
             "in PACKAGE_PROFILERS; available: " + ", ".join(ctx.all_profilers)
         )
 
-    profiler = discovery.load_profiler(CONFIG_ENV, ctx.profiler_entries[profiler_name])
-    # Full layering: config.env -> profiler -> package -> real env.  The package
-    # sits above the profiler so it can tune that profiler for itself, which is
-    # why this is rebuilt per pair rather than hoisted out of the loop.
+    profiler = discovery.load_profiler(
+        CONFIG_ENV, ctx.profiler_entries[profiler_name], ctx.overrides.profiler
+    )
+    # Full layering: config.env -> profiler -> package -> --env-* (§5).  The
+    # package sits above the profiler so it can tune that profiler for itself,
+    # which is why this is rebuilt per pair rather than hoisted out of the loop.
     package = discovery.load_package(
-        CONFIG_ENV, package_entry, profiler.entry.env_file
+        CONFIG_ENV, package_entry, profiler.entry.env_file, ctx.overrides.merged
     )
 
     is_forced = forced and profiler_name not in base_package.profilers
@@ -419,7 +498,9 @@ def _run_pair(
 
     # 4. Dry run: resolve and print, create nothing, start nothing.
     if args.dry_run:
-        if not _print_dry_run(package, profiler, target, run_dir, run_id, is_forced):
+        if not _print_dry_run(
+            package, profiler, target, run_dir, run_id, is_forced, ctx.overrides
+        ):
             # A command that cannot be resolved is a failure the real run would
             # also hit, so --dry-run reports it in its exit code and not just on
             # stderr -- otherwise it cannot be used as a CI preflight gate.
@@ -454,7 +535,9 @@ def _run_pair(
         forced=is_forced,
         timeout=package.timeout,
     )
-    meta = report.write_meta(result, package, profiler, ctx.repo_root)
+    meta = report.write_meta(
+        result, package, profiler, ctx.repo_root, ctx.overrides.as_meta()
+    )
     report.update_latest(run_dir)
 
     print(
@@ -465,7 +548,9 @@ def _run_pair(
     return meta, EXIT_RUN_FAILED if failed else EXIT_OK
 
 
-def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
+def cmd_run(
+    args: argparse.Namespace, env: Dict[str, str], overrides: Overrides
+) -> int:
     package_entries = discovery.discover_packages(PROFILING_ROOT)
     profiler_entries = discovery.discover_profilers(PROFILING_ROOT)
 
@@ -495,6 +580,7 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
 
     ctx = RunContext(
         args=args,
+        overrides=overrides,
         profiler_entries=profiler_entries,
         all_profilers=all_profilers,
         output_dir=Path(
@@ -512,7 +598,9 @@ def cmd_run(args: argparse.Namespace, env: Dict[str, str]) -> int:
             # Loaded without a profiler beneath it, purely to read
             # PACKAGE_PROFILERS: which profilers apply cannot be known until
             # the package has been read.
-            base_package = discovery.load_package(CONFIG_ENV, package_entry)
+            base_package = discovery.load_package(
+                CONFIG_ENV, package_entry, overrides=ctx.overrides.package
+            )
 
             selected, forced = _select_profilers_for_package(
                 args,
@@ -610,6 +698,7 @@ def _print_dry_run(
     run_dir: Path,
     run_id: str,
     forced: bool,
+    overrides: Overrides,
 ) -> bool:
     """Resolve and print, without creating the run directory or any process.
 
@@ -637,6 +726,11 @@ def _print_dry_run(
     print(f"    workdir : {package.workdir}")
     if forced:
         print("    forced  : yes (not in PACKAGE_PROFILERS)")
+    for level, values in overrides.as_meta().items():
+        print(
+            f"    --env-{level}: "
+            + " ".join(f"{k}={shlex.quote(v)}" for k, v in sorted(values.items()))
+        )
     print("    workload: " + " ".join(shlex.quote(a) for a in argv))
     print("    command : " + " ".join(shlex.quote(a) for a in command))
     return True
@@ -684,6 +778,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         # config.env plus the real process environment: the harness's own view
         # of paths and defaults, independent of any package or profiler.
         env = envfile.load_layers(CONFIG_ENV)
+        # Parsed before any dispatch, so a malformed --env-* is a usage error
+        # whichever action was asked for.
+        overrides = Overrides.from_args(args)
 
         terminal = [
             args.init,
@@ -698,11 +795,11 @@ def main(argv: Optional[List[str]] = None) -> int:
             )
 
         if args.init:
-            return cmd_init(args, env)
+            return cmd_init(args, env, overrides.package)
         if args.list_packages:
-            return cmd_list_packages(env, args.json)
+            return cmd_list_packages(env, args.json, overrides.package)
         if args.list_profilers:
-            return cmd_list_profilers(env, args.json)
+            return cmd_list_profilers(env, args.json, overrides.profiler)
         if args.remove_output is not None:
             return cmd_remove_output(args, env)
 
@@ -711,7 +808,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         if args.json:
             raise UsageError("--json is only meaningful with --list-packages/--list-profilers")
 
-        return cmd_run(args, env)
+        return cmd_run(args, env, overrides)
 
     except (UsageError, DiscoveryError, EnvFileError) as exc:
         # All three mean "the harness was asked to do something it cannot make
