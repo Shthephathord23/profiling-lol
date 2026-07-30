@@ -358,10 +358,9 @@ def _missing_binaries(profiler: Profiler, env: Dict[str, str]) -> List[str]:
 class RunContext:
     """Everything a single run needs that does not vary between runs."""
 
-    args: argparse.Namespace
+    dry_run: bool
     overrides: Overrides
     profiler_entries: Dict[str, discovery.Entry]
-    all_profilers: List[str]
     output_dir: Path
     repo_root: Path
 
@@ -378,13 +377,13 @@ def _run_pair(
     outcome contributes.  Every branch returns both together, so no path can
     record an outcome without also accounting for it in the exit code.
     """
-    args = ctx.args
     package_name = base_package.name
 
     if profiler_name not in ctx.profiler_entries:
         raise UsageError(
             f"package '{package_name}' lists unknown profiler {profiler_name!r} "
-            "in PACKAGE_PROFILERS; available: " + ", ".join(ctx.all_profilers)
+            "in PACKAGE_PROFILERS; available: "
+            + ", ".join(sorted(ctx.profiler_entries))
         )
 
     profiler = discovery.load_profiler(
@@ -407,7 +406,7 @@ def _run_pair(
     missing = _missing_binaries(profiler, package.env)
     if missing:
         reason = "missing required binary: " + ", ".join(missing)
-        if args.dry_run:
+        if ctx.dry_run:
             print(f"WARN: {profiler_name} would fail: {reason}", file=sys.stderr)
         else:
             print(
@@ -427,7 +426,7 @@ def _run_pair(
     run_dir = ctx.output_dir / package_name / profiler_name / run_id
 
     # 4. Dry run: resolve and print, create nothing, start nothing.
-    if args.dry_run:
+    if ctx.dry_run:
         _print_dry_run(package, profiler, target, run_dir, run_id, ctx.overrides)
         return (
             _record_status(package_name, profiler_name, "skipped", "dry run"),
@@ -500,10 +499,9 @@ def cmd_run(
     default_profilers = (env.get("DEFAULT_PROFILERS") or "").split()
 
     ctx = RunContext(
-        args=args,
+        dry_run=args.dry_run,
         overrides=overrides,
         profiler_entries=profiler_entries,
-        all_profilers=all_profilers,
         output_dir=Path(
             env.get("PROFILING_OUTPUT_DIR") or (PROFILING_ROOT / "output")
         ),
