@@ -116,9 +116,8 @@ See "Package init".
 
 Resolved **per package**, in this order:
 
-1. `--profiler <name>` — exactly those, **forced**. A profiler not in that
-   package's `PACKAGE_PROFILERS` still runs; you get a warning on stderr and
-   `"forced": true` in that run's `meta.json`.
+1. `--profiler <name>` — exactly those. A profiler not in that package's
+   `PACKAGE_PROFILERS` still runs.
 2. `--profiler all` — that package's `PACKAGE_PROFILERS`.
 3. `PACKAGE_PROFILERS` empty — `DEFAULT_PROFILERS` from `config.env`.
 4. That empty too — every discovered profiler.
@@ -182,7 +181,7 @@ anything already set:
 
 ```bash
 PROFILING_OUT_PATH=/var/lib/profiling ./run_profiling.sh --package all --profiler all
-docker run -e PROFILING_FLAMEGRAPHS=0 …
+docker run -e DEFAULT_PROFILERS=time …
 ```
 
 So `docker run -e` and CI variables keep working for the knobs in `config.env`,
@@ -385,8 +384,6 @@ script inside a string and makes `--dry-run` unreadable.
 | `PROFILER_FLAMEGRAPH_FILE` | path relative to `RUN_DIR`, recorded in `meta.json` when present |
 | `PROFILER_REQUIRES_BIN` | binaries checked by `install.sh --check` and before each run |
 | `PROFILER_APT_PACKAGES` / `PROFILER_PIP_PACKAGES` | dependencies for `install.sh` |
-| `PROFILER_WARN_IF_UNSET` | variables whose absence should produce a warning |
-| `PROFILER_WARN_MESSAGE` | text appended to that warning |
 
 ### Helpers available in hooks
 
@@ -397,7 +394,6 @@ From `lib/common.sh`, sourced before every hook:
 | `run_artifact <name>` | absolute path inside `RUN_DIR` |
 | `require_bin <bin>…` | abort with a clear message if a tool is missing |
 | `require_python_target` | abort unless the target is a Python program |
-| `profiling_flamegraphs_enabled` | honour the global flamegraph kill switch |
 | `profiling_warn` / `profiling_error` / `profiling_die` | logging |
 
 ---
@@ -456,7 +452,7 @@ an error, because the `.env` asked for a build step that does not exist.
 leaves the box ready to profile.
 
 A failed init skips that package's runs, records them as failed, and yields
-exit code 4. Nothing is cached, so the next invocation simply tries again.
+exit code 1. Nothing is cached, so the next invocation simply tries again.
 
 ---
 
@@ -485,7 +481,7 @@ Console output is **tee'd**: you see the workload live and it is captured to
   "status": "ok", "exit_code": 0, "duration_s": 12.4,
   "started_at": "…", "finished_at": "…",
   "argv": ["…"], "kind": "python-module", "workdir": "…",
-  "forced": false, "flamegraph": "profile.svg",
+  "flamegraph": "profile.svg",
   "artifacts": ["profile.svg", "stdout.log", "stderr.log"],
   "host": "…", "git_sha": "…",
   "env_overrides": {"package": {"PACKAGE_ARGS": "…"}}
@@ -566,13 +562,11 @@ something you would spot in `git status`.
 | Code | Meaning |
 |---|---|
 | 0 | all runs succeeded (skips do not affect this) |
-| 1 | at least one workload run failed or timed out |
+| 1 | a run failed, timed out, or could not start (missing binary, failed init) |
 | 2 | usage error: unknown package/profiler, missing `--profiler`, bad flag |
-| 3 | a required profiler binary is missing |
-| 4 | a package init failed |
 
 The harness runs everything then aggregates — it does not stop at the first
-failure — and reports the **highest** applicable code.
+failure.
 
 ---
 
@@ -594,7 +588,7 @@ extends the installer automatically.
   (PEP 668); in a container that is exactly where these tools belong, so
   `--break-system-packages` is passed explicitly rather than failing.
 * `--check` verifies every `PROFILER_REQUIRES_BIN`, prints a table, and exits
-  3 listing what is missing.
+  1 listing what is missing.
 
 ---
 
@@ -677,8 +671,7 @@ an empty report. Set it in the package `.env`:
 LINE_PROFILER_TARGETS="my_tool.core"   # comma-separated modules/functions
 ```
 
-The harness warns — it does not fail — when a package selects line-profiler
-without setting it.
+The profiler warns — it does not fail — when a run produces an empty report.
 
 **py-spy runs through `profilers/py-spy/attach.sh`.** py-spy's exit status
 describes *py-spy*, not the program it ran, and the two are uncorrelated.
@@ -721,10 +714,6 @@ and checks whether the workload is still live at that moment.
 Set `PYSPY_CAPTURE_EXIT_CODE=0` for plain launch mode, where the workload's
 exit status is simply not observable and is reported as 0.
 
-**The global flamegraph kill switch.** `PROFILING_FLAMEGRAPHS=0` makes
-flamegraph-capable profilers degrade to a cheaper format rather than fail —
-py-spy falls back to `speedscope` JSON.
-
 ---
 
 ## Global configuration (`config.env`)
@@ -737,7 +726,6 @@ py-spy falls back to `speedscope` JSON.
 | `PROFILING_OUTPUT_DIR` | `$PROFILING_OUT_PATH/output` | where artifacts go |
 | `DEFAULT_PROFILERS` | `time py-spy` | fallback when `PACKAGE_PROFILERS` is empty |
 | `PROFILING_KEEP_DEFAULT` | `1` | default `--keep` for `--remove-output` |
-| `PROFILING_FLAMEGRAPHS` | `1` | global flamegraph kill switch |
 
 Every one is overridable from the environment: each is declared with
 `: "${VAR:=default}"`, so an exported value wins. This is the one place where

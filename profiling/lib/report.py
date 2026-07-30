@@ -94,7 +94,6 @@ def write_meta(
         "command": result.command,
         "kind": package.kind,
         "workdir": str(package.workdir),
-        "forced": result.forced,
         "flamegraph": flamegraph,
         "artifacts": _artifacts(run_dir),
         "host": platform.node(),

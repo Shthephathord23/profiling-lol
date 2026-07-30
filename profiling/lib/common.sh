@@ -43,13 +43,6 @@ require_python_target() {
     fi
 }
 
-# 1 when flamegraph output is globally enabled, 0 when the kill switch is set.
-# Flamegraph-capable profilers should degrade to a cheaper output format when
-# this is 0 rather than failing the run.
-profiling_flamegraphs_enabled() {
-    [ "${PROFILING_FLAMEGRAPHS:-1}" = "1" ]
-}
-
 # Absolute path inside the current run directory, e.g.
 #   out=$(run_artifact profile.svg)
 run_artifact() {

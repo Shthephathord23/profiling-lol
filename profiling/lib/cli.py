@@ -5,10 +5,8 @@ Run it through ``run_profiling.sh``; see README.md for the user-facing docs.
 
 Exit codes
     0  all runs succeeded (skips do not affect this)
-    1  at least one workload run failed or timed out
+    1  a run failed, timed out, or could not start (missing binary, failed init)
     2  usage error
-    3  a required profiler binary is missing
-    4  a package init failed
 """
 
 from __future__ import annotations
@@ -39,8 +37,6 @@ from envfile import EnvFileError  # noqa: E402
 EXIT_OK = 0
 EXIT_RUN_FAILED = 1
 EXIT_USAGE = 2
-EXIT_MISSING_BIN = 3
-EXIT_INIT_FAILED = 4
 
 PROFILING_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_ENV = PROFILING_ROOT / "config.env"
@@ -295,7 +291,7 @@ def cmd_init(
             print(f"    no package_init in {name}/package.sh; nothing to do")
         elif code != 0:
             print(f"ERROR: package_init failed for {name}", file=sys.stderr)
-            exit_code = EXIT_INIT_FAILED
+            exit_code = EXIT_RUN_FAILED
     return exit_code
 
 
@@ -347,31 +343,27 @@ def cmd_remove_output(args: argparse.Namespace, env: Dict[str, str]) -> int:
 
 
 def _select_profilers_for_package(
-    args: argparse.Namespace,
     package: Package,
     requested: List[str],
     explicit: bool,
     all_profilers: List[str],
     default_profilers: List[str],
-) -> "tuple[List[str], bool]":
-    """Resolve the profiler list for one package (§4).
+) -> List[str]:
+    """Resolve the profiler list for one package.
 
-    Returns (names, forced).  ``forced`` marks profilers named explicitly on
-    the command line, which run even when the package does not list them.
-
-    Ordering follows §10: names given explicitly keep their command-line
-    order, while anything reached through ``--profiler all`` -- the package's
-    own list, DEFAULT_PROFILERS, or every discovered profiler -- runs
-    alphabetically.  Duplicates are collapsed either way, so a package that
-    lists a profiler twice still runs it once.
+    Names given explicitly on the command line run as given, in command-line
+    order, whether or not the package lists them.  ``--profiler all`` falls
+    back through the package's own PACKAGE_PROFILERS, then DEFAULT_PROFILERS,
+    then every discovered profiler, alphabetically.  Duplicates are collapsed
+    either way.
     """
     if explicit:
-        return _dedupe(requested), True
+        return _dedupe(requested)
 
     for candidate in (package.profilers, default_profilers, all_profilers):
         if candidate:
-            return sorted(_dedupe(candidate)), False
-    return [], False
+            return sorted(_dedupe(candidate))
+    return []
 
 
 def _dedupe(names: List[str]) -> List[str]:
@@ -394,24 +386,6 @@ def _missing_binaries(profiler: Profiler, env: Dict[str, str]) -> List[str]:
     return missing
 
 
-def _warn_unset_knobs(profiler: Profiler, package: Package, env: Dict[str, str]) -> None:
-    """Honour a profiler's ``PROFILER_WARN_IF_UNSET`` declaration.
-
-    Data-driven on purpose: line-profiler is the one profiler that is not
-    zero-config, but the core must not know its name.
-    """
-    names = (profiler.env.get("PROFILER_WARN_IF_UNSET") or "").split()
-    for name in names:
-        if (env.get(name) or "").strip():
-            continue
-        message = (profiler.env.get("PROFILER_WARN_MESSAGE") or "").strip()
-        print(
-            f"WARN: {profiler.name} selected for {package.name} but {name} is unset"
-            + (f"; {message}" if message else ""),
-            file=sys.stderr,
-        )
-
-
 @dataclass
 class RunContext:
     """Everything a single run needs that does not vary between runs."""
@@ -429,7 +403,6 @@ def _run_pair(
     package_entry: discovery.Entry,
     base_package: Package,
     profiler_name: str,
-    forced: bool,
 ) -> "tuple[Dict, int]":
     """Run one (package, profiler) pair.
 
@@ -449,28 +422,18 @@ def _run_pair(
     profiler = discovery.load_profiler(
         CONFIG_ENV, ctx.profiler_entries[profiler_name], ctx.overrides.profiler
     )
-    # Full layering: config.env -> profiler -> package -> --env-* (§5).  The
+    # Full layering: config.env -> profiler -> package -> --env-*.  The
     # package sits above the profiler so it can tune that profiler for itself,
     # which is why this is rebuilt per pair rather than hoisted out of the loop.
     package = discovery.load_package(
         CONFIG_ENV, package_entry, profiler.entry.env_file, ctx.overrides.merged
     )
 
-    is_forced = forced and profiler_name not in base_package.profilers
-    if is_forced:
-        print(
-            f"WARN: {profiler_name} not listed in PACKAGE_PROFILERS for "
-            f"{package_name}; forced by --profiler",
-            file=sys.stderr,
-        )
-
     # 1. Kind compatibility -- a skip, never a failure.
     if not profiler.supports(package.kind):
         reason = f"kind {package.kind} not supported by {profiler_name}"
         print(f"SKIP {package_name} / {profiler_name}: {reason}")
-        return _skip_record(package_name, profiler_name, reason, is_forced), EXIT_OK
-
-    _warn_unset_knobs(profiler, package, package.env)
+        return _record_status(package_name, profiler_name, "skipped", reason), EXIT_OK
 
     # 2. Required binaries.
     missing = _missing_binaries(profiler, package.env)
@@ -484,8 +447,7 @@ def _run_pair(
                 file=sys.stderr,
             )
             record = _record_status(package_name, profiler_name, "failed", reason)
-            record["forced"] = is_forced
-            return record, EXIT_MISSING_BIN
+            return record, EXIT_RUN_FAILED
 
     # 3. Resolve the workload and where its artifacts go.
     try:
@@ -498,9 +460,7 @@ def _run_pair(
 
     # 4. Dry run: resolve and print, create nothing, start nothing.
     if args.dry_run:
-        _print_dry_run(
-            package, profiler, target, run_dir, run_id, is_forced, ctx.overrides
-        )
+        _print_dry_run(package, profiler, target, run_dir, run_id, ctx.overrides)
         return (
             _record_status(package_name, profiler_name, "skipped", "dry run"),
             EXIT_OK,
@@ -520,7 +480,6 @@ def _run_pair(
         target=target,
         run_dir=run_dir,
         run_id=run_id,
-        forced=is_forced,
         timeout=package.timeout,
     )
     meta = report.write_meta(
@@ -560,7 +519,7 @@ def cmd_run(
     requested_profilers = discovery.resolve_selection(
         args.profiler, profiler_entries, "profiler"
     )
-    # "--profiler all" means "each package's own list"; explicit names are forced.
+    # "--profiler all" means "each package's own list"; explicit names always run.
     explicit = not _is_all(args.profiler)
 
     all_profilers = sorted(profiler_entries)
@@ -590,8 +549,7 @@ def cmd_run(
                 CONFIG_ENV, package_entry, overrides=ctx.overrides.package
             )
 
-            selected, forced = _select_profilers_for_package(
-                args,
+            selected = _select_profilers_for_package(
                 base_package,
                 requested_profilers,
                 explicit,
@@ -619,12 +577,12 @@ def cmd_run(
                                 "package init failed",
                             )
                         )
-                    exit_code = max(exit_code, EXIT_INIT_FAILED)
+                    exit_code = max(exit_code, EXIT_RUN_FAILED)
                     continue
 
             for profiler_name in selected:
                 record, category = _run_pair(
-                    ctx, package_entry, base_package, profiler_name, forced
+                    ctx, package_entry, base_package, profiler_name
                 )
                 records.append(record)
                 exit_code = max(exit_code, category)
@@ -662,12 +620,6 @@ def _is_all(values: Sequence[str]) -> bool:
     )
 
 
-def _skip_record(package: str, profiler: str, reason: str, forced: bool) -> Dict:
-    record = _record_status(package, profiler, "skipped", reason)
-    record["forced"] = forced
-    return record
-
-
 def _record_status(package: str, profiler: str, status: str, reason: str) -> Dict:
     return {
         "package": package,
@@ -685,7 +637,6 @@ def _print_dry_run(
     target: runner.Target,
     run_dir: Path,
     run_id: str,
-    forced: bool,
     overrides: Overrides,
 ) -> None:
     """Resolve and print, without creating the run directory or any process."""
@@ -708,8 +659,6 @@ def _print_dry_run(
     print(f"    run dir : {run_dir}")
     print(f"    kind    : {package.kind}")
     print(f"    workdir : {package.workdir}")
-    if forced:
-        print("    forced  : yes (not in PACKAGE_PROFILERS)")
     for level, values in overrides.as_meta().items():
         print(
             f"    --env-{level}: "

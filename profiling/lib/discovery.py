@@ -203,7 +203,7 @@ def load_package(
 
     When ``profiler_env_file`` is given the layering is the full run stack --
     config.env, then the profiler, then the package, then ``overrides`` from the
-    ``--env-*`` flags (§5) -- which is what lets a package tune a profiler for
+    ``--env-*`` flags -- which is what lets a package tune a profiler for
     itself and the command line tune either one.
     """
     layers = [profiler_env_file] if profiler_env_file else []

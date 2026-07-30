@@ -8,20 +8,11 @@
 profiler_command() {
     require_python_target
 
-    local format="${PYSPY_FORMAT:-flamegraph}"
-    local ext="${PYSPY_EXT:-svg}"
-    # Honour the global flamegraph kill switch by degrading to a cheaper format
-    # rather than failing the run.
-    if ! profiling_flamegraphs_enabled && [ "$format" = "flamegraph" ]; then
-        format="${PYSPY_FALLBACK_FORMAT:-speedscope}"
-        ext="${PYSPY_FALLBACK_EXT:-json}"
-    fi
-
     cmd=(
         "$PROFILER_DIR/attach.sh"
         --rate "${PYSPY_RATE:-100}"
-        --format "$format"
-        --output "$(run_artifact "profile.$ext")"
+        --format "${PYSPY_FORMAT:-flamegraph}"
+        --output "$(run_artifact "profile.${PYSPY_EXT:-svg}")"
         --capture-exit-code "${PYSPY_CAPTURE_EXIT_CODE:-1}"
     )
     [ "${PYSPY_SUBPROCESSES:-0}" = "1" ] && cmd+=(--subprocesses)

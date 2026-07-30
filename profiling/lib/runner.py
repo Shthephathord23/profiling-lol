@@ -1,8 +1,8 @@
 """Execute one (package, profiler) run.
 
-The central mechanism is the *target contract* (§6 of the spec): before the
-profiler hook is invoked, the runner writes ``<RUN_DIR>/target.sh`` declaring
-the workload as bash arrays.  Sourcing a generated file sidesteps every
+The central mechanism is the *target contract* (README, "The target
+contract"): before the profiler hook is invoked, the runner writes
+``<RUN_DIR>/target.sh`` declaring the workload as bash arrays.  Sourcing a generated file sidesteps every
 quoting and export problem that passing argv through the environment would
 create, and exposing the argv in two shapes serves both profiler families:
 
@@ -88,7 +88,6 @@ class RunResult:
     exit_code: Optional[int] = None
     duration_s: float = 0.0
     reason: str = ""
-    forced: bool = False
     argv: List[str] = field(default_factory=list)
     command: List[str] = field(default_factory=list)
     started_at: str = ""
@@ -271,7 +270,7 @@ def _hook_env(
     argv_file: Path,
     command_file: Path,
 ) -> Dict[str, str]:
-    """The environment every hook sees (§6)."""
+    """The environment every hook sees."""
     out = dict(env)
     out.update(
         {
@@ -417,7 +416,6 @@ def execute(
     target: Target,
     run_dir: Path,
     run_id: str,
-    forced: bool,
     timeout: Optional[float],
 ) -> RunResult:
     """Run the workload under the profiler, tee'ing output and enforcing the
@@ -508,7 +506,6 @@ def execute(
         exit_code=exit_code,
         duration_s=duration,
         reason=reason,
-        forced=forced,
         argv=argv,
         command=command,
         started_at=started_at,

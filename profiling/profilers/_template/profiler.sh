@@ -7,7 +7,6 @@
 # Sourced with lib/common.sh already loaded, so these helpers are available:
 #   run_artifact <name>          -> absolute path inside RUN_DIR
 #   require_python_target        -> abort unless the target is a Python program
-#   profiling_flamegraphs_enabled-> honour the global flamegraph kill switch
 #   profiling_warn / profiling_error / profiling_die
 #
 # The target contract (see README.md "The target contract"):

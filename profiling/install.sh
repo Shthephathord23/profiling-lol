@@ -117,7 +117,7 @@ do_check() {
                 /*) [ -x "$bin" ] && rows+=("$name|$bin|ok") || {
                     rows+=("$name|$bin|MISSING")
                     missing+=("$bin")
-                    status=3
+                    status=1
                 } ;;
                 *)
                     if command -v "$bin" >/dev/null 2>&1; then
@@ -125,7 +125,7 @@ do_check() {
                     else
                         rows+=("$name|$bin|MISSING")
                         missing+=("$bin")
-                        status=3
+                        status=1
                     fi
                     ;;
             esac
