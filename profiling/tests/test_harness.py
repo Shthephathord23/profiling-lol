@@ -792,6 +792,86 @@ class TestCliRun(TreeFixture):
         self.run_cli("--package", "p", "--profiler", "noop")
         self.assertFalse((self.tmp / "post-mark").exists())
 
+    def test_profiler_may_not_supply_package_declarations(self):
+        """All layers share one shell so a `.env` can interpolate those beneath
+        it.  That must not let a profiler rewrite the workload: a package leaving
+        PACKAGE_ARGS unset would otherwise profile whatever the profiler said,
+        and two profilers would measure different commands."""
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/echo\nPACKAGE_PROFILERS="nosy"\n'
+        )
+        self.add_profiler(
+            "nosy", env='PROFILER_KINDS="exec"\nPACKAGE_ARGS="injected"\n'
+        )
+        r = self.run_cli("--package", "p", "--profiler", "nosy")
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        self.assertIn("PACKAGE_ARGS", r.stderr)
+        self.assertIn("belongs to the package", r.stderr)
+
+    def test_two_profilers_cannot_profile_different_workloads(self):
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/echo\nPACKAGE_PROFILERS="a b"\n'
+        )
+        self.add_profiler("a", env='PROFILER_KINDS="exec"\nPACKAGE_ARGS="from-a"\n')
+        self.add_profiler("b", env='PROFILER_KINDS="exec"\nPACKAGE_ARGS="from-b"\n')
+        r = self.run_cli("--package", "p", "--profiler", "all")
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+
+    def test_a_profiler_repeating_the_packages_own_value_is_fine(self):
+        """Only a *disagreement* matters; an identical value changes nothing."""
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/echo\nPACKAGE_ARGS=agreed\n'
+            'PACKAGE_PROFILERS="echoey"\n',
+        )
+        self.add_profiler(
+            "echoey", env='PROFILER_KINDS="exec"\nPACKAGE_ARGS=overridden-then-lost\n'
+        )
+        r = self.run_cli("--package", "p", "--profiler", "echoey")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+    def test_package_setting_a_profiler_declaration_is_not_silently_ignored(self):
+        """PROFILER_* is read from the profiler loaded on its own, so a package
+        assigning one used to do nothing and say nothing."""
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="noop"\n'
+            'PROFILER_KINDS="python-module"\n',
+        )
+        self.add_profiler("noop", env='PROFILER_KINDS="exec"\n')
+        r = self.run_cli("--package", "p", "--profiler", "noop")
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        self.assertIn("PROFILER_KINDS", r.stderr)
+        self.assertIn("no effect", r.stderr)
+
+    def test_package_may_still_tune_the_profiler(self):
+        """The documented direction has to keep working."""
+        self.add_package(
+            "p",
+            env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/true\nPACKAGE_PROFILERS="knobby"\n'
+            "KNOB=from-package\n",
+        )
+        self.add_profiler(
+            "knobby",
+            env='PROFILER_KINDS="exec"\nKNOB=from-profiler\n',
+            script='profiler_command() { cmd=(/bin/echo "knob=$KNOB"); }\n',
+        )
+        self.run_cli("--package", "p", "--profiler", "knobby")
+        run_id = self._summary()["runs"][0]["run_id"]
+        log = (self.out / "p" / "knobby" / run_id / "stdout.log").read_text()
+        self.assertIn("knob=from-package", log)
+
+    def test_env_package_override_is_not_mistaken_for_a_profiler_leak(self):
+        self.add_package(
+            "p", env='PACKAGE_KIND=exec\nPACKAGE_ENTRY=/bin/echo\nPACKAGE_PROFILERS="noop"\n'
+        )
+        self.add_profiler("noop")
+        r = self.run_cli(
+            "--package", "p", "--profiler", "noop",
+            "--env-package", "PACKAGE_ARGS=from-the-command-line",
+        )
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
     def test_package_env_overrides_profiler_env(self):
         self.add_package(
             "p",

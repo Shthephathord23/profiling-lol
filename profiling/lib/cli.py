@@ -386,6 +386,64 @@ def _missing_binaries(profiler: Profiler, env: Dict[str, str]) -> List[str]:
     return missing
 
 
+def _reject_package_leak(
+    profiler: Profiler,
+    package: Package,
+    base_package: Package,
+    overrides: Dict[str, str],
+) -> None:
+    """A profiler may not supply the package's own declarations.
+
+    Every layer is sourced into one shell so that a `.env` can interpolate the
+    ones beneath it -- that is what lets a package tune a profiler for itself,
+    and it is the documented direction.  The reverse is not a feature.  A
+    profiler that assigns ``PACKAGE_*`` silently rewrites the workload of every
+    package leaving that variable unset, so two profilers would measure
+    different commands and their numbers would not be comparable -- which is
+    the one thing this harness exists to make possible.
+
+    ``base_package`` is the same package without the profiler beneath it, so a
+    disagreement on a ``PACKAGE_*`` key is exactly the profiler's doing.  Keys
+    the command line set are excluded: they apply to every pair alike and so
+    cannot make two profilers disagree.
+    """
+    leaked = sorted(
+        key
+        for key, value in package.env.items()
+        if key.startswith("PACKAGE_")
+        and key not in overrides
+        and base_package.env.get(key) != value
+    )
+    if leaked:
+        raise UsageError(
+            f"profiler '{profiler.name}' sets {', '.join(leaked)}, which belongs to "
+            f"the package: it would change what '{package.name}' profiles without "
+            "the package saying so, and a different profiler would measure "
+            "something else. Move it into the package .env, or rename it to "
+            "something outside the PACKAGE_* namespace."
+        )
+
+    # The mirror case.  A package may tune a profiler's *knobs* -- PYSPY_RATE,
+    # LINE_PROFILER_TARGETS -- because hooks read those from this merged
+    # environment.  It cannot tune a profiler's declarations, because
+    # PROFILER_KINDS and friends are read from the profiler loaded on its own.
+    # Assigning one did nothing at all and said nothing about it.
+    ignored = sorted(
+        key
+        for key in package.env
+        if key.startswith("PROFILER_")
+        and key not in overrides
+        and profiler.env.get(key) != package.env[key]
+    )
+    if ignored:
+        raise UsageError(
+            f"package '{package.name}' sets {', '.join(ignored)}, which is read "
+            f"from profiler '{profiler.name}' before the package is layered on "
+            "and so has no effect. Set it in the profiler's own .env; for "
+            "flamegraphs specifically, the global switch is PROFILING_FLAMEGRAPHS."
+        )
+
+
 def _warn_unset_knobs(profiler: Profiler, package: Package) -> None:
     """Honour a profiler's ``PROFILER_WARN_IF_UNSET`` declaration.
 
@@ -451,6 +509,8 @@ def _run_pair(
     package = discovery.load_package(
         CONFIG_ENV, package_entry, profiler.entry.env_file, ctx.overrides.merged
     )
+
+    _reject_package_leak(profiler, package, base_package, ctx.overrides.merged)
 
     is_forced = forced and profiler_name not in base_package.profilers
     if is_forced:

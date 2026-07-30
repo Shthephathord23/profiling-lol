@@ -190,6 +190,29 @@ command substitution and `PATH="$MY_BIN:$PATH"` all behave as written — a
 package can write `PYTHONPATH="$MY_SRC:$PYTHONPATH"` and have it stick. A
 non-zero exit from the sourcing subshell is a hard error naming the file.
 
+### Each layer owns its own namespace
+
+All layers are sourced into one shell, so a `.env` can interpolate the ones
+beneath it — that is what makes `PYTHONPATH="$MY_SRC:$PYTHONPATH"` and
+`"$PROFILING_ROOT/..."` work, and what lets a package tune a profiler.
+
+That sharing is one-directional by rule:
+
+* A **profiler** must not assign `PACKAGE_*`. It sits below the package, so it
+  would silently supply any declaration the package left unset — and a package
+  profiled under two profilers would run two different commands, which is
+  exactly the comparison the harness exists to make.
+* A **package** must not assign `PROFILER_*`. Those declarations are read from
+  the profiler before the package is layered on, so the assignment would do
+  nothing. Profiler *knobs* (`PYSPY_RATE`, `LINE_PROFILER_TARGETS`) are a
+  different thing and are tunable — that is the point of layer 4 over layer 3.
+
+Both are errors, not warnings.
+
+> `set -a` exports everything a `.env` assigns, scratch variables included, and
+> the profiled process inherits them. `unset` anything you only needed while
+> computing a value.
+
 ### The ambient environment is the floor, not the ceiling
 
 A `.env` assigns unconditionally, so it beats whatever happened to be exported
