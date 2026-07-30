@@ -314,24 +314,37 @@ def _select_profilers_for_package(
     package: Package,
     requested: List[str],
     explicit: bool,
-    all_profilers: List[str],
+    profiler_entries: Dict[str, discovery.Entry],
     default_profilers: List[str],
 ) -> List[str]:
     """Resolve the profiler list for one package.
 
     Names given explicitly on the command line run as given, in command-line
-    order, whether or not the package lists them.  ``--profiler all`` falls
-    back through the package's own PACKAGE_PROFILERS, then DEFAULT_PROFILERS,
-    then every discovered profiler, alphabetically.  Duplicates are collapsed
-    either way.
+    order, whether or not the package lists them; ``resolve_selection`` has
+    already validated those.  ``--profiler all`` falls back through the
+    package's own PACKAGE_PROFILERS, then DEFAULT_PROFILERS, then every
+    discovered profiler, alphabetically.  The fallback lists come from `.env`
+    files, so they are validated here -- blaming the file the name came from.
     """
     if explicit:
         return _dedupe(requested)
 
-    for candidate in (package.profilers, default_profilers, all_profilers):
+    for candidate, source in (
+        (package.profilers, f"PACKAGE_PROFILERS of package '{package.name}'"),
+        (default_profilers, "DEFAULT_PROFILERS"),
+    ):
         if candidate:
-            return sorted(_dedupe(candidate))
-    return []
+            names = sorted(_dedupe(candidate))
+            unknown = [n for n in names if n not in profiler_entries]
+            if unknown:
+                raise UsageError(
+                    f"unknown profiler(s) in {source}: "
+                    + ", ".join(unknown)
+                    + "; available: "
+                    + ", ".join(sorted(profiler_entries))
+                )
+            return names
+    return sorted(profiler_entries)
 
 
 def _dedupe(names: List[str]) -> List[str]:
@@ -360,7 +373,6 @@ class RunContext:
 
     dry_run: bool
     overrides: Overrides
-    profiler_entries: Dict[str, discovery.Entry]
     output_dir: Path
     repo_root: Path
 
@@ -369,25 +381,20 @@ def _run_pair(
     ctx: RunContext,
     package_entry: discovery.Entry,
     base_package: Package,
-    profiler_name: str,
+    profiler_entry: discovery.Entry,
 ) -> "tuple[Dict, int]":
-    """Run one (package, profiler) pair.
+    """Run one (package, profiler) pair -- and only that pair: both entries
+    arrive already resolved and validated by the caller.
 
     Returns the record for ``summary.json`` and the exit-code category this
     outcome contributes.  Every branch returns both together, so no path can
     record an outcome without also accounting for it in the exit code.
     """
     package_name = base_package.name
-
-    if profiler_name not in ctx.profiler_entries:
-        raise UsageError(
-            f"package '{package_name}' lists unknown profiler {profiler_name!r} "
-            "in PACKAGE_PROFILERS; available: "
-            + ", ".join(sorted(ctx.profiler_entries))
-        )
+    profiler_name = profiler_entry.name
 
     profiler = discovery.load_profiler(
-        CONFIG_ENV, ctx.profiler_entries[profiler_name], ctx.overrides.profiler
+        CONFIG_ENV, profiler_entry, ctx.overrides.profiler
     )
     # Full layering: config.env -> profiler -> package -> --env-*.  The
     # package sits above the profiler so it can tune that profiler for itself,
@@ -495,13 +502,11 @@ def cmd_run(
     # "--profiler all" means "each package's own list"; explicit names always run.
     explicit = not _is_all(args.profiler)
 
-    all_profilers = sorted(profiler_entries)
     default_profilers = (env.get("DEFAULT_PROFILERS") or "").split()
 
     ctx = RunContext(
         dry_run=args.dry_run,
         overrides=overrides,
-        profiler_entries=profiler_entries,
         output_dir=Path(
             env.get("PROFILING_OUTPUT_DIR") or (PROFILING_ROOT / "output")
         ),
@@ -525,7 +530,7 @@ def cmd_run(
                 base_package,
                 requested_profilers,
                 explicit,
-                all_profilers,
+                profiler_entries,
                 default_profilers,
             )
 
@@ -554,7 +559,7 @@ def cmd_run(
 
             for profiler_name in selected:
                 record, category = _run_pair(
-                    ctx, package_entry, base_package, profiler_name
+                    ctx, package_entry, base_package, profiler_entries[profiler_name]
                 )
                 records.append(record)
                 exit_code = max(exit_code, category)
