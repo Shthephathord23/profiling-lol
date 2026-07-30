@@ -16,19 +16,6 @@ from typing import Dict, List, Mapping, Optional
 
 from envfile import load_layers
 
-__all__ = [
-    "DiscoveryError",
-    "Entry",
-    "Package",
-    "Profiler",
-    "NAME_RE",
-    "discover_packages",
-    "discover_profilers",
-    "load_package",
-    "load_profiler",
-    "resolve_selection",
-]
-
 NAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
 
 PACKAGE_KINDS = ("python-module", "python-script", "exec")
@@ -94,12 +81,7 @@ class Package:
 
     @property
     def init_enabled(self) -> bool:
-        """PACKAGE_INIT=1 means "call package_init before this package's runs".
-
-        There is no staleness tracking: the harness calls the hook, and making
-        it cheap when there is nothing to do is the hook's own job.  Only the
-        package knows what "already built" means for it.
-        """
+        """PACKAGE_INIT=1: call package_init before this package's runs."""
         return (self.env.get("PACKAGE_INIT") or "0").strip() == "1"
 
     @property

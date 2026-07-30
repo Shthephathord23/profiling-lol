@@ -15,9 +15,6 @@ import sys
 from pathlib import Path
 from typing import Dict, Mapping, Optional
 
-__all__ = ["EnvFileError", "load_layers"]
-
-
 class EnvFileError(RuntimeError):
     """Raised when a `.env` file fails to source."""
 

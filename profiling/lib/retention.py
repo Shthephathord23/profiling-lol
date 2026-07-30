@@ -16,8 +16,6 @@ import shutil
 from pathlib import Path
 from typing import List, Optional, Sequence
 
-__all__ = ["RetentionError", "check_output_dir", "prune"]
-
 
 class RetentionError(Exception):
     """Raised when the output directory fails its safety checks."""

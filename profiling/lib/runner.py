@@ -1,16 +1,9 @@
 """Execute one (package, profiler) run.
 
 The central mechanism is the *target contract* (README, "The target
-contract"): before the profiler hook is invoked, the runner writes
-``<RUN_DIR>/target.sh`` declaring the workload as bash arrays.  Sourcing a generated file sidesteps every
-quoting and export problem that passing argv through the environment would
-create, and exposing the argv in two shapes serves both profiler families:
-
-  * prefix wrappers (`/usr/bin/time`, `py-spy record -- ...`) consume
-    ``TARGET_ARGV``, the complete plain command;
-  * interpreter replacements (`viztracer`, `kernprof`) consume
-    ``TARGET_PYTHON_ARGV``, the same command minus the interpreter, which is
-    exactly Python's own trailing CLI shape (`-m module args...`).
+contract"): the runner writes ``<RUN_DIR>/target.sh`` declaring the workload
+as bash arrays -- ``TARGET_ARGV`` for prefix wrappers (time, py-spy) and
+``TARGET_PYTHON_ARGV`` for interpreter replacements (viztracer, kernprof).
 """
 
 from __future__ import annotations
@@ -31,18 +24,6 @@ from typing import Dict, List, Mapping, Optional
 
 from discovery import Package, Profiler
 
-__all__ = [
-    "RunError",
-    "RunResult",
-    "Target",
-    "build_target",
-    "make_run_id",
-    "render_target_sh",
-    "execute",
-    "reset_run_dir",
-    "resolve",
-]
-
 _RUN_ID_SAFE = re.compile(r"[^A-Za-z0-9._-]+")
 
 
@@ -56,13 +37,8 @@ _ACTIVE: "Optional[subprocess.Popen]" = None
 
 
 def terminate_active() -> bool:
-    """Kill the in-flight run's process group, if there is one.
-
-    The workload runs in its own session so that a timeout can kill the
-    profiler and everything it spawned together.  The flip side is that a
-    signal sent to the harness does *not* reach it, so an interrupted run
-    would otherwise leave py-spy and the workload orphaned in the container.
-    """
+    """Kill the in-flight run's process group, if any.  The workload runs in
+    its own session, so a signal sent to the harness never reaches it."""
     proc = _ACTIVE
     if proc is None or proc.poll() is not None:
         return False
@@ -119,10 +95,7 @@ def make_run_id(env: Mapping[str, str]) -> str:
 
 def build_target(package: Package) -> Target:
     """Derive the target contract from the package's `.env` declarations.
-
-    A ``package_command`` hook may override this wholesale; see
-    ``resolve``, which asks bash for the final arrays.
-    """
+    A ``package_command`` hook may later override it wholesale."""
     kind = package.kind
     entry = package.entry_point
     args = package.args
@@ -192,16 +165,11 @@ def render_target_sh(target: Target, package: Package, profiler: Profiler) -> st
 
 # ------------------------------------------------------------- harnesses ---
 
-# One harness serves --dry-run and the real run alike.
-#
-# It sources the same files either way and calls the same profiler_command
-# builder, so the command --dry-run prints is by construction the command that
-# executes -- they cannot drift, because there is only one of them.
-#
-# With PROFILING_RESOLVE_ONLY=1 it stops right after writing what it resolved.
-# Otherwise it goes on to run the workload, all in this one bash process so
-# that the hooks share shell state and package_post_run can be an EXIT trap
-# that fires even when the run fails or is killed.
+# One harness serves --dry-run and the real run alike: same sourced files,
+# same profiler_command builder, so what --dry-run prints cannot drift from
+# what executes.  With PROFILING_RESOLVE_ONLY=1 it stops after writing what it
+# resolved; otherwise it runs the workload in this same bash process, so hooks
+# share shell state and package_post_run can be an EXIT trap.
 _HARNESS = r"""
 set -o pipefail
 . "$PROFILING_ROOT/lib/common.sh"
@@ -361,18 +329,9 @@ NO_INIT_HOOK = 79
 
 
 def run_package_init(env: Mapping[str, str], package: Package) -> int:
-    """Call ``package_init``.  Returns its exit code; output goes to the console.
-
-    ``NO_INIT_HOOK`` means there was no hook to call -- a skip, not a failure,
-    so ``--init`` can be pointed at any package without the caller first having
-    to ask whether it has one.
-
-    No caching of any kind.  Deciding whether there is work to do belongs to the
-    hook: only the package knows what "already built" means for it, and a guard
-    like ``[ -x .venv/bin/python ] || python3 -m venv .venv`` says so in one
-    line -- cheaper and more honest than any staleness check the harness could
-    make on its behalf.
-    """
+    """Call ``package_init``; return its exit code (``NO_INIT_HOOK``: nothing
+    to call -- a skip, not a failure).  No staleness caching of any kind:
+    guarding repeat work is the hook's own job (README, "Package init")."""
     script = (
         "set -o pipefail\n"
         '. "$PROFILING_ROOT/lib/common.sh"\n'
@@ -397,16 +356,10 @@ def run_package_init(env: Mapping[str, str], package: Package) -> int:
 
 
 def reset_run_dir(run_dir: Path, output_root: Path) -> bool:
-    """Clear a run directory that already exists.
-
-    Only reachable when ``RUN_ID`` is pinned (a CI build number) and that build
-    is re-run.  Without this, the previous run's artifacts survive alongside
-    the new one and get listed in ``meta.json`` as if this run had produced
-    them -- e.g. a stale ``profile.svg`` next to a fresh ``profile.json``.
-
-    Returns True if anything was cleared.  The containment check is belt and
-    braces: ``run_id`` is already sanitized to a single path component.
-    """
+    """Clear an existing run directory (a pinned RUN_ID being re-run), so the
+    previous attempt's artifacts cannot be listed in ``meta.json`` as this
+    run's.  Returns True if anything was cleared; the containment check is
+    belt and braces, since run_id is already a single sanitized component."""
     if not run_dir.is_dir():
         return False
     try:

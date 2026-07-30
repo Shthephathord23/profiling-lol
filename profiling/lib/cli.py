@@ -158,14 +158,9 @@ def parse_overrides(values: Sequence[str], flag: str) -> Dict[str, str]:
 
 @dataclass
 class Overrides:
-    """The ``--env-*`` layer: the topmost one, above every `.env` file.
-
-    Both flags land on the same layer -- the command line always wins -- and are
-    kept apart only for provenance: ``meta.json`` records each set separately,
-    so a run says what was overridden and at which level.  On a collision
-    ``--env-package`` wins, because a package sits above a profiler everywhere
-    else in the layering too.
-    """
+    """The ``--env-*`` layer: topmost, above every `.env` file.  The two flags
+    are kept apart only so ``meta.json`` can record provenance; on a collision
+    ``--env-package`` wins, matching the `.env` layering."""
 
     profiler: Dict[str, str]
     package: Dict[str, str]
@@ -190,76 +185,45 @@ class Overrides:
         return out
 
 
-# ----------------------------------------------------------- global setup ---
-
-
-def _int_env(env: Dict[str, str], key: str, default: int) -> int:
-    raw = (env.get(key) or "").strip()
-    if not raw:
-        return default
-    try:
-        return int(raw)
-    except ValueError as exc:
-        raise UsageError(f"{key} must be an integer, got {raw!r}") from exc
-
-
 # --------------------------------------------------------------- listings ---
 
 
-def cmd_list_packages(
-    env: Dict[str, str], as_json: bool, overrides: Dict[str, str]
+def cmd_list(
+    kind: str, env: Dict[str, str], as_json: bool, overrides: Dict[str, str]
 ) -> int:
-    entries = discovery.discover_packages(PROFILING_ROOT)
+    """--list-packages / --list-profilers: print and exit."""
     profiler_entries = discovery.discover_profilers(PROFILING_ROOT)
-    packages = {
-        name: discovery.load_package(CONFIG_ENV, entry, overrides=overrides)
-        for name, entry in entries.items()
-    }
-    rows = report.packages_listing(
-        packages,
-        default_profilers=(env.get("DEFAULT_PROFILERS") or "").split(),
-        all_profilers=sorted(profiler_entries),
-    )
-    if as_json:
-        print(json.dumps(rows, indent=2))
-    else:
-        print(
-            report.render_table(
-                rows,
-                [
-                    ("NAME", "name"),
-                    ("KIND", "kind"),
-                    ("PROFILERS", "profilers"),
-                    ("DESCRIPTION", "description"),
-                ],
-            )
+    if kind == "packages":
+        entries = discovery.discover_packages(PROFILING_ROOT)
+        rows = report.packages_listing(
+            {
+                name: discovery.load_package(CONFIG_ENV, entry, overrides=overrides)
+                for name, entry in entries.items()
+            },
+            default_profilers=(env.get("DEFAULT_PROFILERS") or "").split(),
+            all_profilers=sorted(profiler_entries),
         )
-    return EXIT_OK
-
-
-def cmd_list_profilers(
-    env: Dict[str, str], as_json: bool, overrides: Dict[str, str]
-) -> int:
-    entries = discovery.discover_profilers(PROFILING_ROOT)
-    profilers = {
-        name: discovery.load_profiler(CONFIG_ENV, entry, overrides)
-        for name, entry in entries.items()
-    }
-    rows = report.profilers_listing(profilers)
-    if as_json:
-        print(json.dumps(rows, indent=2))
+        columns = [
+            ("NAME", "name"),
+            ("KIND", "kind"),
+            ("PROFILERS", "profilers"),
+            ("DESCRIPTION", "description"),
+        ]
     else:
-        print(
-            report.render_table(
-                rows,
-                [
-                    ("NAME", "name"),
-                    ("KINDS", "kinds"),
-                    ("FLAMEGRAPH", "flamegraph"),
-                    ("DESCRIPTION", "description"),
-                ],
-            )
+        rows = report.profilers_listing(
+            {
+                name: discovery.load_profiler(CONFIG_ENV, entry, overrides)
+                for name, entry in profiler_entries.items()
+            }
         )
+        columns = [
+            ("NAME", "name"),
+            ("KINDS", "kinds"),
+            ("FLAMEGRAPH", "flamegraph"),
+            ("DESCRIPTION", "description"),
+        ]
+
+    print(json.dumps(rows, indent=2) if as_json else report.render_table(rows, columns))
     return EXIT_OK
 
 
@@ -268,14 +232,9 @@ def cmd_init(
 ) -> int:
     """Run package_init for the selected packages (default: all) and exit.
 
-    This is the manual trigger, and it deliberately **ignores PACKAGE_INIT**.
-    That flag governs whether a profiling run builds the package on its own;
-    asking for --init is already saying you want it now, and having to edit a
-    file first -- then remember to edit it back -- would make the flag a switch
-    you have to flip rather than a setting you choose once.
-
-    A package with no package_init hook is skipped, not an error, so --init can
-    be pointed at anything.
+    Deliberately ignores PACKAGE_INIT -- that flag governs whether a *run*
+    builds the package; --init is the manual trigger (see README, "Package
+    init").  A package without the hook is skipped, not an error.
     """
     entries = discovery.discover_packages(PROFILING_ROOT)
     names = discovery.resolve_selection(args.package, entries, "package") or sorted(
@@ -309,7 +268,13 @@ def cmd_remove_output(args: argparse.Namespace, env: Dict[str, str]) -> int:
 
     keep = 0 if args.remove_output == "all" else args.keep
     if keep is None:
-        keep = _int_env(env, "PROFILING_KEEP_DEFAULT", 1)
+        raw = (env.get("PROFILING_KEEP_DEFAULT") or "").strip() or "1"
+        try:
+            keep = int(raw)
+        except ValueError as exc:
+            raise UsageError(
+                f"PROFILING_KEEP_DEFAULT must be an integer, got {raw!r}"
+            ) from exc
     if keep < 0:
         raise UsageError(f"--keep must be >= 0, got {keep}")
     if args.remove_output == "all" and args.keep not in (None, 0):
@@ -596,10 +561,8 @@ def cmd_run(
                 records.append(record)
                 exit_code = max(exit_code, category)
     finally:
-        # Written even when a later package aborts the invocation.  Runs that
-        # already completed have their artifacts on disk, so discarding the
-        # summary that indexes them would lose real results to an unrelated
-        # mistake in a package further down the list.
+        # Written even when a later package aborts the invocation: completed
+        # runs are already on disk, and the summary is what indexes them.
         if not args.dry_run and records:
             summary = report.write_summary(
                 ctx.output_dir, sys.argv[1:], records, exit_code
@@ -692,13 +655,8 @@ def _print_totals(records: Sequence[Dict]) -> None:
 
 
 def _install_signal_handlers() -> None:
-    """Route SIGTERM through the same path as Ctrl-C.
-
-    SIGINT already raises KeyboardInterrupt, which ``runner.execute`` turns
-    into a process-group kill.  SIGTERM has no such default, so a cancelled CI
-    job would return from the harness while leaving the profiler and the
-    workload running.
-    """
+    """Route SIGTERM/SIGHUP through the same path as Ctrl-C, so a cancelled CI
+    job kills the workload's process group instead of orphaning it."""
 
     def handler(signum, frame):  # noqa: ARG001 - signal handler signature
         raise KeyboardInterrupt
@@ -750,9 +708,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         if args.init:
             return cmd_init(args, env, overrides.package)
         if args.list_packages:
-            return cmd_list_packages(env, args.json, overrides.package)
+            return cmd_list("packages", env, args.json, overrides.package)
         if args.list_profilers:
-            return cmd_list_profilers(env, args.json, overrides.profiler)
+            return cmd_list("profilers", env, args.json, overrides.profiler)
         if args.remove_output is not None:
             return cmd_remove_output(args, env)
 
