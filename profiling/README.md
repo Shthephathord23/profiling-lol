@@ -1,27 +1,26 @@
 # Profiling harness
 
-A self-contained harness that runs this project's workloads ("packages") under
-a set of profilers, writes timestamped artifacts, and is meant to be driven
-from CI.
+Runs this project's workloads ("packages") under a set of profilers, writes
+timestamped artifacts, and is meant to be driven from CI.
 
-Packages and profilers are **discovered from the filesystem**. Nothing is
-hardcoded: adding either is "create a directory with two small files", and the
-listings, the installer and the CI matrix pick it up with no code change.
+Packages and profilers are **discovered from the filesystem**: a directory
+under `packages/` or `profilers/` containing a `.env` file is an entry, and
+the listings, the installer and the CI matrix pick it up with no code change.
+A leading `_` (as in `_template`) hides a directory from discovery; names
+must match `[a-z0-9][a-z0-9._-]*`.
 
 ```
 profiling/
   run_profiling.sh     entry point (a shim around lib/cli.py)
   install.sh           discovery-driven dependency installer
   config.env           global paths and defaults
-  lib/                 the Python core, common.sh, and helper scripts
+  lib/                 the Python core and its bash halves
   packages/<name>/     .env + package.sh   -- a workload
   profilers/<name>/    .env + profiler.sh  -- a way to measure it
 
 $PROFILING_OUT_PATH/
   output/<package>/<profiler>/<run-id>/   run artifacts
 ```
-
----
 
 ## Quick start
 
@@ -31,268 +30,159 @@ cd profiling
 ./install.sh --check                           # CI preflight: are the binaries there?
 
 ./run_profiling.sh --list-packages
-./run_profiling.sh --list-profilers
-
 ./run_profiling.sh --package my-tool --profiler all
-./run_profiling.sh --package my-tool --profiler all --dry-run   # resolve only
+./run_profiling.sh --package my-tool --profiler all --dry-run
 ```
 
-`packages/my-tool/` is a working example: a small, stdlib-only, offline
-workload with its own `package_init`. It runs out of the box in a fresh
-checkout, so you can exercise the harness before wiring up a real project.
-
----
+`packages/my-tool/` is a working example: small, stdlib-only, offline. It
+runs in a fresh checkout, so you can exercise the harness before wiring up a
+real project.
 
 ## Commands
 
 ```
 run_profiling.sh --package <sel> --profiler <sel> [--dry-run]
                  [--env-package KEY=VALUE] [--env-profiler KEY=VALUE]
-run_profiling.sh --init [--package <sel>]
+run_profiling.sh --init [--package <sel>] [--dry-run]
 run_profiling.sh --list-packages  [--json]
 run_profiling.sh --list-profilers [--json]
 run_profiling.sh --remove-output[=all] [--package <sel>] [--profiler <sel>]
                                        [--keep N] [--dry-run]
 ```
 
-`<sel>` is a single name, a comma-separated list, a repeated flag, or the
-literal `all`:
+`<sel>` is a name, a comma-separated list, a repeated flag, or the literal
+`all`. `--profiler` is mandatory for a run — profiling every workload with
+every profiler is expensive, so there is no implicit sweep. `--init`,
+`--list-*` and `--remove-output` are terminal actions: they cannot be
+combined with each other, and a flag that does not apply to the chosen
+action is an error, not silently ignored.
 
-```bash
---profiler time
---profiler time,py-spy
---profiler time --profiler py-spy
---profiler all
-```
+`--dry-run` resolves everything — environment layering, `package_command`
+overrides, the profiler's own argv — and prints the exact command line each
+profiler would execute, creating and running nothing. The printed command is
+produced by the same `profiler_command` builder the real run uses, so it
+cannot drift from what executes.
 
-### `--profiler` is mandatory
+`--list-* --json` emits a JSON array for generating a CI matrix. The
+`profilers` field of `--list-packages --json` is exactly what
+`--profiler all` will run, in the same order.
 
-Omitting it while `--package` is present is a usage error (exit 2). There is
-no implicit default sweep — profiling every workload with every profiler is
-expensive, so the harness makes you say what you want.
+### Exit codes
 
-### `--list-packages` / `--list-profilers`
+| Code | Meaning |
+|---|---|
+| 0 | all runs succeeded (skips do not affect this) |
+| 1 | a run failed, timed out, or could not start (missing binary, failed init) |
+| 2 | usage error: unknown package/profiler, missing `--profiler`, bad flag |
 
-Terminal actions: print and exit. The default is a human-readable table; add
-`--json` for a JSON array suitable for generating a CI matrix.
-
-```bash
-./run_profiling.sh --list-packages --json
-```
-
-### `--dry-run`
-
-On a run: resolves everything — environment layering, `package_command`
-overrides, the profiler's own argv — prints the exact command line each
-profiler would execute plus the run directory it would use, and then executes
-nothing and creates nothing.
-
-```
-[dry-run] my-tool / py-spy
-    run dir : .../output/my-tool/py-spy/20260729-141230-a3f1
-    kind    : python-module
-    workdir : .../packages/my-tool
-    workload: .../python -m my_tool.cli --input data/sample.json --iterations 5
-    command : .../profilers/py-spy/attach.sh --rate 100 --format flamegraph \
-              --output .../profile.svg --capture-exit-code 1 --subprocesses \
-              -- .../python -m my_tool.cli --input data/sample.json --iterations 5
-```
-
-The `command` line is produced by the very same `profiler_command` builder the
-real run uses — one harness, one builder, resolved once. It is not a rendering
-of what would run; it is what runs.
-
-On `--remove-output`: lists what would be deleted, deletes nothing.
-
-### `--init`
-
-Runs `package_init` for the selected packages (default: all) and exits. It
-ignores `PACKAGE_INIT`, so it builds a package without you editing the `.env`.
-See "Package init".
-
----
+The harness runs everything then aggregates — it does not stop at the first
+failure.
 
 ## Selecting profilers
 
-Resolved **per package**, in this order:
+Resolved per package:
 
-1. `--profiler <name>` — exactly those. A profiler not in that package's
-   `PACKAGE_PROFILERS` still runs.
-2. `--profiler all` — that package's `PACKAGE_PROFILERS`.
-3. `PACKAGE_PROFILERS` empty — `DEFAULT_PROFILERS` from `config.env`.
+1. `--profiler <name>` — exactly those, whether or not the package lists them.
+2. `--profiler all` — the package's `PACKAGE_PROFILERS`.
+3. That empty — `DEFAULT_PROFILERS` from `config.env`.
 4. That empty too — every discovered profiler.
 
-So `--package all --profiler all` is *not* a cartesian product: a package
-listing two profilers gets two runs while its neighbour listing three gets
-three.
+Explicit names keep their command-line order; anything reached through `all`
+runs alphabetically, duplicates collapsed. An unknown name errors
+immediately, blaming the file it came from. A profiler that does not support
+the package's `PACKAGE_KIND` is **skipped**: an informational line and a
+`"skipped"` entry in `summary.json`, never a failure.
 
-**Order.** Packages run before profilers vary, and each dimension is ordered
-the same way: as given on the command line, or alphabetically for `all`. So
-`--profiler viztracer,time` runs viztracer first, while `--profiler all` runs
-a package's list alphabetically regardless of how it is written in
-`PACKAGE_PROFILERS`. Duplicates in that list are collapsed. The `profilers`
-field of `--list-packages --json` is exactly what `--profiler all` will run,
-in the same order, so a CI matrix built from it matches the harness.
+## Environment
 
-### Kind compatibility
+Each run's environment is layered, later layers winning:
 
-Every profiler declares which `PACKAGE_KIND`s it can handle. If a package's
-kind is not in that list the run is **skipped**: an informational line, a
-`"status": "skipped"` entry in `summary.json`, and no effect on the exit code.
-Skips are a normal outcome, not a failure.
-
----
-
-## Environment precedence
-
-For each (package, profiler) run the environment is built in this order:
-
-1. the ambient process environment — the *base*, not the winner
+1. the ambient process environment — the base, not the winner
 2. `config.env`
 3. `profilers/<profiler>/.env`
 4. `packages/<package>/.env`
-5. `--env-profiler` / `--env-package` (highest priority)
+5. `--env-profiler` / `--env-package` — the command line always wins
 
-Later layers win. **Layer 4 above layer 3 is the point**: it is how a package
-tunes a profiler for itself.
+The package sits **above** the profiler on purpose: that is how a package
+tunes a profiler for itself:
 
 ```bash
 # in packages/my-tool/.env
-LINE_PROFILER_TARGETS="my_tool.core"   # configure line-profiler for this package
-PYSPY_NATIVE=1                         # this workload has C extensions
-VIZTRACER_MAX_DEPTH=32                 # its call graph is deep
+LINE_PROFILER_TARGETS="my_tool.core"
+PYSPY_NATIVE=1
+VIZTRACER_MAX_DEPTH=32
 ```
 
-`.env` files are sourced by **bash**, not parsed, so `$VAR` interpolation,
-command substitution and `PATH="$MY_BIN:$PATH"` all behave as written — a
-package can write `PYTHONPATH="$MY_SRC:$PYTHONPATH"` and have it stick. A
-non-zero exit from the sourcing subshell is a hard error naming the file.
+`.env` files are sourced by bash, so `$VAR` interpolation, command
+substitution and `PATH="$X:$PATH"` behave as written. A `.env` must not call
+`exit`, and any failure while sourcing is a hard error naming the file.
+Because a `.env` assigns unconditionally, a stray exported variable cannot
+silently redirect a run; harness knobs in `config.env` use
+`: "${VAR:=default}"` and therefore *do* answer to the environment
+(`PROFILING_OUT_PATH=/var/lib/profiling ./run_profiling.sh …`,
+`docker run -e DEFAULT_PROFILERS=time …`).
 
-### The ambient environment is the floor, not the ceiling
-
-A `.env` assigns unconditionally, so it beats whatever happened to be exported
-into your shell. `PACKAGE_ARGS=… ./run_profiling.sh` does **not** redirect a
-run: a stray variable left over in a session — or inherited from a CI job that
-knows nothing about this harness — cannot silently change what gets profiled.
-
-Harness configuration still answers to the environment, because `config.env`
-declares every one of its variables with `: "${VAR:=default}"`, which defers to
-anything already set:
-
-```bash
-PROFILING_OUT_PATH=/var/lib/profiling ./run_profiling.sh --package all --profiler all
-docker run -e DEFAULT_PROFILERS=time …
-```
-
-So `docker run -e` and CI variables keep working for the knobs in `config.env`,
-while package and profiler knobs are owned by their `.env` files.
-
-### Overriding a knob for one invocation
-
-To change a package or profiler knob without editing a file, say so on the
-command line. Both flags are repeatable and take `KEY=VALUE`:
+`--env-package` / `--env-profiler` override any knob for one invocation
+without editing a file. Both land on the topmost layer (`--env-package` wins
+a collision) and are recorded separately in `meta.json` under
+`env_overrides`, so a run says what was overridden and at which level.
 
 ```bash
 ./run_profiling.sh --package my-tool --profiler py-spy \
-  --env-package PACKAGE_ARGS="--input data/big.json --iterations 50" \
-  --env-profiler PYSPY_RATE=500
+  --env-package PACKAGE_ARGS="--input data/big.json" --env-profiler PYSPY_RATE=500
 ```
-
-Both land on the same, topmost layer — the command line always wins. They are
-kept apart for **provenance**: `meta.json` records each set separately under
-`env_overrides`, so a run says what was forced and at which level, and
-`--dry-run` prints them. On a collision `--env-package` wins, matching the
-`.env` layering above it. A value that is not `KEY=VALUE` is a usage error
-(exit 2), whichever command you asked for.
-
----
 
 ## The target contract
 
-This is the mechanism everything else rests on. Profilers come in two shapes:
-
-* **Prefix wrappers** — `time`, `py-spy`. They run the complete command:
-  `/usr/bin/time -v -- python -m tool`.
-* **Interpreter replacements** — `viztracer`, `kernprof`. The tool *is* the
-  interpreter: `viztracer -m tool`, never `viztracer python -m tool`.
-
-So the workload is exposed in two forms. Before invoking the profiler hook the
-runner writes `<RUN_DIR>/target.sh` and the harness sources it — a sourced
-file of bash arrays sidesteps every quoting and export problem:
-
-```bash
-TARGET_KIND=python-module
-TARGET_PYTHON=/repo/.venv/bin/python
-TARGET_ARGV=(/repo/.venv/bin/python -m my_tool.cli --input data/sample.json)
-TARGET_PYTHON_ARGV=(-m my_tool.cli --input data/sample.json)
-```
+Profilers come in two shapes: **prefix wrappers** (`time`, `py-spy`) that run
+the complete command, and **interpreter replacements** (`viztracer`,
+`kernprof`) that *are* the interpreter. The runner writes
+`<RUN_DIR>/target.sh` declaring the workload in both forms as bash arrays,
+and the harness sources it before the profiler hooks run:
 
 | Variable | Meaning |
 |---|---|
 | `TARGET_ARGV` | the complete plain command — what you'd run with no profiling |
-| `TARGET_PYTHON_ARGV` | the same minus the interpreter, i.e. Python's own trailing CLI shape. **Unset when `PACKAGE_KIND=exec`.** |
+| `TARGET_PYTHON_ARGV` | the same minus the interpreter (`-m module args…`). **Unset when `PACKAGE_KIND=exec`** |
 | `TARGET_PYTHON` | the interpreter path (unset for `exec`) |
 | `TARGET_KIND` | the package's `PACKAGE_KIND` |
 
-Both `viztracer` and `kernprof` accept `-m module args…` or `script.py args…`,
-so `TARGET_PYTHON_ARGV` drops straight in after their flags.
-
-A profiler that needs a Python target calls `require_python_target` first, so
-an `exec` package produces a readable error rather than an empty array
-expanding into a baffling complaint from the tool's own CLI parser.
+A profiler that needs a Python target calls `require_python_target` first,
+so an `exec` package produces a readable error instead of an empty array
+confusing the tool's own CLI parser.
 
 Also exported into every hook: `RUN_DIR`, `RUN_ID`, `PACKAGE_NAME`,
 `PROFILER_NAME`, `PROFILING_ROOT`, `REPO_ROOT`, `PACKAGE_WORKDIR`, plus
-`PACKAGE_DIR` and `PROFILER_DIR` — each hook's own directory, which is how a
-profiler invokes a helper script that lives beside it.
-
----
+`PACKAGE_DIR` and `PROFILER_DIR` — each hook's own directory, so a profiler
+can invoke a helper script that lives beside it.
 
 ## Adding a package
-
-A package is a workload you want to measure.
-
-**1. Copy the template.**
 
 ```bash
 cp -r packages/_template packages/my-service
 ```
 
-The name must match `[a-z0-9][a-z0-9._-]*`. A leading `_` hides a directory
-from discovery, which is how `_template` stays out of the listings.
-
-**2. Describe the workload in `packages/my-service/.env`.**
+Describe the workload in `packages/my-service/.env`:
 
 ```bash
 PACKAGE_DESCRIPTION="Ingest 10k documents"
-PACKAGE_KIND=python-module
-PACKAGE_ENTRY=my_service.bench
+PACKAGE_KIND=python-module           # python-module | python-script | exec
+PACKAGE_ENTRY=my_service.bench      # module name, script path, or executable
 PACKAGE_ARGS="--corpus data/10k --workers 4"
 PACKAGE_WORKDIR="$REPO_ROOT"
 PACKAGE_PYTHON="$REPO_ROOT/.venv/bin/python"
 PACKAGE_PROFILERS="time py-spy line-profiler"
 PACKAGE_INIT=1
 PACKAGE_TIMEOUT=600
-LINE_PROFILER_TARGETS="my_service.index"
 ```
 
-**3. Add hooks in `packages/my-service/package.sh`** (all optional):
+Optional hooks in `packages/my-service/package.sh`:
 
 ```bash
-package_init()     { uv sync --frozen; }   # one-time build
-package_pre_run()  { rm -rf .cache; }      # before each profiled run
-package_post_run() { :; }                  # after each run, even on failure
+package_init()     { [ -x .venv/bin/python ] || python3 -m venv .venv; }
+package_pre_run()  { rm -rf .cache; }   # before each profiled run
+package_post_run() { :; }               # after each run, even on failure
 ```
-
-**4. Check and run.**
-
-```bash
-./run_profiling.sh --list-packages
-./run_profiling.sh --package my-service --profiler all --dry-run
-./run_profiling.sh --package my-service --profiler all
-```
-
-### Package `.env` reference
 
 | Key | Meaning |
 |---|---|
@@ -307,10 +197,10 @@ package_post_run() { :; }                  # after each run, even on failure
 | `PACKAGE_TIMEOUT` | seconds; `0` or empty means no timeout |
 | `PACKAGE_APT_PACKAGES` / `PACKAGE_PIP_PACKAGES` | dependencies for `install.sh` |
 
-### When `.env` isn't enough
-
-Define `package_command` in `package.sh` to build the argv yourself. It
-overrides the `.env`-declared entry point completely:
+When `.env` isn't enough, define `package_command` in `package.sh` to build
+the argv yourself. It overrides the declared entry point completely —
+populate **both** arrays so both profiler shapes keep working, and
+`--dry-run` reflects it too:
 
 ```bash
 package_command() {
@@ -320,30 +210,14 @@ package_command() {
 }
 ```
 
-Populate **both** arrays for a Python workload so prefix wrappers and
-interpreter-replacing profilers both keep working. `--dry-run` calls this
-hook too, so the printed command reflects the override.
-
----
-
 ## Adding a profiler
 
 ```bash
 cp -r profilers/_template profilers/perf
 ```
 
-Declare it in `profilers/perf/.env`:
-
-```bash
-PROFILER_DESCRIPTION="Linux perf sampling"
-PROFILER_KINDS="python-module python-script exec"
-PROFILER_FLAMEGRAPH=0
-PROFILER_REQUIRES_BIN="perf"
-PROFILER_APT_PACKAGES="linux-tools-generic"
-PERF_FREQ=999
-```
-
-Implement it in `profilers/perf/profiler.sh`:
+Declare it in `profilers/perf/.env`, implement it in
+`profilers/perf/profiler.sh`:
 
 ```bash
 profiler_command() {           # REQUIRED -- declare the command, run nothing
@@ -356,25 +230,12 @@ profiler_post() {              # OPTIONAL, only after the command succeeded
 }
 ```
 
-A profiler declares a **command**; the harness runs it. The same
-`profiler_command` builder serves `--dry-run` and the real run, so what
-`--dry-run` prints is by construction what executes — there is only one of
-them, so they cannot drift.
-
-The command is one argv. If a profiler needs two processes, a wait, or any
-sequencing, that goes in a small script **inside the profiler's own directory**,
-which the command invokes as `"$PROFILER_DIR/<script>"` — see
-`profilers/py-spy/attach.sh`. It belongs there and not in `lib/`: it is one
-profiler's implementation, not shared machinery, and keeping it beside its
-`.env` and `profiler.sh` means deleting the profiler deletes all of it.
-Reaching for `bash -c '...'` technically fits in one argv but hides a shell
-script inside a string and makes `--dry-run` unreadable.
-
-`install.sh` and `install.sh --check` now cover it, and it appears in
-`--list-profilers`. No core change is needed — which is the whole point of the
-`exec` kind being plumbed through even though nothing ships using it yet.
-
-### Profiler `.env` reference
+A profiler declares a **command**; the harness runs it. The command is one
+argv — if a profiler needs two processes, a wait, or any sequencing, that
+belongs in a small script inside the profiler's own directory, invoked as
+`"$PROFILER_DIR/<script>"` (see `profilers/py-spy/attach.sh`). Deleting the
+profiler's directory then deletes all of it. `install.sh`, `--check` and the
+listings cover a new profiler automatically.
 
 | Key | Meaning |
 |---|---|
@@ -385,9 +246,7 @@ script inside a string and makes `--dry-run` unreadable.
 | `PROFILER_REQUIRES_BIN` | binaries checked by `install.sh --check` and before each run |
 | `PROFILER_APT_PACKAGES` / `PROFILER_PIP_PACKAGES` | dependencies for `install.sh` |
 
-### Helpers available in hooks
-
-From `lib/common.sh`, sourced before every hook:
+Helpers from `lib/common.sh`, available in every hook:
 
 | Helper | Purpose |
 |---|---|
@@ -396,65 +255,19 @@ From `lib/common.sh`, sourced before every hook:
 | `require_python_target` | abort unless the target is a Python program |
 | `profiling_warn` / `profiling_error` / `profiling_die` | logging |
 
----
-
 ## Package init
 
-Some packages need a build step before they can be profiled: a virtualenv, a
-compile, `uv sync --frozen`. Declare it with a flag in the package `.env` and
-put the work in `package_init`:
+`PACKAGE_INIT=1` means: call `package_init` once, before this package's
+runs. There is no staleness tracking — the hook runs on every invocation,
+and guarding the expensive part is the hook's own job (one line usually
+does it; only the package knows what "already built" means for it).
 
-```bash
-# packages/my-service/.env
-PACKAGE_INIT=1
-```
-
-```bash
-# packages/my-service/package.sh
-package_init() {
-    [ -x .venv/bin/python ] || python3 -m venv .venv
-    uv sync --frozen
-}
-```
-
-`PACKAGE_INIT=1` means *call the hook once, before this package's runs*. `0` or
-absent means a profiling run never builds the package. That is the whole
-mechanism.
-
-**There is no staleness tracking.** The hook runs on every invocation, and
-making it cheap when there is nothing to do is the hook's job — as above, one
-guard line usually does it. This is deliberate: only the package knows what
-"already built" means for it, and any check the harness invented on its behalf
-would be a guess. Earlier versions guessed with a sha256 of the inputs stored
-in a `.state/` directory; the guess could disagree with reality (stamp says
-built, the virtualenv is gone, every run dies at exit 127), and it cost more
-code than the thing it was guarding.
-
-`--init` is the manual trigger, and it **ignores `PACKAGE_INIT`**:
-
-```bash
-./run_profiling.sh --init                    # every discovered package
-./run_profiling.sh --init --package my-tool  # just one
-```
-
-The flag decides whether a *profiling run* builds the package on its own.
-Asking for `--init` is already saying you want it now, so it does not also
-require editing the `.env` — and then remembering to edit it back. Set
-`PACKAGE_INIT=0` once and build when you choose to. The reverse one-off works
-too: `--env-package PACKAGE_INIT=0` skips the build for a single invocation
-without touching the file.
-
-A package with no `package_init` hook is skipped by `--init`, not an error, so
-you can point it at anything. The reverse — `PACKAGE_INIT=1` with no hook — *is*
-an error, because the `.env` asked for a build step that does not exist.
-
-`./install.sh` calls `--init` after installing dependencies, so one command
-leaves the box ready to profile.
-
-A failed init skips that package's runs, records them as failed, and yields
-exit code 1. Nothing is cached, so the next invocation simply tries again.
-
----
+`--init` is the manual trigger. It **ignores `PACKAGE_INIT`** — asking for it
+is already saying you want it now — and skips packages without the hook, so
+it can be pointed at anything. The reverse, `PACKAGE_INIT=1` with no hook,
+*is* an error. A failed init records that package's runs as failed (exit 1);
+nothing is cached, so the next invocation simply tries again. `install.sh`
+runs `--init` after installing dependencies.
 
 ## Output
 
@@ -467,60 +280,36 @@ output/
 ```
 
 `run-id` is `YYYYmmdd-HHMMSS-<4 hex>`. Set the `RUN_ID` environment variable
-to override it wholesale — a CI build number, say. Injected values are
-sanitized down to `[A-Za-z0-9._-]`, so they cannot escape the output tree.
+(a CI build number, say) to override it; injected values are sanitized down
+to `[A-Za-z0-9._-]`, and re-running a pinned `RUN_ID` clears that run
+directory first so a rebuilt job cannot report the previous attempt's
+artifacts as its own.
 
-Console output is **tee'd**: you see the workload live and it is captured to
-`stdout.log` / `stderr.log`.
+Console output is tee'd: you see the workload live and it is captured to
+`stdout.log` / `stderr.log`. Runs are sequential, and each profiler is a
+separate execution of the workload — they cannot be stacked.
 
-`meta.json` per run:
-
-```json
-{
-  "package": "my-tool", "profiler": "py-spy", "run_id": "20260729-141230-a3f1",
-  "status": "ok", "exit_code": 0, "duration_s": 12.4,
-  "started_at": "…", "finished_at": "…",
-  "argv": ["…"], "kind": "python-module", "workdir": "…",
-  "flamegraph": "profile.svg",
-  "artifacts": ["profile.svg", "stdout.log", "stderr.log"],
-  "host": "…", "git_sha": "…",
-  "env_overrides": {"package": {"PACKAGE_ARGS": "…"}}
-}
-```
-
-`status` is `ok`, `failed`, `timeout` or `skipped`. `env_overrides` records the
-`--env-package` / `--env-profiler` values this run was given, and is absent
-when there were none. `git_sha` is best-effort
-and simply absent when git is unavailable. `flamegraph` is null unless the
-profiler declares `PROFILER_FLAMEGRAPH=1` *and* the file exists.
-
-`summary.json` holds the invocation's arguments, per-status counts and the
-array of per-run results, so a regression gate downstream has one file to
-read.
-
-Runs are **sequential** and each profiler is a **separate execution** of the
-workload — they cannot be stacked.
+`meta.json` records each run: `status` (`ok | failed | timeout | skipped`),
+`exit_code`, duration, timestamps, the resolved workload `argv` and profiler
+`command`, `kind`, `workdir`, the artifact list, `host`, best-effort
+`git_sha`, `flamegraph` (when the profiler declares one and the file
+exists), `reason` (on failure) and `env_overrides` (when `--env-*` was
+used). `summary.json` holds the invocation's arguments, per-status counts
+and the array of per-run records — one file for a downstream gate to read.
 
 ### Interrupting a run
 
 The workload runs in its own session so that a timeout can take the profiler
-and everything it spawned down together. That also means a signal sent to the
-harness does not reach it, so `SIGINT` (Ctrl-C), `SIGTERM` (a cancelled CI
-job) and `SIGHUP` are handled explicitly: the harness kills everything in the
-workload's session before exiting, and returns 1.
+and everything it spawned down together. A signal to the harness therefore
+does not reach it, so `SIGINT`, `SIGTERM` (a cancelled CI job) and `SIGHUP`
+are handled explicitly: the harness kills everything in the workload's
+session before exiting, and returns 1.
 
 Termination escalates `SIGTERM` → `SIGKILL` over every live process in the
-workload's *session*, enumerated from `/proc` — not its process group, and
-not just the direct child. Both cheaper notions were observed to lie: bash
-can leave a profiler's command in a different process group, so a group kill
-orphaned GNU time and the workload it ran, and a zombie member keeps a group
-looking alive, stalling the escalation. There is a ~2 s courtesy window after
-`SIGTERM` for workloads that clean up on it before `SIGKILL` lands.
-
-Re-running a pinned `RUN_ID` clears that run directory first, so a rebuilt
-`build-123` cannot report the previous attempt's artifacts as its own.
-
----
+session, enumerated from `/proc` — not the process group, which was observed
+to be unreliable (bash can leave a profiler's command in a different group,
+and a zombie keeps a group looking alive). There is a ~2 s courtesy window
+after `SIGTERM` for workloads that clean up on it.
 
 ## Retention
 
@@ -528,132 +317,57 @@ Re-running a pinned `RUN_ID` clears that run directory first, so a rebuilt
 ./run_profiling.sh --remove-output                    # keep PROFILING_KEEP_DEFAULT
 ./run_profiling.sh --remove-output --keep 3
 ./run_profiling.sh --remove-output=all                # keep nothing
-./run_profiling.sh --remove-output --package my-tool --profiler py-spy
-./run_profiling.sh --remove-output --keep 3 --dry-run
+./run_profiling.sh --remove-output --package my-tool --profiler py-spy --dry-run
 ```
 
-A terminal action: prune, print, exit. It never combines with a run.
+Keeps the newest N runs **per (package, profiler) pair**, scope following
+`--package` / `--profiler`. Every directory inside a pair is treated as a
+run, whatever it is called, ordered by **mtime** — run ids are only
+chronological when the harness generated them. The `latest` symlink is
+re-pointed at the newest survivor. As a guard against a mis-set variable
+feeding `rm -rf`, pruning refuses to run when `PROFILING_OUTPUT_DIR` is
+unset, relative, or suspiciously shallow.
 
-`--keep N` keeps N runs **per (package, profiler) pair**, not N in total — so
-`--keep 3` on a package with four profilers leaves twelve run directories.
-Scope follows `--package` / `--profiler`; with neither, the whole tree.
-
-**Every directory inside a package/profiler pair is treated as a run**, whatever
-it is called. There is no name pattern and nothing is special-cased: a run made
-with a custom `RUN_ID` is prunable like any other, and so is a folder someone
-left behind. The tree is the harness's to manage, not somewhere to keep things.
-
-The consequence worth knowing: a folder dropped in *after* the last run counts
-as the newest run and will be kept until newer runs push it out.
-
-Runs are ordered by **mtime**, not by name — run ids are only chronological
-when the harness generated them, and a CI-supplied `RUN_ID` like `build-9`
-would otherwise sort after `build-10`.
-
-The `latest` symlink is re-pointed at the newest survivor, or removed when none
-is left. And the harness refuses to prune at all when `PROFILING_OUTPUT_DIR` is
-unset, relative, the filesystem root, or suspiciously shallow — which matters
-more now that the tree lives outside the repository, where a mistake is not
-something you would spot in `git status`.
-
----
-
-## Exit codes
-
-| Code | Meaning |
-|---|---|
-| 0 | all runs succeeded (skips do not affect this) |
-| 1 | a run failed, timed out, or could not start (missing binary, failed init) |
-| 2 | usage error: unknown package/profiler, missing `--profiler`, bad flag |
-
-The harness runs everything then aggregates — it does not stop at the first
-failure.
-
----
-
-## `install.sh`
+## install.sh
 
 ```bash
 ./install.sh              # install everything discovered
-./install.sh --check      # CI preflight
+./install.sh --check      # CI preflight; exits 1 listing what is missing
 ./install.sh --dry-run    # print the commands without running them
 ```
 
-It reads `*_APT_PACKAGES` and `*_PIP_PACKAGES` out of every `profilers/*/.env`
-and `packages/*/.env`, deduplicates, and installs. Adding a profiler directory
-extends the installer automatically.
-
-* `sudo` is used only when not already root; apt is skipped with a warning
-  when unavailable.
-* On Debian/Ubuntu the system interpreter is marked externally managed
-  (PEP 668); in a container that is exactly where these tools belong, so
-  `--break-system-packages` is passed explicitly rather than failing.
-* `--check` verifies every `PROFILER_REQUIRES_BIN`, prints a table, and exits
-  1 listing what is missing.
-
----
+Reads `*_APT_PACKAGES` and `*_PIP_PACKAGES` out of every `.env`,
+deduplicates, installs (using `sudo` only when not root, and
+`--break-system-packages` on PEP 668 systems, which in a container is where
+these tools belong), runs `--init`, then verifies. Adding a profiler
+directory extends it automatically.
 
 ## Running in a container
 
-### py-spy needs ptrace
+**py-spy needs ptrace.** Run with `docker run --cap-add=SYS_PTRACE`; on a
+hardened host you may also need `sudo sysctl -w kernel.yama.ptrace_scope=0`.
+`install.sh --check` warns when py-spy is installed but the yama scope is
+non-zero — check this first, it is the most common container problem by a
+wide margin.
 
-py-spy reads another process's memory, which needs `CAP_SYS_PTRACE`. Without
-it you get a cryptic "Operation not permitted".
+**viztracer traces are large.** It records every call; the shipped defaults
+(`VIZTRACER_MAX_DEPTH=64`, `VIZTRACER_TRACER_ENTRIES=200000`, a circular
+buffer of roughly 20 MB) keep that bounded. Overflow costs the *earliest*
+events, not the run. Deterministic tracing also slows the workload by one to
+two orders of magnitude, so a viztracer run is not a timing measurement.
 
-```bash
-docker run --cap-add=SYS_PTRACE …
-```
-
-On a host with a hardened kernel you may also need:
-
-```bash
-sudo sysctl -w kernel.yama.ptrace_scope=0
-```
-
-`install.sh --check` warns when py-spy is installed but
-`/proc/sys/kernel/yama/ptrace_scope` is non-zero, and the profiler repeats the
-hint if a run fails. Check this first — it is the most common container
-problem by a wide margin.
-
-### Artifact sizes
-
-**viztracer traces are large.** It records every call, and its stock defaults
-produce roughly 100 MB of JSON from a workload that runs for a fraction of a
-second. Two conservative defaults keep that in check:
-
-```bash
-VIZTRACER_MAX_DEPTH=64          # maximum call depth recorded
-VIZTRACER_TRACER_ENTRIES=200000 # circular event buffer (~20 MB)
-```
-
-The buffer is circular, so overflowing it costs you the *earliest* events, not
-the run. Raise either per package if you need more, but budget the disk — and
-note that deterministic tracing also slows the workload down by one to two
-orders of magnitude, so a viztracer run is not a timing measurement. Use
-`--remove-output` in CI to keep the tree bounded.
-
-### Persisting build state
-
-There is no state directory to mount — the harness keeps none. Persist the
-thing `package_init` actually builds (a virtualenv, a compiled tree) if you
-want to skip the work, or let the hook rebuild it. Either way the hook's own
-guard decides, and it cannot disagree with what is on disk.
-
-### Disk layout
-
-Set `PROFILING_OUT_PATH` to a directory **outside the repository** so profiling
-data can never be captured by a commit, and so the tree survives a re-clone:
+**Point `PROFILING_OUT_PATH` outside the repository** so profiling data can
+never be captured by a commit and survives a re-clone:
 
 ```bash
 PROFILING_OUT_PATH=/var/lib/profiling ./run_profiling.sh --package all --profiler all
 docker run -v /var/lib/profiling:/var/lib/profiling -e PROFILING_OUT_PATH=/var/lib/profiling …
 ```
 
-It defaults to the harness's own directory so a fresh checkout runs with no
-configuration, and `output/` is gitignored to cover that case. Every path is
-defined in `config.env`, so relocating the whole tree is one edit.
-
----
+It defaults to the harness's own directory (with `output/` gitignored) so a
+fresh checkout runs with no configuration. There is no state directory to
+persist: to skip `package_init` work across containers, persist the thing
+the hook builds (the virtualenv, the compiled tree).
 
 ## Profiler notes
 
@@ -664,58 +378,24 @@ defined in `config.env`, so relocating the whole tree is one edit.
 | `viztracer` | python | no | Deterministic timeline; view with `vizviewer <RUN_DIR>/trace.json`. Large artifacts, heavy overhead. |
 | `line-profiler` | python | no | Per-line timings via `kernprof`. Needs configuration. |
 
-**line-profiler is the one profiler that is not zero-config.** Without
-`LINE_PROFILER_TARGETS` (or `@profile` decorators in the source) it produces
-an empty report. Set it in the package `.env`:
+**line-profiler is the one profiler that is not zero-config**: without
+`LINE_PROFILER_TARGETS` in the package `.env` (or `@profile` decorators in
+the source) it produces an empty report. The profiler warns — it does not
+fail — when that happens.
 
-```bash
-LINE_PROFILER_TARGETS="my_tool.core"   # comma-separated modules/functions
-```
-
-The profiler warns — it does not fail — when a run produces an empty report.
-
-**py-spy runs through `profilers/py-spy/attach.sh`.** py-spy's exit status
-describes *py-spy*, not the program it ran, and the two are uncorrelated.
-Running one command repeatedly, `py-spy record -- <cmd>` returns 0 for a
-workload that exited 3, and 1 for a workload that exited 0 — the latter
-whenever its flamegraph renderer found no samples to plot, which depends on
-how long the workload ran rather than on whether it worked:
-
-```
-child exits 0 -> py-spy exits  0 1 1 1 1 0 1 1 1 1
-child exits 3 -> py-spy exits  1 0 1 1 1 1 1 0 0 1
-```
-
-Since the run's status *is* the workload's status, trusting py-spy's
-would report broken workloads as successful and healthy ones as broken, at
-random. So `attach.sh` starts the workload itself and attaches py-spy to the
-resulting pid; the shell then owns the process and `wait` yields its exact exit
-code. It lives in its own file because a profiler declares a *command*, and
-anything needing two processes and a wait is a program, not a command — and in
-py-spy's own directory because it is py-spy's code. The cost is that sampling
-begins a few milliseconds late, so the very start of interpreter startup can be
-missed.
-
-A non-zero py-spy status is still used, but only to tell its failure modes
-apart, and never by trusting the number itself:
-
-| What happened | How it is detected | Outcome |
-|---|---|---|
-| Attached, collected no samples | it still wrote an output file | warning; the workload's status stands |
-| Could not attach, workload still running | no output file, and the workload was alive when py-spy quit | **run fails** — ptrace denied or similar |
-| Could not attach, workload already finished | no output file, workload already gone | warning; the workload's status stands |
-
-That last row is the attach-window race, and it is deliberately not a failure:
-a workload that finishes in a few milliseconds occasionally beats the attach,
-and failing on it would make fast packages flaky in CI. You lose the profile
-for that run, not the run. The distinction between the last two rows is only
-observable while it happens, which is why the profiler waits on py-spy first
-and checks whether the workload is still live at that moment.
-
-Set `PYSPY_CAPTURE_EXIT_CODE=0` for plain launch mode, where the workload's
-exit status is simply not observable and is reported as 0.
-
----
+**py-spy runs through `profilers/py-spy/attach.sh`**, which starts the
+workload itself and attaches py-spy to the resulting pid. py-spy's own exit
+status describes py-spy, not the program it ran, and the two are measurably
+uncorrelated — it returns 0 for workloads that failed and 1 for healthy
+workloads too short to sample. Owning the process lets the shell recover the
+workload's exact exit code; the cost is a few milliseconds of missed
+interpreter startup. A non-zero py-spy status is downgraded to a warning
+unless the workload was still running when py-spy gave up — a real attach
+failure (ptrace denied), which fails the run. The attach-window race on very
+fast workloads costs you the profile, not the run. Set
+`PYSPY_CAPTURE_EXIT_CODE=0` for plain launch mode, where the workload's
+status is not observable and is reported as 0. Full reasoning and
+measurements in `attach.sh`.
 
 ## Global configuration (`config.env`)
 
@@ -728,6 +408,5 @@ exit status is simply not observable and is reported as 0.
 | `DEFAULT_PROFILERS` | `time py-spy` | fallback when `PACKAGE_PROFILERS` is empty |
 | `PROFILING_KEEP_DEFAULT` | `1` | default `--keep` for `--remove-output` |
 
-Every one is overridable from the environment: each is declared with
-`: "${VAR:=default}"`, so an exported value wins. This is the one place where
-the ambient environment beats a `.env` file — see "Environment precedence".
+Every one is declared with `: "${VAR:=default}"`, so an exported value from
+the environment wins.

@@ -82,8 +82,8 @@ class RunResult:
 def make_run_id(env: Mapping[str, str]) -> str:
     """Timestamped id, or a sanitized override from ``RUN_ID`` (CI build no.).
 
-    An injected value becomes a directory name, so it is sanitized hard: only
-    ``[A-Za-z0-9._-]`` survives, and the path-traversal names are rejected.
+    An injected value becomes a directory name, so only ``[A-Za-z0-9._-]``
+    survives -- it cannot escape the output tree.
     """
     override = (env.get("RUN_ID") or "").strip()
     if override:
@@ -357,7 +357,7 @@ def execute(
             exit_code = proc.wait()
         except BaseException:
             # Ctrl-C, SIGTERM from a cancelled CI job, anything else: take the
-            # process group with us rather than orphaning the workload.
+            # session with us rather than orphaning the workload.
             _kill_session(proc)
             raise
     finally:
@@ -403,7 +403,6 @@ def execute(
 
 
 def _tee(stream, path: Path, console) -> None:
-    """Stream to the console and to a log file at the same time."""
     try:
         with path.open("wb") as fh:
             for chunk in iter(lambda: stream.readline(), b""):

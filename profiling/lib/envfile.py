@@ -35,22 +35,15 @@ def load_layers(
     *paths: Path,
     overrides: Optional[Mapping[str, str]] = None,
 ) -> Dict[str, str]:
-    """Build a run's environment: ambient, then each `.env`, then `overrides`.
+    """Build a run's environment: ambient, then each `.env` in order, then
+    ``overrides`` -- later layers win.
 
-        1. the ambient environment       the subshell's starting point
-        2. each path in order            config.env, profiler, package
-        3. overrides                     --env-profiler / --env-package
-
-    All paths are sourced in one bash process, in order, so a later layer can
-    interpolate and override an earlier one.  The ambient environment is the
-    *base*, not the winner: a `.env` assigns unconditionally, so it beats
-    whatever was exported into the shell -- a stray ``PACKAGE_ARGS`` left over
-    in someone's session cannot silently redirect a run -- while
-    ``PYTHONPATH="$MY_SRC:$PYTHONPATH"`` still sticks.  Harness variables in
-    config.env are declared with ``: "${VAR:=default}"`` and so *do* answer to
-    the ambient environment (``PROFILING_OUT_PATH=...``, ``docker run -e``).
-
-    Raises ``EnvFileError`` naming the offending file if any layer fails.
+    All paths are sourced in one bash process, so a later layer can
+    interpolate an earlier one.  The ambient environment is the base, not the
+    winner: a `.env` assigns unconditionally (a stray exported variable
+    cannot redirect a run), while config.env's ``: "${VAR:=default}"``
+    declarations still defer to it.  Raises ``EnvFileError`` naming the
+    offending file if any layer fails.
     """
     files = [str(Path(p)) for p in paths]
     for path in files:

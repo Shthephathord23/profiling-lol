@@ -653,7 +653,7 @@ def _print_totals(records: Sequence[Dict]) -> None:
 
 def _install_signal_handlers() -> None:
     """Route SIGTERM/SIGHUP through the same path as Ctrl-C, so a cancelled CI
-    job kills the workload's process group instead of orphaning it."""
+    job kills the workload's session instead of orphaning it."""
 
     def handler(signum, frame):  # noqa: ARG001 - signal handler signature
         raise KeyboardInterrupt
@@ -738,7 +738,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"ERROR: {exc}", file=sys.stderr)
         return EXIT_RUN_FAILED
     except KeyboardInterrupt:
-        # execute() has already killed the in-flight process group; this is a
+        # execute() has already killed the in-flight session; this is a
         # backstop for an interrupt that landed between runs.
         runner.terminate_active()
         print("\nInterrupted.", file=sys.stderr)
