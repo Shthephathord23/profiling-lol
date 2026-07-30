@@ -26,23 +26,29 @@ from discovery import Package, Profiler
 
 _RUN_ID_SAFE = re.compile(r"[^A-Za-z0-9._-]+")
 
+_LIB_DIR = Path(__file__).resolve().parent
+#: The bash side of resolve()/execute(); see its header for the contract.
+_HARNESS_SH = _LIB_DIR / "harness.sh"
+#: The bash side of run_package_init().
+_PACKAGE_INIT_SH = _LIB_DIR / "package_init.sh"
+
 
 class RunError(Exception):
     """Raised for a run that cannot be set up (bad kind, missing entry, ...)."""
 
 
-# The run currently in flight, so an interrupt can take its process group down
+# The run currently in flight, so an interrupt can take its session down
 # with it.  Runs are strictly sequential, so a single slot is enough.
 _ACTIVE: "Optional[subprocess.Popen]" = None
 
 
 def terminate_active() -> bool:
-    """Kill the in-flight run's process group, if any.  The workload runs in
+    """Kill the in-flight run's session, if any.  The workload runs in
     its own session, so a signal sent to the harness never reaches it."""
     proc = _ACTIVE
     if proc is None or proc.poll() is not None:
         return False
-    _kill_group(proc)
+    _kill_session(proc)
     return True
 
 
@@ -165,82 +171,6 @@ def render_target_sh(target: Target, package: Package, profiler: Profiler) -> st
 
 # ------------------------------------------------------------- harnesses ---
 
-# One harness serves --dry-run and the real run alike: same sourced files,
-# same profiler_command builder, so what --dry-run prints cannot drift from
-# what executes.  With PROFILING_RESOLVE_ONLY=1 it stops after writing what it
-# resolved; otherwise it runs the workload in this same bash process, so hooks
-# share shell state and package_post_run can be an EXIT trap.
-_HARNESS = r"""
-set -o pipefail
-. "$PROFILING_ROOT/lib/common.sh"
-. "$PROFILING_TARGET_FILE"
-if [ -f "$PROFILING_PACKAGE_SH" ]; then . "$PROFILING_PACKAGE_SH"; fi
-if [ -f "$PROFILING_PROFILER_SH" ]; then . "$PROFILING_PROFILER_SH"; fi
-
-# The package may rewrite the workload entirely.
-if declare -F package_command >/dev/null; then
-  package_command
-fi
-if [ "${#TARGET_ARGV[@]}" -eq 0 ]; then
-  profiling_error "package_command left TARGET_ARGV empty"
-  exit 78
-fi
-printf '%s\0' "${TARGET_ARGV[@]}" > "$PROFILING_ARGV_FILE"
-
-if ! declare -F profiler_command >/dev/null; then
-  profiling_error "profiler '$PROFILER_NAME' defines no profiler_command function"
-  exit 78
-fi
-
-cmd=()
-profiler_command
-if [ "${#cmd[@]}" -eq 0 ]; then
-  # An empty array would expand to zero words below and "run" successfully,
-  # reporting a green run that measured nothing.
-  profiling_error "profiler '$PROFILER_NAME' declared an empty command"
-  exit 78
-fi
-printf '%s\0' "${cmd[@]}" > "$PROFILING_COMMAND_FILE"
-
-if [ "${PROFILING_RESOLVE_ONLY:-0}" = "1" ]; then
-  exit 0
-fi
-
-cd "$PACKAGE_WORKDIR" || {
-  profiling_error "PACKAGE_WORKDIR does not exist: $PACKAGE_WORKDIR"
-  exit 77
-}
-
-# Installed only after the cd succeeded: a post_run doing relative cleanup
-# must never fire from some other directory.
-__profiling_post_run() {
-  if declare -F package_post_run >/dev/null; then
-    package_post_run || profiling_warn "package_post_run exited $?"
-  fi
-}
-trap __profiling_post_run EXIT
-
-if declare -F package_pre_run >/dev/null; then
-  package_pre_run || {
-    __profiling_status=$?
-    profiling_error "package_pre_run exited $__profiling_status"
-    exit "$__profiling_status"
-  }
-fi
-
-"${cmd[@]}"
-__profiling_status=$?
-
-if [ "$__profiling_status" -eq 0 ] && declare -F profiler_post >/dev/null; then
-  profiler_post || {
-    __profiling_status=$?
-    profiling_error "profiler_post exited $__profiling_status"
-  }
-fi
-
-exit "$__profiling_status"
-"""
-
 
 def _hook_env(
     env: Mapping[str, str],
@@ -308,9 +238,10 @@ def resolve(
     hook_env["PROFILING_RESOLVE_ONLY"] = "1"
 
     proc = subprocess.run(
-        ["bash", "-c", _HARNESS],
+        ["bash", str(_HARNESS_SH)],
         env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
+        stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
@@ -325,6 +256,7 @@ def resolve(
 
 
 #: ``run_package_init`` returns this when package.sh defines no such hook.
+#: Keep in sync with lib/package_init.sh.
 NO_INIT_HOOK = 79
 
 
@@ -332,23 +264,11 @@ def run_package_init(env: Mapping[str, str], package: Package) -> int:
     """Call ``package_init``; return its exit code (``NO_INIT_HOOK``: nothing
     to call -- a skip, not a failure).  No staleness caching of any kind:
     guarding repeat work is the hook's own job (README, "Package init")."""
-    script = (
-        "set -o pipefail\n"
-        '. "$PROFILING_ROOT/lib/common.sh"\n'
-        # A package without package.sh has no hook -- same outcome as a
-        # package.sh without the function, minus bash's "cannot open" noise.
-        f'[ -f "$1" ] || exit {NO_INIT_HOOK}\n'
-        '. "$1"\n'
-        "if ! declare -F package_init >/dev/null; then\n"
-        f"  exit {NO_INIT_HOOK}\n"
-        "fi\n"
-        "package_init\n"
-    )
     hook_env = dict(env)
     hook_env["PACKAGE_NAME"] = package.name
     hook_env["PACKAGE_DIR"] = str(package.entry.path)
     proc = subprocess.run(
-        ["bash", "-c", script, "_", str(package.entry.script_file)],
+        ["bash", str(_PACKAGE_INIT_SH), str(package.entry.script_file)],
         env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
     )
@@ -404,7 +324,7 @@ def execute(
     started = time.time()
 
     proc = subprocess.Popen(
-        ["bash", "-c", _HARNESS],
+        ["bash", str(_HARNESS_SH)],
         env=hook_env,
         cwd=_existing_dir(package.workdir, package.entry.path),
         stdout=subprocess.PIPE,
@@ -437,12 +357,12 @@ def execute(
             exit_code = proc.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
             timed_out = True
-            _kill_group(proc)
+            _kill_session(proc)
             exit_code = proc.wait()
         except BaseException:
             # Ctrl-C, SIGTERM from a cancelled CI job, anything else: take the
             # process group with us rather than orphaning the workload.
-            _kill_group(proc)
+            _kill_session(proc)
             raise
     finally:
         _ACTIVE = None
@@ -505,58 +425,77 @@ def _tee(stream, path: Path, console) -> None:
             pass
 
 
-def _group_alive(pgid: int) -> bool:
-    """True while any process remains in the group (signal 0 probes it)."""
-    try:
-        os.killpg(pgid, 0)
-        return True
-    except ProcessLookupError:
-        return False
-    except PermissionError:
-        return True
+def _live_session_pids(sid: int) -> List[int]:
+    """Live (non-zombie) pids whose session id is ``sid``, via /proc.
+
+    The harness child is started with ``start_new_session=True``, so its pid
+    is the session id of everything it spawned, however deep.  Unlike a
+    process group, a session cannot be left behind by bash's job control or
+    by a tool calling setpgid()."""
+    pids = []
+    for entry in os.listdir("/proc"):
+        if not entry.isdigit():
+            continue
+        try:
+            with open(f"/proc/{entry}/stat", "rb") as fh:
+                # The comm field may contain ') '; parse from the last ')'.
+                fields = fh.read().rsplit(b")", 1)[-1].split()
+        except OSError:
+            continue  # the process raced away
+        try:
+            if int(fields[3]) == sid and fields[0] != b"Z":
+                pids.append(int(entry))
+        except (ValueError, IndexError):
+            continue
+    return pids
 
 
-def _signal_group(pgid: int, sig: int) -> bool:
-    try:
-        os.killpg(pgid, sig)
-        return True
-    except (ProcessLookupError, PermissionError):
-        return False
+def _signal_pids(pids: List[int], sig: int) -> None:
+    for pid in pids:
+        try:
+            os.kill(pid, sig)
+        except (ProcessLookupError, PermissionError):
+            pass
 
 
-def _kill_group(
+def _kill_session(
     proc: "subprocess.Popen",
     term_grace: float = 2.0,
     kill_grace: float = 5.0,
 ) -> None:
-    """SIGTERM the process group, then SIGKILL whatever is still in it.
+    """SIGTERM every live process in the child's session, then SIGKILL the
+    survivors.
 
-    Escalation is driven by whether the *group* is empty, not by whether the
-    direct child exited.  Those differ in practice: GNU time sets SIGTERM to
-    SIG_IGN, and an ignored disposition survives exec, so `time -- sleep 99`
-    leaves a sleep that shrugs off the SIGTERM that killed its parent. Keying
-    on the child alone let that sleep outlive the harness.
+    By *session*, not by process group, and not just the direct child --
+    both cheaper notions were observed to lie in this harness: bash can
+    leave a profiler's command in a different process group, so a group kill
+    orphaned GNU time and the workload it ran, and a zombie member keeps
+    ``killpg(pgid, 0)`` reporting a group alive, stalling escalation for the
+    whole grace period.  The child is its session's leader, and /proc says
+    exactly who belongs to it.  The ~2 s window after SIGTERM is a courtesy
+    for workloads that clean up on it.
     """
-    try:
-        pgid = os.getpgid(proc.pid)
-    except ProcessLookupError:
-        return
+    sid = proc.pid
+    doomed = _live_session_pids(sid)
+    if not doomed and proc.poll() is None:
+        doomed = [proc.pid]
+    _signal_pids(doomed, signal.SIGTERM)
 
-    _signal_group(pgid, signal.SIGTERM)
-
-    # Reap the direct child first.  An un-reaped zombie is still a member of
-    # the group, so probing before this would always report the group alive
-    # and stall for the full grace period on every kill.
     try:
         proc.wait(timeout=term_grace)
     except subprocess.TimeoutExpired:
         pass
 
-    if _group_alive(pgid):
-        _signal_group(pgid, signal.SIGKILL)
-        deadline = time.monotonic() + kill_grace
-        while time.monotonic() < deadline and _group_alive(pgid):
-            time.sleep(0.05)
+    deadline = time.monotonic() + kill_grace
+    while True:
+        survivors = _live_session_pids(sid)
+        if not survivors:
+            break
+        # Re-sent every pass so anything forked between scans is caught too.
+        _signal_pids(survivors, signal.SIGKILL)
+        if time.monotonic() >= deadline:
+            break
+        time.sleep(0.05)
     _reap(proc)
 
 

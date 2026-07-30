@@ -23,27 +23,12 @@ class EnvFileError(RuntimeError):
 # make it depend on where the harness happened to be invoked from.
 _VOLATILE = frozenset({"_", "PWD", "OLDPWD", "SHLVL", "BASH_ENV"})
 
-# Internal names used by the sourcing snippet below.
+# Internal names used by lib/capture_env.sh.
 _INTERNAL_PREFIX = "__profiling_"
 
-# Sourced in a fresh bash process.  "$@" is the list of files, in order.
-# The trap is armed until every file has been sourced, so any exit before then
-# names the current file -- a failure under set -e, a syntax error that kills
-# the shell outright, or a `.env` calling `exit` directly (even `exit 0`,
-# which would otherwise return an empty capture that looks like success).
-_SOURCE_SNIPPET = r"""
-__profiling_current=""
-trap 'printf "__PROFILING_ENV_FAIL__%s\n" "$__profiling_current" >&2' EXIT
-set -e
-set -a
-for __profiling_current in "$@"; do
-  . "$__profiling_current"
-done
-set +a
-set +e
-trap - EXIT
-env -0
-"""
+# The bash side of the capture: sources "$@" in order and prints `env -0`.
+# On any premature exit it emits a marker naming the file, parsed by _parse.
+_CAPTURE_SH = Path(__file__).resolve().parent / "capture_env.sh"
 
 
 def load_layers(
@@ -74,8 +59,10 @@ def load_layers(
             raise EnvFileError(f"env file not found: {path}")
 
     proc = subprocess.run(
-        ["bash", "-c", _SOURCE_SNIPPET, "_", *files],
+        ["bash", str(_CAPTURE_SH), *files],
         env=_base_environment(real_env),
+        # A `.env` must never wait on stdin; sourcing has to be unattended.
+        stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )

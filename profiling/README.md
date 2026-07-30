@@ -506,15 +506,16 @@ workload — they cannot be stacked.
 The workload runs in its own session so that a timeout can take the profiler
 and everything it spawned down together. That also means a signal sent to the
 harness does not reach it, so `SIGINT` (Ctrl-C), `SIGTERM` (a cancelled CI
-job) and `SIGHUP` are handled explicitly: the harness kills the workload's
-process group before exiting, and returns 1.
+job) and `SIGHUP` are handled explicitly: the harness kills everything in the
+workload's session before exiting, and returns 1.
 
-Termination escalates `SIGTERM` → `SIGKILL`, driven by whether the process
-*group* is empty rather than by whether the direct child exited. Those differ:
-GNU time sets `SIGTERM` to `SIG_IGN`, and an ignored disposition survives
-`exec`, so `time -- sleep 99` leaves a `sleep` that shrugs off the signal that
-killed its parent. There is a ~2 s courtesy window after `SIGTERM` for
-workloads that clean up on it before `SIGKILL` lands.
+Termination escalates `SIGTERM` → `SIGKILL` over every live process in the
+workload's *session*, enumerated from `/proc` — not its process group, and
+not just the direct child. Both cheaper notions were observed to lie: bash
+can leave a profiler's command in a different process group, so a group kill
+orphaned GNU time and the workload it ran, and a zombie member keeps a group
+looking alive, stalling the escalation. There is a ~2 s courtesy window after
+`SIGTERM` for workloads that clean up on it before `SIGKILL` lands.
 
 Re-running a pinned `RUN_ID` clears that run directory first, so a rebuilt
 `build-123` cannot report the previous attempt's artifacts as its own.
