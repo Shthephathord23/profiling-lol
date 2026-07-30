@@ -13,9 +13,9 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, Iterable, Mapping, Optional
+from typing import Dict, Mapping, Optional
 
-__all__ = ["EnvFileError", "load_layers", "base_environment", "source_files"]
+__all__ = ["EnvFileError", "load_layers"]
 
 
 class EnvFileError(RuntimeError):
@@ -30,16 +30,13 @@ _VOLATILE = frozenset({"_", "PWD", "OLDPWD", "SHLVL", "BASH_ENV"})
 _INTERNAL_PREFIX = "__profiling_"
 
 # Sourced in a fresh bash process.  "$@" is the list of files, in order.
-# The EXIT trap names the offending file even when a syntax error kills the
-# shell outright, which a plain `if ! source` cannot catch.
+# The trap is armed until every file has been sourced, so any exit before then
+# names the current file -- a failure under set -e, a syntax error that kills
+# the shell outright, or a `.env` calling `exit` directly (even `exit 0`,
+# which would otherwise return an empty capture that looks like success).
 _SOURCE_SNIPPET = r"""
 __profiling_current=""
-trap '
-  __profiling_status=$?
-  if [ "$__profiling_status" -ne 0 ]; then
-    printf "__PROFILING_ENV_FAIL__%s\n" "$__profiling_current" >&2
-  fi
-' EXIT
+trap 'printf "__PROFILING_ENV_FAIL__%s\n" "$__profiling_current" >&2' EXIT
 set -e
 set -a
 for __profiling_current in "$@"; do
@@ -63,34 +60,37 @@ def load_layers(
         2. each path in order            config.env, profiler, package
         3. overrides                     --env-profiler / --env-package
 
-    The ambient environment is the *base*, not the winner.  A `.env` assigns
-    unconditionally, so it beats whatever was exported into the shell -- which
-    means a stray ``PACKAGE_ARGS`` left over in someone's session cannot
-    silently redirect a run.  It also means a package can write
-    ``PYTHONPATH="$MY_SRC:$PYTHONPATH"`` and have it stick, so the PATHLIKE
-    exception this module used to carry is gone.
-
-    Harness variables still respond to the ambient environment, because
-    config.env declares them with ``: "${VAR:=default}"`` -- it defers to
-    anything already set.  So ``PROFILING_OUT_PATH=... run_profiling.sh`` and
-    ``docker run -e`` keep working, while package and profiler knobs do not
-    answer to the shell.
+    All paths are sourced in one bash process, in order, so a later layer can
+    interpolate and override an earlier one.  The ambient environment is the
+    *base*, not the winner: a `.env` assigns unconditionally, so it beats
+    whatever was exported into the shell -- a stray ``PACKAGE_ARGS`` left over
+    in someone's session cannot silently redirect a run -- while
+    ``PYTHONPATH="$MY_SRC:$PYTHONPATH"`` still sticks.  Harness variables in
+    config.env are declared with ``: "${VAR:=default}"`` and so *do* answer to
+    the ambient environment (``PROFILING_OUT_PATH=...``, ``docker run -e``).
 
     Raises ``EnvFileError`` naming the offending file if any layer fails.
     """
-    env = source_files(paths, base=base_environment(real_env))
+    files = [str(Path(p)) for p in paths]
+    for path in files:
+        if not Path(path).is_file():
+            raise EnvFileError(f"env file not found: {path}")
+
+    proc = subprocess.run(
+        ["bash", "-c", _SOURCE_SNIPPET, "_", *files],
+        env=_base_environment(real_env),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    env = _parse(proc, files)
     if overrides:
         env.update(overrides)
     return env
 
 
-def base_environment(real_env: Optional[Mapping[str, str]] = None) -> Dict[str, str]:
-    """Build the controlled base environment for a sourcing subshell.
-
-    It is the real process environment with bash bookkeeping stripped, so the
-    capture does not depend on the caller's working directory or shell nesting
-    while still letting `.env` files interpolate the ambient `PATH`.
-    """
+def _base_environment(real_env: Optional[Mapping[str, str]] = None) -> Dict[str, str]:
+    """The real process environment minus bash bookkeeping, so the capture does
+    not depend on the caller's working directory or shell nesting."""
     src = os.environ if real_env is None else real_env
     env = {
         k: v
@@ -101,32 +101,6 @@ def base_environment(real_env: Optional[Mapping[str, str]] = None) -> Dict[str, 
     # Keep tool output parseable and stable across hosts.
     env.setdefault("LC_ALL", "C.UTF-8")
     return env
-
-
-def source_files(
-    files: Iterable[Path],
-    base: Optional[Mapping[str, str]] = None,
-) -> Dict[str, str]:
-    """Source `files` in order in one bash process; return the exported env.
-
-    Raises ``EnvFileError`` naming the offending file if any of them fails.
-    """
-    paths = [str(Path(f)) for f in files]
-    if not paths:
-        return dict(base if base is not None else base_environment())
-
-    for p in paths:
-        if not Path(p).is_file():
-            raise EnvFileError(f"env file not found: {p}")
-
-    env = dict(base) if base is not None else base_environment()
-    proc = subprocess.run(
-        ["bash", "-c", _SOURCE_SNIPPET, "_", *paths],
-        env=env,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    return _parse(proc, paths)
 
 
 def _parse(proc: "subprocess.CompletedProcess[bytes]", paths) -> Dict[str, str]:
@@ -146,6 +120,17 @@ def _parse(proc: "subprocess.CompletedProcess[bytes]", paths) -> Dict[str, str]:
         if detail:
             msg += f"\n{detail}"
         raise EnvFileError(msg)
+
+    if culprit is not None or not proc.stdout:
+        # Exit status 0 but the shell died while a layer was still being
+        # sourced: a `.env` called `exit 0` (or exec'd away).  Without this
+        # check the capture would come back empty and look like a run with no
+        # environment at all.
+        where = culprit or (paths[-1] if paths else "<unknown>")
+        raise EnvFileError(
+            f"sourcing {where} exited the shell before the environment could "
+            "be captured; a .env file must not call exit"
+        )
 
     if detail:
         # A `.env` may legitimately print warnings; pass them through.

@@ -11,7 +11,6 @@
 
 # ---------------------------------------------------------------- logging ---
 
-profiling_log() { printf '%s\n' "$*" >&2; }
 profiling_warn() { printf 'WARN: %s\n' "$*" >&2; }
 profiling_error() { printf 'ERROR: %s\n' "$*" >&2; }
 
@@ -23,18 +22,13 @@ profiling_die() {
 
 # --------------------------------------------------------- target helpers ---
 
-# True when the workload is a Python program, i.e. TARGET_PYTHON_ARGV is set.
-profiling_has_python_target() {
-    [ "${TARGET_KIND:-}" != "exec" ] &&
-        declare -p TARGET_PYTHON_ARGV >/dev/null 2>&1
-}
-
 # Guard for profilers that *replace* the interpreter (viztracer, kernprof)
 # rather than prefixing the command.  Call it first in profiler_command: without
 # it an unset TARGET_PYTHON_ARGV expands to nothing and the tool reports a
 # baffling error about its own arguments instead of the real problem.
 require_python_target() {
-    if ! profiling_has_python_target; then
+    if [ "${TARGET_KIND:-}" = "exec" ] ||
+        ! declare -p TARGET_PYTHON_ARGV >/dev/null 2>&1; then
         profiling_die \
             "profiler '${PROFILER_NAME:-?}' needs a Python target, but package" \
             "'${PACKAGE_NAME:-?}' has PACKAGE_KIND=${TARGET_KIND:-unset}." \

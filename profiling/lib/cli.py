@@ -765,6 +765,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         # traceback whichever internal guard fired.
         print(f"ERROR: {exc}", file=sys.stderr)
         return EXIT_RUN_FAILED
+    except BrokenPipeError:
+        # stdout went away (e.g. piped into `head`); finish quietly like any
+        # pipeline tool instead of tracebacking on interpreter shutdown.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        return EXIT_RUN_FAILED
+    except OSError as exc:
+        # Disk full, permissions, an unwritable output tree: an environment
+        # problem, not a bug, so report it as one.
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return EXIT_RUN_FAILED
     except KeyboardInterrupt:
         # execute() has already killed the in-flight process group; this is a
         # backstop for an interrupt that landed between runs.

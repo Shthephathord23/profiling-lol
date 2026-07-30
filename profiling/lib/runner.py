@@ -213,6 +213,10 @@ if [ -f "$PROFILING_PROFILER_SH" ]; then . "$PROFILING_PROFILER_SH"; fi
 if declare -F package_command >/dev/null; then
   package_command
 fi
+if [ "${#TARGET_ARGV[@]}" -eq 0 ]; then
+  profiling_error "package_command left TARGET_ARGV empty"
+  exit 78
+fi
 printf '%s\0' "${TARGET_ARGV[@]}" > "$PROFILING_ARGV_FILE"
 
 if ! declare -F profiler_command >/dev/null; then
@@ -370,6 +374,9 @@ def run_package_init(env: Mapping[str, str], package: Package) -> int:
     script = (
         "set -o pipefail\n"
         '. "$PROFILING_ROOT/lib/common.sh"\n'
+        # A package without package.sh has no hook -- same outcome as a
+        # package.sh without the function, minus bash's "cannot open" noise.
+        f'[ -f "$1" ] || exit {NO_INIT_HOOK}\n'
         '. "$1"\n'
         "if ! declare -F package_init >/dev/null; then\n"
         f"  exit {NO_INIT_HOOK}\n"
