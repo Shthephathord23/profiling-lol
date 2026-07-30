@@ -106,9 +106,11 @@ def make_run_id(env: Mapping[str, str]) -> str:
     override = (env.get("RUN_ID") or "").strip()
     if override:
         clean = _RUN_ID_SAFE.sub("-", override).strip("-.")[:128]
-        if clean and clean not in (".", ".."):
-            return clean
-        raise RunError(f"RUN_ID={override!r} does not contain any usable characters")
+        if not clean:
+            raise RunError(
+                f"RUN_ID={override!r} does not contain any usable characters"
+            )
+        return clean
     return f"{time.strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(2)}"
 
 
@@ -220,6 +222,12 @@ fi
 
 cmd=()
 profiler_command
+if [ "${#cmd[@]}" -eq 0 ]; then
+  # An empty array would expand to zero words below and "run" successfully,
+  # reporting a green run that measured nothing.
+  profiling_error "profiler '$PROFILER_NAME' declared an empty command"
+  exit 78
+fi
 printf '%s\0' "${cmd[@]}" > "$PROFILING_COMMAND_FILE"
 
 if [ "${PROFILING_RESOLVE_ONLY:-0}" = "1" ]; then
@@ -443,6 +451,10 @@ def execute(
         # workload it spawned down together.
         start_new_session=True,
     )
+    # Registered immediately: a signal arriving before this is set would skip
+    # terminate_active and orphan the group we just created.
+    global _ACTIVE
+    _ACTIVE = proc
 
     stdout_log = run_dir / "stdout.log"
     stderr_log = run_dir / "stderr.log"
@@ -456,9 +468,6 @@ def execute(
     ]
     for t in teams:
         t.start()
-
-    global _ACTIVE
-    _ACTIVE = proc
 
     timed_out = False
     try:

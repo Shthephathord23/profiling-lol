@@ -47,10 +47,6 @@ class Entry:
     env_file: Path
     script_file: Path
 
-    @property
-    def has_script(self) -> bool:
-        return self.script_file.is_file()
-
 
 @dataclass
 class Package:
@@ -232,6 +228,11 @@ def resolve_selection(
                 names.append(piece)
 
     if not names:
+        if values:
+            # The flag was given but every piece was empty (e.g. --package ,).
+            # Returning [] would make the caller fall back to its no-flag
+            # default, silently turning a typo into "all" or "nothing".
+            raise DiscoveryError(f"--{label} got an empty selector")
         return []
 
     if "all" in names:

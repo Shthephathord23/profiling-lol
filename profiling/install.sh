@@ -184,8 +184,10 @@ do_install() {
     if [ -n "$apt_packages" ]; then
         if command -v apt-get >/dev/null 2>&1; then
             echo "Installing apt packages..."
-            # shellcheck disable=SC2086
-            if as_root env DEBIAN_FRONTEND=noninteractive apt-get update -qq; then
+            # Both through `run`, so --dry-run prints them instead of running
+            # apt-get update for real.
+            if run as_root env DEBIAN_FRONTEND=noninteractive apt-get update -qq; then
+                # shellcheck disable=SC2086
                 run as_root env DEBIAN_FRONTEND=noninteractive \
                     apt-get install -y --no-install-recommends $apt_packages ||
                     warn "apt-get install failed; continuing"

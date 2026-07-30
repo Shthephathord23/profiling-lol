@@ -519,6 +519,12 @@ def cmd_run(
     requested_profilers = discovery.resolve_selection(
         args.profiler, profiler_entries, "profiler"
     )
+    # Empty here means 'all' expanded over an empty tree; exiting 0 having run
+    # nothing would look like success.
+    if not package_names:
+        raise UsageError("no packages discovered under packages/")
+    if not requested_profilers:
+        raise UsageError("no profilers discovered under profilers/")
     # "--profiler all" means "each package's own list"; explicit names always run.
     explicit = not _is_all(args.profiler)
 
@@ -725,6 +731,14 @@ def main(argv: Optional[List[str]] = None) -> int:
                 "--init, --list-packages, --list-profilers and --remove-output are "
                 "terminal actions and cannot be combined"
             )
+        # Checked before dispatch, so a flag that does not apply to the chosen
+        # action is an error rather than silently ignored.
+        if args.keep is not None and args.remove_output is None:
+            raise UsageError("--keep is only meaningful with --remove-output")
+        if args.json and not (args.list_packages or args.list_profilers):
+            raise UsageError(
+                "--json is only meaningful with --list-packages/--list-profilers"
+            )
 
         if args.init:
             return cmd_init(args, env, overrides.package)
@@ -734,11 +748,6 @@ def main(argv: Optional[List[str]] = None) -> int:
             return cmd_list_profilers(env, args.json, overrides.profiler)
         if args.remove_output is not None:
             return cmd_remove_output(args, env)
-
-        if args.keep is not None:
-            raise UsageError("--keep is only meaningful with --remove-output")
-        if args.json:
-            raise UsageError("--json is only meaningful with --list-packages/--list-profilers")
 
         return cmd_run(args, env, overrides)
 
@@ -751,6 +760,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     except retention.RetentionError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return EXIT_USAGE
+    except runner.RunError as exc:
+        # E.g. the reset_run_dir containment check; a clean message beats a
+        # traceback whichever internal guard fired.
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return EXIT_RUN_FAILED
     except KeyboardInterrupt:
         # execute() has already killed the in-flight process group; this is a
         # backstop for an interrupt that landed between runs.

@@ -23,13 +23,10 @@ __all__ = [
     "profilers_listing",
 ]
 
-_INTERNAL_ARTIFACTS = frozenset({".argv"})
-
-
 def _is_internal(rel: str) -> bool:
-    """Bookkeeping files a profiler or the runner left behind are not
-    artifacts.  Dotfiles at the top of a run directory are reserved for it."""
-    return rel in _INTERNAL_ARTIFACTS or rel == "meta.json" or rel.startswith(".")
+    """meta.json and top-level dotfiles (.argv, .command) are the harness's
+    bookkeeping, not run artifacts."""
+    return rel == "meta.json" or rel.startswith(".")
 
 
 def git_sha(cwd: Path) -> Optional[str]:
@@ -207,13 +204,13 @@ def profilers_listing(profilers: Mapping[str, Profiler]) -> List[Dict]:
 
 
 def render_table(rows: Sequence[Mapping], columns: Sequence["tuple"]) -> str:
-    """Render an aligned table.  ``columns`` is a sequence of (header, key-or-
-    callable) pairs."""
+    """Render an aligned table.  ``columns`` is a sequence of (header, key)
+    pairs."""
     if not rows:
         return "(none)"
 
-    def cell(row, accessor):
-        value = accessor(row) if callable(accessor) else row.get(accessor, "")
+    def cell(row, key):
+        value = row.get(key, "")
         if isinstance(value, bool):
             return "yes" if value else "no"
         if isinstance(value, (list, tuple)):
