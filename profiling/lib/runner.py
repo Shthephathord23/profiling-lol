@@ -238,17 +238,19 @@ if [ "${PROFILING_RESOLVE_ONLY:-0}" = "1" ]; then
   exit 0
 fi
 
+cd "$PACKAGE_WORKDIR" || {
+  profiling_error "PACKAGE_WORKDIR does not exist: $PACKAGE_WORKDIR"
+  exit 77
+}
+
+# Installed only after the cd succeeded: a post_run doing relative cleanup
+# must never fire from some other directory.
 __profiling_post_run() {
   if declare -F package_post_run >/dev/null; then
     package_post_run || profiling_warn "package_post_run exited $?"
   fi
 }
 trap __profiling_post_run EXIT
-
-cd "$PACKAGE_WORKDIR" || {
-  profiling_error "PACKAGE_WORKDIR does not exist: $PACKAGE_WORKDIR"
-  exit 77
-}
 
 if declare -F package_pre_run >/dev/null; then
   package_pre_run || {
@@ -492,11 +494,13 @@ def execute(
     finally:
         _ACTIVE = None
 
-    for t in teams:
-        t.join(timeout=5)
-
+    # Stamped at child exit, before waiting on the tee threads, so a slow
+    # drain cannot inflate the workload's measured duration.
     duration = time.time() - started
     finished_at = _stamp()
+
+    for t in teams:
+        t.join(timeout=5)
 
     # What the harness actually resolved, which is what belongs in meta.json:
     # a package_command hook may have rewritten the workload, and the profiler

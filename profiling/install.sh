@@ -18,7 +18,8 @@ MODE=install
 DRY_RUN=0
 
 usage() {
-    sed -n '3,13p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    # Print the comment header above (only lines starting with '#').
+    sed -n '3,/^[^#]/p' "${BASH_SOURCE[0]}" | sed -n 's/^# \{0,1\}//p'
 }
 
 while [ $# -gt 0 ]; do

@@ -71,7 +71,14 @@ class Package:
 
     @property
     def args(self) -> List[str]:
-        return shlex.split(self.env.get("PACKAGE_ARGS", ""))
+        raw = self.env.get("PACKAGE_ARGS", "")
+        try:
+            return shlex.split(raw)
+        except ValueError as exc:
+            raise DiscoveryError(
+                f"package '{self.name}': PACKAGE_ARGS is not shell-parseable "
+                f"({exc}): {raw!r}"
+            ) from exc
 
     @property
     def workdir(self) -> str:

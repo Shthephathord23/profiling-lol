@@ -284,6 +284,9 @@ def cmd_init(
 
     exit_code = EXIT_OK
     for name in names:
+        if args.dry_run:
+            print(f"[dry-run] would run package_init for {name} (if defined)")
+            continue
         package = discovery.load_package(CONFIG_ENV, entries[name], overrides=overrides)
         print(f"--> init {name}")
         code = runner.run_package_init(package.env, package)
@@ -738,6 +741,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         if args.json and not (args.list_packages or args.list_profilers):
             raise UsageError(
                 "--json is only meaningful with --list-packages/--list-profilers"
+            )
+        if args.remove_output is not None and (args.env_package or args.env_profiler):
+            raise UsageError(
+                "--env-package/--env-profiler do not apply to --remove-output"
             )
 
         if args.init:
