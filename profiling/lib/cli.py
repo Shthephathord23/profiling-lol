@@ -227,9 +227,7 @@ def cmd_list(
     return EXIT_OK
 
 
-def cmd_init(
-    args: argparse.Namespace, env: Dict[str, str], overrides: Dict[str, str]
-) -> int:
+def cmd_init(args: argparse.Namespace, overrides: Dict[str, str]) -> int:
     """Run package_init for the selected packages (default: all) and exit.
 
     Deliberately ignores PACKAGE_INIT -- that flag governs whether a *run*
@@ -248,7 +246,7 @@ def cmd_init(
             continue
         package = discovery.load_package(CONFIG_ENV, entries[name], overrides=overrides)
         print(f"--> init {name}")
-        code = runner.run_package_init(package.env, package)
+        code = runner.run_package_init(package)
         if code == runner.NO_INIT_HOOK:
             print(f"    no package_init in {name}/package.sh; nothing to do")
         elif code != 0:
@@ -380,7 +378,6 @@ class RunContext:
 def _run_pair(
     ctx: RunContext,
     package_entry: discovery.Entry,
-    base_package: Package,
     profiler_entry: discovery.Entry,
 ) -> "tuple[Dict, int]":
     """Run one (package, profiler) pair -- and only that pair: both entries
@@ -390,7 +387,7 @@ def _run_pair(
     outcome contributes.  Every branch returns both together, so no path can
     record an outcome without also accounting for it in the exit code.
     """
-    package_name = base_package.name
+    package_name = package_entry.name
     profiler_name = profiler_entry.name
 
     profiler = discovery.load_profiler(
@@ -448,13 +445,11 @@ def _run_pair(
         print(f"    cleared previous artifacts in {run_id}")
 
     result = runner.execute(
-        env=package.env,
         package=package,
         profiler=profiler,
         target=target,
         run_dir=run_dir,
         run_id=run_id,
-        timeout=package.timeout,
     )
     meta = report.write_meta(
         result, package, profiler, ctx.repo_root, ctx.overrides.as_meta()
@@ -539,7 +534,7 @@ def cmd_run(
             if base_package.init_enabled:
                 if args.dry_run:
                     print(f"    [dry-run] would run package_init for {package_name}")
-                elif _init_for_run(base_package, package_name) != 0:
+                elif _init_for_run(base_package) != 0:
                     print(
                         f"ERROR: package_init failed for {package_name}; "
                         "skipping its runs",
@@ -559,7 +554,7 @@ def cmd_run(
 
             for profiler_name in selected:
                 record, category = _run_pair(
-                    ctx, package_entry, base_package, profiler_entries[profiler_name]
+                    ctx, package_entry, profiler_entries[profiler_name]
                 )
                 records.append(record)
                 exit_code = max(exit_code, category)
@@ -576,14 +571,14 @@ def cmd_run(
     return exit_code
 
 
-def _init_for_run(package: Package, name: str) -> int:
+def _init_for_run(package: Package) -> int:
     """package_init as part of a run.  A missing hook is a configuration error
     here -- the .env asked for an init that does not exist."""
-    code = runner.run_package_init(package.env, package)
+    code = runner.run_package_init(package)
     if code == runner.NO_INIT_HOOK:
         print(
-            f"ERROR: {name}/.env sets PACKAGE_INIT=1 but package.sh defines no "
-            "package_init",
+            f"ERROR: {package.name}/.env sets PACKAGE_INIT=1 but package.sh "
+            "defines no package_init",
             file=sys.stderr,
         )
     return code
@@ -618,7 +613,6 @@ def _print_dry_run(
     with tempfile.TemporaryDirectory(prefix="profiling-dryrun-") as scratch:
         try:
             argv, command = runner.resolve(
-                package.env,
                 package,
                 profiler,
                 target,
@@ -709,7 +703,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             )
 
         if args.init:
-            return cmd_init(args, env, overrides.package)
+            return cmd_init(args, overrides.package)
         if args.list_packages:
             return cmd_list("packages", env, args.json, overrides.package)
         if args.list_profilers:

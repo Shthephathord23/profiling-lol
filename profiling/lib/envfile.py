@@ -34,7 +34,6 @@ _CAPTURE_SH = Path(__file__).resolve().parent / "capture_env.sh"
 def load_layers(
     *paths: Path,
     overrides: Optional[Mapping[str, str]] = None,
-    real_env: Optional[Mapping[str, str]] = None,
 ) -> Dict[str, str]:
     """Build a run's environment: ambient, then each `.env`, then `overrides`.
 
@@ -60,7 +59,7 @@ def load_layers(
 
     proc = subprocess.run(
         ["bash", str(_CAPTURE_SH), *files],
-        env=_base_environment(real_env),
+        env=_base_environment(),
         # A `.env` must never wait on stdin; sourcing has to be unattended.
         stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
@@ -72,13 +71,12 @@ def load_layers(
     return env
 
 
-def _base_environment(real_env: Optional[Mapping[str, str]] = None) -> Dict[str, str]:
+def _base_environment() -> Dict[str, str]:
     """The real process environment minus bash bookkeeping, so the capture does
     not depend on the caller's working directory or shell nesting."""
-    src = os.environ if real_env is None else real_env
     env = {
         k: v
-        for k, v in src.items()
+        for k, v in os.environ.items()
         if k not in _VOLATILE and not k.startswith(_INTERNAL_PREFIX)
     }
     env.setdefault("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin")
